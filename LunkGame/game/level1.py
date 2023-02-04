@@ -33,9 +33,9 @@ class Level:
         ['x', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', 'x'],
         ['x', ',', 'p', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', 'x'],
         ['x', ',', ',', ',', 't', 't', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', 'x'],
-        ['x', ',', ',', ',', ',', ',', ',', 't', ',', ',', ',', ',', ',', 'x', ',', ',', ',', ',', ',', 'x'],
-        ['x', ',', ',', 'e', ',', ',', ',', ',', ',', ',', ',', ',', 'x', ',', ',', ',', ',', ',', ',', 'x'],
-        ['x', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', 'x', ',', ',', ',', ',', 't', ',', ',', 'x'],
+        ['x', ',', ',', ',', 't', ',', ',', 't', ',', ',', ',', ',', ',', 'x', ',', ',', ',', ',', ',', 'x'],
+        ['x', ',', ',', 'e', 't', ',', ',', ',', ',', ',', ',', ',', 'x', ',', ',', ',', ',', ',', ',', 'x'],
+        ['x', ',', ',', ',', 't', ',', ',', ',', ',', ',', ',', 'x', ',', ',', ',', ',', 't', ',', ',', 'x'],
         ['x', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', 'x'],
         ['x', ',', ',', 'x', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', ',', 'x'],
         ['x', ',', ',', 'x', ',', ',', 't', ',', ',', ',', ',', ',', ',', ',', ',', 't', ',', ',', ',', 'x'],
@@ -57,6 +57,7 @@ class Level:
         self.create_map()
 
     def create_map(self):
+        """
         #layout of the map
         layouts = {
             'boundary': import_csv_layout('map/map_FloorBlocks.csv'),
@@ -70,9 +71,9 @@ class Level:
         }
 
         #reading from csv file to get map data
-        for style, layout in layouts.items():
-            for row_index, row in enumerate(layout):
-                for col_index, col in enumerate(row):
+        #for style, layout in layouts.items():#indent below
+        for row_index, row in enumerate(self.world_map):# in enumerate(WORLD_MAP)
+                for col_index, col in enumerate(row):# in enumerate(row)
                     if col != '-1':
                         x = col_index * TILESIZE
                         y = row_index * TILESIZE
@@ -91,6 +92,20 @@ class Level:
                         if style == 'object':
                             surface = graphics['objects'][int(col)]
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surface)
+
+        """
+        for row_index, row in enumerate(self.world_map):# in enumerate(WORLD_MAP)
+                for col_index, col in enumerate(row):# in enumerate(row)
+                    x = col_index * TILESIZE
+                    y = row_index * TILESIZE
+                    if col == 'x':
+                        Wall((x, y), [self.visible_sprites, self.obstacle_sprites])
+
+                    if col == 't':
+                        Plant((x, y), [self.visible_sprites, self.obstacle_sprites])
+
+                    if col == 'e':
+                        Enemy1((x, y), [self.visible_sprites, self.enemy_sprites], self.obstacle_sprites)
 
         #pass in map size so player can do wrap around if needed
         self.player = Player((1400, 500), [self.visible_sprites], self.obstacle_sprites, self.map_size)
