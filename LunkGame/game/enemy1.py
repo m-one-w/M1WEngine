@@ -11,13 +11,13 @@ import time
 class Enemy1(pygame.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
-        self.image = pygame.image.load('graphics/enemy1/enemy1.png').convert_alpha()
+        self.image = pygame.image.load('graphics/enemy1/enemy1animation1.png').convert_alpha()
         self.rect = self.image.get_rect(topleft = pos)
         #modify model rect to be a slightly less tall hitbox. Will use this for movement
         self.hitbox = self.rect.inflate(0, -26)
         self.direction = pygame.math.Vector2()
-        self.speed = 5
-        random.seed()#TODO: seed with time
+        self.speed = 0.5
+        random.seed(time.time())#TODO: seed with time
 
         self.obstacle_sprites = obstacle_sprites
         self.timer = 100
@@ -30,7 +30,7 @@ class Enemy1(pygame.sprite.Sprite):
             #get random number
             seed = random.randint(1, 1000)
             #if odd turn left else right
-            if seed %4:
+            if seed %2:
                 self.direction.x = -1
             else:
                 self.direction.x = 1

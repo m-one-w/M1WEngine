@@ -16,7 +16,7 @@ class Player(pygame.sprite.Sprite):
         self.hitbox = self.rect.inflate(0, -26)
         self.map_size = pygame.math.Vector2(map_size)
         #graphics setup
-        self.import_player_asset()
+        #self.import_player_asset()#TODO
         self.status = 'down'
         self.frame_index = 0
         self.animation_speed = 0.15
@@ -166,6 +166,6 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.cooldowns()
         self.get_status()
-        self.animate()
+        #self.animate()
         self.move(self.speed)
         
