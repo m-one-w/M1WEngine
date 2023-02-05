@@ -13,3 +13,15 @@ https://www.geeksforgeeks.org/how-to-install-pygame-in-windows/
 Getting started with pygame
 
 https://www.geeksforgeeks.org/pygame-tutorial/
+
+Black code formatter
+
+If not install, use the following command:
+```
+pip install git+https://github.com/psf/black
+```
+
+Running is done through the following command:
+```
+black {source_file_or_directory}
+```
