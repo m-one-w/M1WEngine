@@ -1,7 +1,3 @@
-# Sean Nishi
-# 11/16/2022
-# Attempt at basic Lunk Game in python
-
 import pygame, sys
 from settings import *
 

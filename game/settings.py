@@ -1,9 +1,3 @@
-"""
-Sean Nishi
-Settings/conststants for Lunk Game
-11/21/2022
-"""
-
 # Screen dimensions
 WINDOW_SIZE = (1280, 720)
 WINDOW_WIDTH = WINDOW_SIZE[0]

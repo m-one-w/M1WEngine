@@ -1,8 +1,3 @@
-# Sean Nishi
-# Lunk Game
-# Level class
-# 12/22/2022
-
 import pygame
 from settings import *
 from tile import Tile

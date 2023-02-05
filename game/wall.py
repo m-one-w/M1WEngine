@@ -1,6 +1,3 @@
-# Sean Nishi
-# Lunk Game Wall png
-
 import pygame
 from settings import *
 

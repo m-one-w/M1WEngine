@@ -1,7 +1,3 @@
-# Sean Nishi
-# Lunk Game import_support
-# created 1/24/2023
-
 from csv import reader
 from os import walk
 import pygame

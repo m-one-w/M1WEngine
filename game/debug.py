@@ -1,9 +1,3 @@
-"""
-Sean Nishi
-Debug file
-11/21/2022
-"""
-
 import pygame
 
 pygame.init()

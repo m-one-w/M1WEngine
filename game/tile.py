@@ -1,7 +1,3 @@
-# Sean Nishi
-# Lunk Game
-# 12/22/2022
-
 import pygame
 from settings import *
 

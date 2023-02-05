@@ -1,7 +1,3 @@
-# Sean Nishi
-# Lunk Game
-# Tree
-
 import pygame
 from settings import *
 

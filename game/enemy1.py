@@ -1,8 +1,3 @@
-# Sean Nishi
-# Lunk Game
-# class for the player
-# 12/22/2022
-
 import pygame
 from settings import *
 import random

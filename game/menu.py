@@ -1,9 +1,3 @@
-"""
-Sean Nishi
-11/16/2022
-Lunk Menu
-"""
-
 import pygame
 from settings import *
 
