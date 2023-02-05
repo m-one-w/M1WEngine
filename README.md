@@ -25,3 +25,15 @@ Running is done through the following command:
 ```
 black {source_file_or_directory}
 ```
+
+Flake8 Style Guide
+
+If not installed, use the following command:
+```
+python -m pip install flake8
+```
+
+Running is done through the following command:
+```
+flake8 {source_file_or_directory}
+```
