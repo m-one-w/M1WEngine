@@ -1,16 +1,9 @@
 import pygame
-from settings import *
-from tile import Tile
+from game.settings import TILESIZE
 from wall import Wall
 from plant import Plant
 from player import Player
 from enemy1 import Enemy1
-
-#
-from debug import debug
-from support import *
-
-from random import choice
 
 
 class Level:
@@ -474,43 +467,6 @@ class Level:
         self.create_map()
 
     def create_map(self):
-        """
-        #layout of the map
-        layouts = {
-            'boundary': import_csv_layout('map/map_FloorBlocks.csv'),
-            'wall': import_csv_layout('graphics/wall/wall.csv'),
-            'enemy1': import_csv_layout('graphics/enemy1/enemy1.csv'),
-            'objects': import_folder('graphics/objects')
-        }
-        graphics = {
-            'plant': import_folder('graphics/plant'),
-            'objects': import_folder('graphics/objects')
-        }
-
-        #reading from csv file to get map data
-        #for style, layout in layouts.items():#indent below
-        for row_index, row in enumerate(self.world_map):# in enumerate(WORLD_MAP)
-                for col_index, col in enumerate(row):# in enumerate(row)
-                    if col != '-1':
-                        x = col_index * TILESIZE
-                        y = row_index * TILESIZE
-                        if style == 'boundary':
-                            #invisible boundries
-                            Tile((x, y), [self.obstacle_sprites], 'invisible')
-
-                        if style == 'wall':
-                            random_wall_image = choice(graphics['wall'])
-                            Tile((x, y), [self.obstacle_sprites], 'wall', random_wall_image)
-
-                        if style == 'plant':
-                            random_plant_image = choice(graphics['plant'])
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'plant', random_plant_image)
-
-                        if style == 'object':
-                            surface = graphics['objects'][int(col)]
-                            Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', surface)
-
-        """
         for row_index, row in enumerate(self.world_map):  # in enumerate(WORLD_MAP)
             for col_index, col in enumerate(row):  # in enumerate(row)
                 x = col_index * TILESIZE
@@ -562,7 +518,7 @@ class YSortCameraGroup(pygame.sprite.Group):
         ).convert()
         self.floor_rect = self.floor_surface.get_rect(topleft=(0, 0))
 
-    # Drawing the map with the offset of the player. aka keeping screen centered on player
+    # Drawing the map with the offset of the player, keeps screen centered on player
     def custom_draw(self, player):
         # calculate offset
         self.offset.x = player.rect.centerx - self.half_width

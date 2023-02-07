@@ -1,5 +1,5 @@
 import pygame
-from settings import *
+from settings import TILESIZE
 from support import import_folder
 
 
@@ -8,7 +8,8 @@ class Player(pygame.sprite.Sprite):
         super().__init__(groups)
         self.image = pygame.image.load("graphics/player/player.png").convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        # modify model rect to be a slightly less tall hitbox. Will use this for movement
+        # modify model rect to be a slightly less tall hitbox.
+        # this will be used for movement.
         self.hitbox = self.rect.inflate(0, -26)
         self.map_size = pygame.math.Vector2(map_size)
         # graphics setup
@@ -87,7 +88,7 @@ class Player(pygame.sprite.Sprite):
     def get_status(self):
         # idle animation for no directional input
         if self.direction.x == 0 and self.direction.y == 0:
-            if not "idle" in self.status and not "attack" in self.status:
+            if "idle" not in self.status and "attack" not in self.status:
                 self.status = self.status + "_idle"
 
         # attack animation
@@ -95,7 +96,7 @@ class Player(pygame.sprite.Sprite):
             # no moving while attacking
             self.direction.x = 0
             self.direction.y = 0
-            if not "attack" in self.status:
+            if "attack" not in self.status:
                 if "idle" in self.status:
                     self.status = self.status.replace("_idle", "_attack")
                     self.status = self.status + "_attack"

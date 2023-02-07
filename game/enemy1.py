@@ -1,5 +1,4 @@
 import pygame
-from settings import *
 import random
 import time
 
@@ -11,7 +10,8 @@ class Enemy1(pygame.sprite.Sprite):
             "graphics/enemy1/enemy1animation1.png"
         ).convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        # modify model rect to be a slightly less tall hitbox. Will use this for movement
+        # modify model rect to be a slightly less tall hitbox.
+        # this will be used for movement.
         self.hitbox = self.rect.inflate(0, -26)
         self.direction = pygame.math.Vector2()
         self.speed = 0.5

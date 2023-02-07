@@ -1,5 +1,4 @@
 import pygame
-from settings import *
 
 
 class Wall(pygame.sprite.Sprite):

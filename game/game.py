@@ -1,9 +1,7 @@
-import pygame, sys
-from settings import *
-
-# from debug import Debug
+import pygame
+import sys
+from game.settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
 from level1 import Level
-from menu import MainMenu
 
 
 class Game:
