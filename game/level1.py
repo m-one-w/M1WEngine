@@ -1,5 +1,5 @@
 import pygame
-from game.settings import TILESIZE
+from settings import TILESIZE
 from wall import Wall
 from plant import Plant
 from player import Player

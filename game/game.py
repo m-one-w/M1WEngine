@@ -1,6 +1,6 @@
 import pygame
 import sys
-from game.settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
+from settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
 from level1 import Level
 
 
