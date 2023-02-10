@@ -10,6 +10,7 @@
     - [Pull Request Guidelines](#pull-request-guidelines)
     - [Recommended IDE](#recommended-ide)
     - [Running the Game](#running-the-game)
+- [Gameplay and Mechanics](#gameplay-and-mechanics)
 - [Further References](#further-references)
 
 ## Installation
@@ -62,6 +63,9 @@ It is recommended to use Visual Studio Code IDE. Please install the following pl
 
 ### Running the Game
 To run the game from within Visual Studio Code, navigate to the game.py file and select the run python file button in the top right corner of the IDE.
+## Gameplay and Mechanics
+The objective of Lunk Game is to maximize your score while traversing the map.
+A detailed spec sheet of the mechanics can be found [here](./docs/specSheet.md)
 
 Alternatively, right click on the game.py file and click 'run python file in terminal'
 
