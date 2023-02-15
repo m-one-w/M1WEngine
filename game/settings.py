@@ -11,3 +11,6 @@ TILESIZE = 64
 
 GAME_ICON_PATH = "graphics/game_icon.jpg"
 MAIN_MENU_BACKGROUND_PATH = "graphics/sad_start_screen.png"
+
+# Constant used to loop game music
+LOOP_MUSIC = -1

@@ -1,5 +1,5 @@
 import pygame
-from settings import TILESIZE
+from settings import TILESIZE, LOOP_MUSIC
 from wall import Wall
 from plant import Plant
 from player import Player
@@ -15,6 +15,14 @@ class Level:
         self.obstacle_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
+
+        # background music
+        self.mixer = pygame.mixer
+        self.mixer.init()
+        self.mixer.music.load(
+            "levels/level_data/inspiring-cinematic-ambient-116199.ogg", "ogg"
+        )
+        self.mixer.music.play(LOOP_MUSIC)
 
         # default world map
         # KEY: x = wall, p = player
