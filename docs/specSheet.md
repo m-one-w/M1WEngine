@@ -31,7 +31,9 @@ Lunk negative interactions:
 
 
 ## Player Movement
-Lunk always goes forward, but he can choose to turn to the left of the right.
+Lunk always goes forward, but he can choose to turn to the left or the right.
+
+This means movement is rotational in nature. Lunk's heading will be adjusted but not suddenly altered. The purpose of this movement system is to give Lunk the feeling of an unwieldy character who is hard to control directly. The player can steer Lunk, but not command him. The same thought process was used when creating Lunks abilities and enemy interactions.
 
 If Lunk falls off the map, he jumps back up so high that the landing spot is a random area within a 10 by 10 area near the fall point
 
