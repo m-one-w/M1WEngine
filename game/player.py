@@ -1,9 +1,13 @@
 import pygame
+from spriteSheet import SpriteSheet
 from settings import TILESIZE
 from support import import_folder
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5
+
+SPRITE_WIDTH = 16
+SPRITE_HEIGHT = 20
 
 
 class Player(pygame.sprite.Sprite):
@@ -16,7 +20,15 @@ class Player(pygame.sprite.Sprite):
 
     def __init__(self, pos, groups, obstacle_sprites, map_size):
         super().__init__(groups)
-        self.image = pygame.image.load("graphics/player/player.png").convert_alpha()
+
+        # grab self image
+        playerMovementsPath = "graphics/player/playerWalking.png"
+        self.playerAnimations = SpriteSheet(playerMovementsPath)
+        playerSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
+        self.colorKeyBlack = (0, 0, 0)
+        self.image = self.playerAnimations.image_at(
+            playerSelfImageRect, self.colorKeyBlack
+        )
         self.rect = self.image.get_rect(topleft=pos)
         # modify model rect to be a slightly less tall hitbox.
         # this will be used for movement.
@@ -40,15 +52,28 @@ class Player(pygame.sprite.Sprite):
         # starting position is running north
         self.direction.y = -1
         self.status = "up"
+        self.import_player_asset()
 
     def import_player_asset(self):
-        player_path = "graphics/player"
+        walkingUpRect = (0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT)
+        walkingDownRect = (0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
+        walkingLeftRect = (0, SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT)
+        walkingRightRect = (0, SPRITE_HEIGHT * 2, SPRITE_WIDTH, SPRITE_HEIGHT)
+
         # animation states in dictionary
         self.animations = {
-            "up": [],
-            "down": [],
-            "left": [],
-            "right": [],
+            "up": self.playerAnimations.load_strip(
+                walkingUpRect, 3, self.colorKeyBlack
+            ),
+            "down": self.playerAnimations.load_strip(
+                walkingDownRect, 3, self.colorKeyBlack
+            ),
+            "left": self.playerAnimations.load_strip(
+                walkingLeftRect, 3, self.colorKeyBlack
+            ),
+            "right": self.playerAnimations.load_strip(
+                walkingRightRect, 3, self.colorKeyBlack
+            ),
             "up_idle": [],
             "down_idle": [],
             "left_idle": [],
@@ -58,10 +83,6 @@ class Player(pygame.sprite.Sprite):
             "left_attack": [],
             "right_attack": [],
         }
-
-        for animation in self.animations.key():
-            full_path = player_path + animation
-            self.animations[animation] = import_folder(full_path)
 
     def input(self):
         """Input function to handle keyboard input to the player class
@@ -80,11 +101,6 @@ class Player(pygame.sprite.Sprite):
                 # TODO: Check current rotation for status change
 
     def get_status(self):
-        # idle animation for no directional input
-        if self.direction.x == 0 and self.direction.y == 0:
-            if "idle" not in self.status and "attack" not in self.status:
-                self.status = self.status + "_idle"
-
         # attack animation
         if self.attacking:
             # no moving while attacking
@@ -101,7 +117,7 @@ class Player(pygame.sprite.Sprite):
 
     # animation loop for the player
     def animate(self):
-        animation = self.animation[self.status]
+        animation = self.animations[self.status]
 
         # loop over the frame index
         self.frame_index += self.animation_speed
@@ -168,5 +184,5 @@ class Player(pygame.sprite.Sprite):
         self.input()
         self.cooldowns()
         self.get_status()
-        # self.animate()
+        self.animate()
         self.move(self.speed)
