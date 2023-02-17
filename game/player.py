@@ -7,6 +7,13 @@ PLAYER_ROTATION_SPEED = 5
 
 
 class Player(pygame.sprite.Sprite):
+    """Player class which contains the object players will directly control
+
+    The player class will handle movement logic and sprite changing logic for the player
+    object. The player class will also handle any collision logic that influences the
+    player object.
+    """
+
     def __init__(self, pos, groups, obstacle_sprites, map_size):
         super().__init__(groups)
         self.image = pygame.image.load("graphics/player/player.png").convert_alpha()
@@ -57,6 +64,10 @@ class Player(pygame.sprite.Sprite):
             self.animations[animation] = import_folder(full_path)
 
     def input(self):
+        """Input function to handle keyboard input to the player class
+
+        This function will handle turning the player object as input is recieved.
+        """
         if not self.attacking:
             keys = pygame.key.get_pressed()
 
