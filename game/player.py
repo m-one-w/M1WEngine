@@ -2,6 +2,9 @@ import pygame
 from settings import TILESIZE
 from support import import_folder
 
+# Defines how fast the player object can rotate while running
+PLAYER_ROTATION_SPEED = 5
+
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites, map_size):
@@ -26,6 +29,10 @@ class Player(pygame.sprite.Sprite):
         self.attack_time = 0
 
         self.obstacle_sprites = obstacle_sprites
+
+        # starting position is running north
+        self.direction.y = -1
+        self.status = "up"
 
     def import_player_asset(self):
         player_path = "graphics/player"
@@ -52,38 +59,14 @@ class Player(pygame.sprite.Sprite):
     def input(self):
         if not self.attacking:
             keys = pygame.key.get_pressed()
-            # up/down input
-            if keys[pygame.K_UP]:
-                self.direction.y = -1
-                self.status = "up"
-            elif keys[pygame.K_DOWN]:
-                self.direction.y = 1
-                self.status = "down"
-            else:
-                self.direction.y = 0
 
             # left/right input
             if keys[pygame.K_LEFT]:
-                self.direction.x = -1
-                self.status = "left"
+                self.direction.rotate_ip(-PLAYER_ROTATION_SPEED)
+                # TODO: Check current rotation for status change
             elif keys[pygame.K_RIGHT]:
-                self.direction.x = 1
-                self.status = "right"
-            else:
-                self.direction.x = 0
-
-            # attack
-            if keys[pygame.K_SPACE]:
-                print("attacking!")
-                self.attacking = True
-                self.attack_time = pygame.time.get_ticks()
-
-            # magic
-            if keys[pygame.K_LCTRL]:
-                print("magic!")
-                self.attacking = True
-
-                self.attack_time = pygame.time.get_ticks()
+                self.direction.rotate_ip(PLAYER_ROTATION_SPEED)
+                # TODO: Check current rotation for status change
 
     def get_status(self):
         # idle animation for no directional input
