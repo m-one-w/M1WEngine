@@ -1,7 +1,6 @@
 import pygame
 from spriteSheet import SpriteSheet
 from settings import TILESIZE
-from support import import_folder
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5
