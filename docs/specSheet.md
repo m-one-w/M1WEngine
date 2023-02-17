@@ -13,7 +13,7 @@
 - [Score System](#score-system)
     - [Health Bar](#health-bar)
     - [High Score](#high-score)
-    - [Bored Bar](#bored-bar)
+    - [Boredom Meter](#boredom-meter)
 - [Map Rendering System](#map-rendering-system)
 
 
@@ -99,7 +99,7 @@ The health bar is a countdown to Lunk sleeping out of anger. When it reaches 0, 
 Lunk gains points for doing things he likes to do.
 Each favorable action adds to the total high score for an amount specific to each action
 
-### Bored Bar
+### Boredom Meter
 Each level has a set timer that counts down to the moment Lunk goes to sleep from boredom.
 
 ## Map Rendering System
