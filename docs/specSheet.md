@@ -4,6 +4,7 @@
 ## Table of contents
 - [Objective](#objective)
 - [Player Movement](#player-movement)
+    - [Wall Collisions](#wall-collisions)
 - [Enemy Movement](#enemy-movement)
 - [Enemy Interaction](#enemy-interaction)
     - [Attack Enemy Options](#attack-enemy-options)
@@ -13,6 +14,7 @@
     - [Health Bar](#health-bar)
     - [High Score](#high-score)
     - [Bored Bar](#bored-bar)
+- [Map Rendering System](#map-rendering-system)
 
 
 ## Objective
@@ -36,6 +38,19 @@ Lunk always goes forward, but he can choose to turn to the left or the right.
 This means movement is rotational in nature. Lunk's heading will be adjusted but not suddenly altered. The purpose of this movement system is to give Lunk the feeling of an unwieldy character who is hard to control directly. The player can steer Lunk, but not command him. The same thought process was used when creating Lunks abilities and enemy interactions.
 
 If Lunk falls off the map, he jumps back up so high that the landing spot is a random area within a 10 by 10 area near the fall point
+
+### Wall Collisions
+If Lunk initiates a wall collision there will be 2 potential outcomes:
+* Lunk turns around
+  * Lunk pauses movement for 1 second while slowly turning around
+  * Lunk chooses a new direction to run from a random direction not facing the wall
+  * Lunk resumes running
+* Lunk keeps going
+  * The wall is destroyed
+  * Lunk moves forward
+  * Boredom meter is reduced by x max percent. x should be set to something very large, potentially 25% of max meter.
+
+  Each option has a 50% chance of happening.
 
 ## Enemy Movement
 Enemies will wander the map after being spawned.
@@ -86,3 +101,8 @@ Each favorable action adds to the total high score for an amount specific to eac
 
 ### Bored Bar
 Each level has a set timer that counts down to the moment Lunk goes to sleep from boredom.
+
+## Map Rendering System
+The map shall not be rerendered unless the player object is within x% of the screen width.
+
+If the player has crossed the rerendering border, the map and player will rerender repeatedly moving the player position slowly back to the center of the view port until the player is centered in the screen. 
