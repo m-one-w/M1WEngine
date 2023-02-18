@@ -1,6 +1,6 @@
 import pygame
 from spriteSheet import SpriteSheet
-from settings import TILESIZE
+from entity import Entity
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5
@@ -9,7 +9,7 @@ SPRITE_WIDTH = 16
 SPRITE_HEIGHT = 20
 
 
-class Player(pygame.sprite.Sprite):
+class Player(Entity):
     """Player class which contains the object players will directly control
 
     The player class will handle movement logic and sprite changing logic for the player
@@ -32,21 +32,15 @@ class Player(pygame.sprite.Sprite):
         # modify model rect to be a slightly less tall hitbox.
         # this will be used for movement.
         self.hitbox = self.rect.inflate(0, -26)
-        self.map_size = pygame.math.Vector2(map_size)
-        # graphics setup
-        # self.import_player_asset()#TODO
-        self.status = "down"
-        self.frame_index = 0
-        self.animation_speed = 0.15
+        self.mapSize = pygame.math.Vector2(map_size)
 
         # movement
-        self.direction = pygame.math.Vector2()
         self.speed = 5
         self.attacking = False
-        self.attack_cooldown = 400
-        self.attack_time = 0
+        self.attackCooldown = 400
+        self.attackTime = 0
 
-        self.obstacle_sprites = obstacle_sprites
+        self.obstacleSprites = obstacle_sprites
 
         # starting position is running north
         self.direction.y = -1
@@ -119,67 +113,26 @@ class Player(pygame.sprite.Sprite):
         animation = self.animations[self.status]
 
         # loop over the frame index
-        self.frame_index += self.animation_speed
+        self.frameIndex += self.animationSpeed
 
-        if self.frame_index >= len(animation):
-            self.frame_index = 0
+        if self.frameIndex >= len(animation):
+            self.frameIndex = 0
 
-        self.image = animation[int(self.frame_index)]
+        self.image = animation[int(self.frameIndex)]
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
-    def move(self, speed):
-        # prevent diagonal moving from increasing speed
-        # check if vector has magnitude
-        if self.direction.magnitude() != 0:
-            # normalize
-            self.direction = self.direction.normalize()
-        # update
-        self.hitbox.x += self.direction.x * speed
-        self.collision_check("horizontal")
-        self.hitbox.y += self.direction.y * speed
-        self.collision_check("vertical")
-        self.rect.center = self.hitbox.center
-
-        # if we go beyond the map size, wrap around to the other side.
-        # Need to test hitbox collisions if wrap around into a wall or enemy..
-        # may need to be before the collision checks..
-        if self.hitbox.x >= self.map_size.x * TILESIZE:
-            self.hitbox.x = TILESIZE
-        if self.hitbox.y >= self.map_size.y * TILESIZE:
-            self.hitbox.y = TILESIZE
-
-    def collision_check(self, direction):
-        # horizontal collision detection
-        if direction == "horizontal":
-            # look at all sprites
-            for sprite in self.obstacle_sprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # check direction of collision
-                    if self.direction.x > 0:  # moving right
-                        self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0:  # moving left
-                        self.hitbox.left = sprite.hitbox.right
-        # vertical collision detection
-        if direction == "vertical":
-            # look at all sprites
-            for sprite in self.obstacle_sprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # check direction of collision
-                    if self.direction.y < 0:  # moving up
-                        self.hitbox.top = sprite.hitbox.bottom
-                    if self.direction.y > 0:  # moving down
-                        self.hitbox.bottom = sprite.hitbox.top
-
     def cooldowns(self):
-        current_time = pygame.time.get_ticks()
+        currentTime = pygame.time.get_ticks()
 
         if self.attacking:
-            if current_time - self.attack_time >= self.attack_cooldown:
+            if currentTime - self.attackTime >= self.attackCooldown:
                 self.attacking = False
 
     def update(self):
+        """Update player entity with corresponding user input
+
+        Will run once per game loop.
+        """
         self.input()
         self.cooldowns()
         self.get_status()

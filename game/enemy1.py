@@ -1,9 +1,16 @@
 import pygame
 import random
 import time
+from entity import Entity
 
 
-class Enemy1(pygame.sprite.Sprite):
+class Enemy1(Entity):
+    """First enemy class
+
+    Inherits from Entity. Move method is overwritten using logic described
+    in the docs. Still uses Entity's collision_check method.
+    """
+
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
         self.image = pygame.image.load(
@@ -13,11 +20,10 @@ class Enemy1(pygame.sprite.Sprite):
         # modify model rect to be a slightly less tall hitbox.
         # this will be used for movement.
         self.hitbox = self.rect.inflate(0, -26)
-        self.direction = pygame.math.Vector2()
         self.speed = 0.5
-        random.seed(time.time())  # TODO: seed with time
+        random.seed(time.time())
 
-        self.obstacle_sprites = obstacle_sprites
+        self.obstacleSprites = obstacle_sprites
         self.timer = 100
 
     def move(self, speed):
@@ -48,31 +54,6 @@ class Enemy1(pygame.sprite.Sprite):
         self.hitbox.y += self.direction.y * speed
         self.collision_check("vertical")
         self.rect.center = self.hitbox.center
-
-    def collision_check(self, direction):
-        # horizontal collision detection
-        if direction == "horizontal":
-            # look at all obstacle sprites
-            for sprite in self.obstacle_sprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # check direction of collision
-                    if self.direction.x > 0:  # moving right
-                        self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0:  # moving left
-                        self.hitbox.left = sprite.hitbox.right
-
-        # vertical collision detection
-        if direction == "vertical":
-            # look at all sprites
-            for sprite in self.obstacle_sprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # check direction of collision
-                    if self.direction.y < 0:  # moving up
-                        self.hitbox.top = sprite.hitbox.bottom
-                    if self.direction.y > 0:  # moving down
-                        self.hitbox.bottom = sprite.hitbox.top
 
     def update(self):
         self.move(self.speed)
