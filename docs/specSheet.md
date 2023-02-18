@@ -50,7 +50,7 @@ If Lunk initiates a wall collision there will be 2 potential outcomes:
   * Lunk moves forward
   * Boredom meter is reduced by x max percent. x should be set to something very large, potentially 25% of max meter.
 
-  Each option has a 50% chance of happening.
+Each option has a 50% chance of happening.
 
 ## Enemy Movement
 Enemies will wander the map after being spawned.
