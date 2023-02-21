@@ -141,6 +141,40 @@ class Player(Entity):
             if "attack" in self.status:
                 self.status = self.status.replace("_attack", "")
 
+    def get_angle_from_direction(self, axis):
+        """Gets the angle for sprite rotation based on the direction
+
+        Angle returned will need to be inverted for 'down' and 'left'.
+        """
+        angle = 0
+
+        if axis == "x":
+            angle = self.direction.y * 45
+        if axis == "y":
+            angle = self.direction.x * 45
+
+        return -angle
+
+    def set_image_rotation(self, image):
+        """Sets a new image to the correct rotation
+
+        Return the rotated image correlating to the correct rotation.
+        Rotation is based on the status, so image rotations are defined by the
+        current status.
+        """
+        angle = 0
+
+        if self.status == "right":
+            angle = self.get_angle_from_direction("x")
+        if self.status == "left":
+            angle = -self.get_angle_from_direction("x")
+        if self.status == "up":
+            angle = self.get_angle_from_direction("y")
+        if self.status == "down":
+            angle = -self.get_angle_from_direction("y")
+
+        return pygame.transform.rotate(image, angle)
+
     # animation loop for the player
     def animate(self):
         animation = self.animations[self.status]
@@ -151,7 +185,7 @@ class Player(Entity):
         if self.frameIndex >= len(animation):
             self.frameIndex = 0
 
-        self.image = animation[int(self.frameIndex)]
+        self.image = self.set_image_rotation(animation[int(self.frameIndex)])
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def cooldowns(self):
