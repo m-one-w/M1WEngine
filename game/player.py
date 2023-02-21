@@ -80,7 +80,7 @@ class Player(Entity):
     def input(self):
         """Input function to handle keyboard input to the player class
 
-        This function will handle turning the player object as input is recieved.
+        This function will handle turning the player object as input is received.
         """
         if not self.attacking:
             keys = pygame.key.get_pressed()
