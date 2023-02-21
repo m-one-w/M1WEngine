@@ -77,6 +77,39 @@ class Player(Entity):
             "right_attack": [],
         }
 
+    def set_status_by_curr_rotation(self):
+        """Sets the correct status based on the current direction
+
+        This function inspects the current direction and determines
+        what the status should be.
+        """
+        # -- xy | xy +-
+        # -+ xy | xy ++
+        if (
+            self.direction.x > 0
+            and self.direction.y < 0.25
+            and self.direction.y > -0.25
+        ):
+            self.status = "right"
+        if (
+            self.direction.x < 0
+            and self.direction.y < 0.25
+            and self.direction.y > -0.25
+        ):
+            self.status = "left"
+        if (
+            self.direction.y > 0
+            and self.direction.x < 0.25
+            and self.direction.x > -0.25
+        ):
+            self.status = "down"
+        if (
+            self.direction.y < 0
+            and self.direction.x < 0.25
+            and self.direction.x > -0.25
+        ):
+            self.status = "up"
+
     def input(self):
         """Input function to handle keyboard input to the player class
 
@@ -88,10 +121,10 @@ class Player(Entity):
             # left/right input
             if keys[pygame.K_LEFT]:
                 self.direction.rotate_ip(-PLAYER_ROTATION_SPEED)
-                # TODO: Check current rotation for status change
+                self.set_status_by_curr_rotation()
             elif keys[pygame.K_RIGHT]:
                 self.direction.rotate_ip(PLAYER_ROTATION_SPEED)
-                # TODO: Check current rotation for status change
+                self.set_status_by_curr_rotation()
 
     def get_status(self):
         # attack animation
