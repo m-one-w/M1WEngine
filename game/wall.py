@@ -8,4 +8,4 @@ class Wall(pygame.sprite.Sprite):
         # self.sprite_type = sprite_type
         self.image = pygame.image.load("graphics/wall/wall.png").convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, -10)
+        self.hitbox = self.rect
