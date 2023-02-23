@@ -5,6 +5,10 @@
 - [Objective](#objective)
 - [Player Movement](#player-movement)
     - [Wall Collisions](#wall-collisions)
+    - [Player Rotation](#player-rotation)
+      - [Movement Rotation](#movement-rotation)
+      - [Animation Rotation](#animation-rotation)
+      - [Player Status](#player-status)
 - [Enemy Movement](#enemy-movement)
 - [Enemy Interaction](#enemy-interaction)
     - [Attack Enemy Options](#attack-enemy-options)
@@ -51,6 +55,43 @@ If Lunk initiates a wall collision there will be 2 potential outcomes:
   * Boredom meter is reduced by x max percent. x should be set to something very large, potentially 25% of max meter.
 
 Each option has a 50% chance of happening.
+
+### Player Rotation
+The player rotation effects the sprite animation and where the sprite is moving.
+Due to Lunk always going forward, as the sprite rotates, the rotation determines which direction points forward.
+The Direction is stored in a vector containing the X and Y orientation in a grid from -1 to 1 as shown below:
+
+<img src="./specSheetImages/sprite-directions.PNG" width="300" height="300" style="padding-left: 50px;">
+
+#### Movement Rotation
+The player movement rotation refers to rotating the X and Y direction with the left and right keyboard buttons.
+As the player runs foward, this rotation steers the player.
+
+#### Animation Rotation
+The player animation rotation refers to the animation rotation offset that is used when displaying the player's animation images.
+With no rotation, there are only animations for the four cardinal directions. Animation rotation adds in a rotation to the displayed animation
+in alignment with the current directional rotation. 
+
+The animation used during this rotation will be defined by the player status.
+
+#### Player Status
+
+The player status is determined by the current player rotation. The options are listed below:
+
+* Up:
+
+  This status is when the direction vector falls within the northern most section of the direction sphere.
+* Down:
+
+  This status is when the direction vector falls within the southern most section of the direction sphere.
+* Left:
+
+  This status is when the direction vector falls within the western most section of the direction sphere.
+* Right:
+
+  This status is when the direction vector falls within the eastern most section of the direction sphere.
+
+The player status determines which animation frame will be active.
 
 ## Enemy Movement
 Enemies will wander the map after being spawned.
