@@ -55,5 +55,40 @@ class Enemy1(Entity):
         self.collision_check("vertical")
         self.rect.center = self.hitbox.center
 
+    def collision_check(self, direction):
+        """Collision check for entity
+
+        Handles collision checks for entities and other entities/the environment.
+        Prevents entity from moving through obstacles.
+
+        Parameters
+        ----------
+        direction: str
+            the axis to check for collisions on. It can be 'horizontal' or 'vertical'.
+        """
+
+        # horizontal collision detection
+        if direction == "horizontal":
+            # look at all sprites
+            for sprite in self.obstacleSprites:
+                # check if rects collide
+                if sprite.hitbox.colliderect(self.hitbox):
+                    # check direction of collision
+                    if self.direction.x > 0:  # moving right
+                        self.hitbox.right = sprite.hitbox.left
+                    if self.direction.x < 0:  # moving left
+                        self.hitbox.left = sprite.hitbox.right
+        # vertical collision detection
+        if direction == "vertical":
+            # look at all sprites
+            for sprite in self.obstacleSprites:
+                # check if rects collide
+                if sprite.hitbox.colliderect(self.hitbox):
+                    # check direction of collision
+                    if self.direction.y < 0:  # moving up
+                        self.hitbox.top = sprite.hitbox.bottom
+                    if self.direction.y > 0:  # moving down
+                        self.hitbox.bottom = sprite.hitbox.top
+
     def update(self):
         self.move(self.speed)

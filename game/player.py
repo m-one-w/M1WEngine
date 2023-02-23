@@ -195,6 +195,37 @@ class Player(Entity):
             if currentTime - self.attackTime >= self.attackCooldown:
                 self.attacking = False
 
+    def collision_check(self, direction):
+        """Collision check for entity
+
+        Handles collision checks for entities and other entities/the environment.
+        Prevents entity from moving through obstacles.
+
+        Parameters
+        ----------
+        direction: str
+            the axis to check for collisions on. It can be 'horizontal' or 'vertical'.
+        """
+
+        # horizontal collision detection
+        if direction == "horizontal":
+            # look at all sprites
+            for sprite in self.obstacleSprites:
+                # check if rects collide
+                if sprite.hitbox.colliderect(self.hitbox):
+                    lastDirectionOfCollision = [self.direction.x, self.direction.y]
+                    # reverse direction
+                    self.direction.x = -lastDirectionOfCollision.x
+        # vertical collision detection
+        if direction == "vertical":
+            # look at all sprites
+            for sprite in self.obstacleSprites:
+                # check if rects collide
+                if sprite.hitbox.colliderect(self.hitbox):
+                    lastDirectionOfCollision = [self.direction.x, self.direction.y]
+                    # reverse direction
+                    self.direction.y = -lastDirectionOfCollision.y
+
     def update(self):
         """Update player entity with corresponding user input
 
