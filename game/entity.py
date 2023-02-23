@@ -1,11 +1,35 @@
 import pygame
 from settings import TILESIZE
+from abc import (
+    ABC,
+    abstractmethod,
+)
 
 
-class Entity(pygame.sprite.Sprite):
-    """Entity base class
+class Entity(pygame.sprite.Sprite, ABC):
+    """Entity abstract class
 
     Base class for all entities including player, enemies, and damsels.
+    ...
+
+    Attributes
+    ----------
+    frameIndex : int
+        the currently shown frame represented by an index
+    animationSpeed : int
+        the speed at which animations run
+    direction : pygame.math.Vector2
+        the x and y direction of movement. This will be in a range
+        of -1 to 1 where 0 means no movement.
+    speed : int
+        the speed at which the sprite moves
+
+    Methods
+    -------
+    move(self, speed)
+        Handles movement of the entity
+    collision_check(self, direction)
+        Handles the collision check for entities
     """
 
     def __init__(self, groups):
@@ -23,6 +47,11 @@ class Entity(pygame.sprite.Sprite):
         Updates position of the entity using current heading and speed.
         Will be overwritten inherited classes that use different movement described
         in the docs.
+
+        Parameters
+        ----------
+        speed : int
+            the multiplier for changing the sprite position.
         """
 
         # prevent diagonal moving from increasing speed
@@ -43,11 +72,19 @@ class Entity(pygame.sprite.Sprite):
         if self.hitbox.y >= self.mapSize.y * TILESIZE:
             self.hitbox.y = TILESIZE
 
+    @abstractmethod
     def collision_check(self, direction):
-        """Collision check for entity
+        """Handles the collision check for entities
 
+        This method should be implemented in any child classes that use it.
+        The method should handle the following:
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
+
+        Parameters
+        ----------
+        direction: str
+            the axis to check for a collision on
         """
 
         raise Exception("Not Implemented")
