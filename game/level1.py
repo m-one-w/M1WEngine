@@ -475,6 +475,11 @@ class Level:
         self.create_map()
 
     def create_map(self):
+        """Creates a map based on a level matrix
+
+        This method turns the level matrix into a map of objects to be used
+        by other classes.
+        """
         for row_index, row in enumerate(self.world_map):  # in enumerate(WORLD_MAP)
             for col_index, col in enumerate(row):  # in enumerate(row)
                 x = col_index * TILESIZE
@@ -491,10 +496,14 @@ class Level:
                         [self.visible_sprites, self.enemy_sprites],
                         self.obstacle_sprites,
                     )
+        sizeOfLandBlock = 64
 
         # pass in map size so player can do wrap around if needed
         self.player = Player(
-            (1400, 500), [self.visible_sprites], self.obstacle_sprites, self.map_size
+            (sizeOfLandBlock * 8, sizeOfLandBlock * 14),
+            [self.visible_sprites],
+            self.obstacle_sprites,
+            self.map_size,
         )
 
     def run(self):
