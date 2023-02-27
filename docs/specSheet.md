@@ -12,8 +12,8 @@
 - [Enemy Movement](#enemy-movement)
 - [Enemy Interaction](#enemy-interaction)
     - [Attack Enemy Options](#attack-enemy-options)
-    - [Enemy Attack Pretty Lady](#enemy-attack-pretty-lady)
-- [Pretty Lady Movement](#pretty-lady-movement)
+    - [Enemy Attack Damsel](#enemy-attack-damsel)
+- [Damsel Movement](#damsel-movement)
 - [Score System](#score-system)
     - [Health Bar](#health-bar)
     - [High Score](#high-score)
@@ -27,12 +27,12 @@ The secondary objective is for Lunk to not do what he does not want to do.
 
 Lunk positive interactions:
 * Lunk wants to crush his enemies.
-* Lunk wants to save the pretty ladies.
+* Lunk wants to save the damsels.
 
 
 Lunk negative interactions:
 * fall off the map, reappear somewhere random
-* crush pretty ladies
+* crush damsel
 * ingest non-tasty things
 
 
@@ -96,10 +96,10 @@ The player status determines which animation frame will be active.
 ## Enemy Movement
 Enemies will wander the map after being spawned.
 
-* if a pretty lady is within 10 squares, enemies will walk generally toward the pretty lady
-* if a pretty lady is within 4 squares, enemies will run directly towards the pretty lady
+* if a damsel is within 10 squares, enemies will walk generally toward the damsel
+* if a damsel is within 4 squares, enemies will run directly towards the damsel
 * if Lunk is greater than 5 squares enemies will walk generally away from Lunk
-* if Lunk is less than 5 squares and a pretty lady is within 10 squares, enemies will run directly towards Lunk to stop him from saving the pretty lady
+* if Lunk is less than 5 squares and a damsel is within 10 squares, enemies will run directly towards Lunk to stop him from saving the damsel
 * if enemy is blocked (on a wall or other object), walk towards Lunk
 
 ## Enemy Interaction
@@ -113,23 +113,23 @@ Options will rotate through every enemy interaction in a loop. The options to at
 * Throw
 
   Lunk chooses to remove his enemy from sight by tossing it out like the trash. Enemies will fly forward 2 or 3 spaces before dying in the embrace of the ground.
-If a pretty lady is crushed by Lunk's flying enemy, Lunk losses his points from his [health bar](#health-bar).
+If a damsel is crushed by Lunk's flying enemy, Lunk losses his points from his [health bar](#health-bar).
 * Eat
 
   Lunk gets hungry, he eats his enemy. Eating can be positive or negative depending on what is eaten.
 
-### Enemy Attack Pretty Lady
-Enemies will try to kill or kidnap pretty ladies if they see any.
+### Enemy Attack Damsel
+Enemies will try to kill or kidnap damsels if they see any.
 
 The mechanics of this are to be decided.
 
-## Pretty Lady Movement
-Pretty ladies will wander the map when spawned.
+## Damsel Movement
+Damsels will wander the map when spawned.
 
-* if an enemy if within 6 squares of a pretty lady, they will walk in the opposite direction
+* if an enemy if within 6 squares of a damsel, they will walk in the opposite direction
     * this is ignored if Lunk is nearby in favor of Lunk related logic
-* if Lunk is within 12 squares of a pretty lady, they will walk towards Lunk
-* if Lunk is within 5 sqaures of a pretty lady, they will stand still and make heart emojis at Lunk 
+* if Lunk is within 12 squares of a damsel, they will walk towards Lunk
+* if Lunk is within 5 squares of a damsel, they will stand still and make heart emojis at Lunk
 
 ## Score System
 ### Health Bar
@@ -141,7 +141,7 @@ Lunk gains points for doing things he likes to do.
 Each favorable action adds to the total high score for an amount specific to each action
 
 ### Boredom Meter
-Each level has a set timer that counts down to the moment Lunk goes to sleep from boredom.
+Each level has a set timer that ticks up to the moment Lunk goes to sleep from boredom.
 
 ## Map Rendering System
 The map shall not be rerendered unless the player object is within x% of the screen width.
