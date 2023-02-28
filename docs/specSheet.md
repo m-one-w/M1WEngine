@@ -19,6 +19,7 @@
     - [High Score](#high-score)
     - [Boredom Meter](#boredom-meter)
 - [Map Rendering System](#map-rendering-system)
+- [Tile Set Support](#tile-set-support)
 
 
 ## Objective
@@ -147,3 +148,10 @@ Each level has a set timer that ticks up to the moment Lunk goes to sleep from b
 The map shall not be rerendered unless the player object is within x% of the screen width.
 
 If the player has crossed the rerendering border, the map and player will rerender repeatedly moving the player position slowly back to the center of the view port until the player is centered in the screen.
+
+## Tile Set Support
+There will be support for reading images in from a tileset or spritesheet of images. 
+A tileset is defined as a single image storing many subimages in a grid. This grid of images can be parsed for internal use by knowing the coordinates of specific images within the tileset grid.
+
+Tilesets are used to create landscape maps in an external programed called tiled. These tiled maps are exported as an CSV of integer values that map to a subimage within the tileset.
+Internal mapping that matches tiled mapping is stored for seemless integration between generated maps and pygame.
