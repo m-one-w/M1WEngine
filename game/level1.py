@@ -4,6 +4,7 @@ from wall import Wall
 from plant import Plant
 from player import Player
 from enemy1 import Enemy1
+from damsel import Damsel
 
 
 class Level:
@@ -14,6 +15,7 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
+        self.friendly_spriites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
 
         # background music
@@ -193,7 +195,7 @@ class Level:
                 ",",
                 ",",
                 ",",
-                ",",
+                "d",
                 ",",
                 ",",
                 ",",
@@ -494,6 +496,13 @@ class Level:
                     Enemy1(
                         (x, y),
                         [self.visible_sprites, self.enemy_sprites],
+                        self.obstacle_sprites,
+                    )
+
+                if col == "d":
+                    Damsel(
+                        (x, y),
+                        [self.visible_sprites, self.friendly_spriites],
                         self.obstacle_sprites,
                     )
         sizeOfLandBlock = 64
