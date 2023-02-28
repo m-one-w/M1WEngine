@@ -213,18 +213,16 @@ class Player(Entity):
             for sprite in self.obstacleSprites:
                 # check if rects collide
                 if sprite.hitbox.colliderect(self.hitbox):
-                    lastDirectionOfCollision = [self.direction.x, self.direction.y]
                     # reverse direction
-                    self.direction.x = -lastDirectionOfCollision.x
+                    self.direction.x *= -1
         # vertical collision detection
         if direction == "vertical":
             # look at all sprites
             for sprite in self.obstacleSprites:
                 # check if rects collide
                 if sprite.hitbox.colliderect(self.hitbox):
-                    lastDirectionOfCollision = [self.direction.x, self.direction.y]
                     # reverse direction
-                    self.direction.y = -lastDirectionOfCollision.y
+                    self.direction.y *= -1
 
     def update(self):
         """Update player entity with corresponding user input
