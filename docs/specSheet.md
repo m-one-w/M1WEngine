@@ -10,6 +10,10 @@
       - [Movement Rotation](#movement-rotation)
       - [Animation Rotation](#animation-rotation)
       - [Player Status](#player-status)
+- [Map](#map)
+    - [Landscape Map](#landscape-map)
+    - [Entity Map](#entity-map)
+    - [Entity Detection](#entity-detection)
 - [Enemy Movement](#enemy-movement)
 - [Enemy Interaction](#enemy-interaction)
     - [Attack Enemy Options](#attack-enemy-options)
@@ -104,6 +108,23 @@ The player status is determined by the current player rotation. The options are 
   This status is when the direction vector falls within the eastern most section of the direction sphere.
 
 The player status determines which animation frame will be active.
+
+## Map
+There are multiple map files stored per level. A map file is a CSV file containing the location of a tilesheet asset. Each layer of objects within the map will have it's own CSV file.
+The 2 essential maps are the landscape map and the entity map, but there will be additional maps stored that contain item locations such as rocks, trees, shrubs, and sign posts ect.
+
+### Landscape Map
+The map will be stored as CSV files containing integers associated with a landscape on the tileset.
+A internal mapping of values to tileset locations will be stored for simple tileset lookup based on the CSV file.
+
+### Entity Map
+The entity map will be the same size as the landscape map, but hold and array of objects instead of primitives. Each object will contain all the entities within that map location.
+If nothing can be interacted with, the map location will be set an empty array. This map will not exist as a file, and instead will be managed in memory.
+
+### Entity Detection
+Any entities that can interact with each other will be listed on the entity map. Collisions and other interactions such as movement towards entities under specific conditions will be done by checking against the entity map.
+
+Entities will know where they are on the entity map by storing their own location indivdually. Both the individual location and the entity map location should be updated on movement.
 
 ## Enemy Movement
 Enemies will wander the map after being spawned.
