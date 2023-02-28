@@ -3,6 +3,7 @@
 
 ## Table of contents
 - [Objective](#objective)
+- [Game Flow](#game-flow)
 - [Player Movement](#player-movement)
     - [Wall Collisions](#wall-collisions)
     - [Player Rotation](#player-rotation)
@@ -36,6 +37,16 @@ Lunk negative interactions:
 * crush damsel
 * ingest non-tasty things
 
+## Game Flow
+The game will start with Lunk spawning into a level facing towards the center of the map. Lunk will be always be moving.
+
+There will be a set amount of enemies on the map.
+There will be a set amount of damsels in distress on the map.
+The map will have landscape entities that act as barriers.
+
+The player will be incentivized to plan an optimal route to save the maximum amount of damsels. Levels should be structured such that deviating from the optimal route should have negative consequences, but not be unfun to play.
+
+A cut scene of the camera panning accross the map should be shown at the start of each level for players to plan their approach.
 
 ## Player Movement
 Lunk always goes forward, but he can choose to turn to the left or the right.
