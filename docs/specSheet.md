@@ -146,4 +146,4 @@ Each level has a set timer that ticks up to the moment Lunk goes to sleep from b
 ## Map Rendering System
 The map shall not be rerendered unless the player object is within x% of the screen width.
 
-If the player has crossed the rerendering border, the map and player will rerender repeatedly moving the player position slowly back to the center of the view port until the player is centered in the screen. 
+If the player has crossed the rerendering border, the map and player will rerender repeatedly moving the player position slowly back to the center of the view port until the player is centered in the screen.
