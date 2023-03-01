@@ -1,6 +1,7 @@
 from csv import reader
 from os import walk
 import pygame
+from settings import TILESIZE
 
 
 def import_csv_layout(path):
@@ -22,4 +23,25 @@ def import_folder(path):
             surface_list.append(image_surface)
 
 
-# import_folder('../graphics/wall')
+def import_cut_graphic(path):
+    """Cut a tileset into correct sprites
+
+    Parameters
+    ----------
+    path: the filepath to find the tileset
+    """
+
+    surface = pygame.image.load(path).convert_alpha()
+    tile_num_x = int(surface.get_size()[0] / TILESIZE)
+    tile_num_y = int(surface.get_size()[1] / TILESIZE)
+
+    cut_tiles = []
+    for row in range(tile_num_y):
+        for col in range(tile_num_x):
+            x = col * TILESIZE
+            y = row * TILESIZE
+            new_surface = pygame.Surface((TILESIZE, TILESIZE))
+            new_rect = pygame.Rect(x, y, TILESIZE, TILESIZE)
+            new_surface.blit(surface, (0, 0), new_rect)
+            cut_tiles.append(new_surface)
+    return cut_tiles

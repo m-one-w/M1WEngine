@@ -1,7 +1,8 @@
 import pygame
 import sys
 from settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
-from level1 import Level
+from level import Level
+from gameData import level_1
 
 
 class Game:
@@ -13,8 +14,9 @@ class Game:
         pygame.display.set_caption("Lunk Game")
         pygame.display.set_icon(self.screen)
         self.clock = pygame.time.Clock()
-        self.level = Level()
-        # self.level = MainMenu()
+
+        # level csv's are saved in game data
+        self.level = Level(level_1, self.screen)
 
     def run(self):
         while True:
