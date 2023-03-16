@@ -224,11 +224,14 @@ class Player(Entity):
                     # reverse direction
                     self.direction.y *= -1
 
-    def update(self):
-        """Update player entity with corresponding user input
+    def update(self, enemy_sprites, friendly_sprites):
+        """Update player behavior based on player input
 
-        Will run once per game loop.
+        Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
         """
+
+        self.enemy_sprites = enemy_sprites
+        self.friendly_sprites = friendly_sprites
         self.input()
         self.cooldowns()
         self.get_status()

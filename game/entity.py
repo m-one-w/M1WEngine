@@ -88,3 +88,15 @@ class Entity(pygame.sprite.Sprite, ABC):
         """
 
         raise Exception("Not Implemented")
+
+    @abstractmethod
+    def update(self):
+        """Handles updating the entity with current information about the level
+
+        This method should be implemented in any child classes that use it.
+        The method should handle the following:
+        Handles passing of other entity's and obstacles in environment.
+        Handling of paramaters depends on entity type, described in documentation.
+        """
+
+        raise Exception("Not Implemented")

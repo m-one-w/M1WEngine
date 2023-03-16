@@ -90,5 +90,16 @@ class Enemy1(Entity):
                     if self.direction.y > 0:  # moving down
                         self.hitbox.bottom = sprite.hitbox.top
 
-    def update(self):
+    def update(self, enemy_sprites, friendly_sprites):
+        """Updates enemy behavior based on entities on the map
+
+        Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
+
+        Parameters
+        ----------
+        friendly_sprites : pygame.sprite.Group()
+            group of entities friendly to the player used for behavior
+        """
+        self.enemy_sprites = enemy_sprites
+        self.friendly_sprites = friendly_sprites
         self.move(self.speed)

@@ -233,9 +233,19 @@ class Damsel(Entity):
                     if self.direction.y > 0:  # moving down
                         self.hitbox.bottom = sprite.hitbox.top
 
-    def update(self):
-        """Update status. Will be run every game tick"""
+    def update(self, enemy_sprites, friendly_sprites):
+        """Updates damsel behavior based on entities on the map
 
+        Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
+
+        Parameters
+        ----------
+        enemy_sprites : pygame.sprite.Group()
+            group of enemy entities used to for behavior
+        """
+
+        self.enemy_sprites = enemy_sprites
+        self.friendly_sprites = friendly_sprites
         self.set_status_by_curr_direction()
         self.animate()
         self.move(self.speed)

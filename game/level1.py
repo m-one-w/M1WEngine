@@ -518,8 +518,8 @@ class Level:
     def run(self):
         # update and draw the game
         self.visible_sprites.custom_draw(self.player)
-        self.visible_sprites.update()
-        self.enemy_sprites.update()
+        self.visible_sprites.update(self.enemy_sprites, self.friendly_sprites)
+        self.enemy_sprites.update(self.enemy_sprites, self.friendly_sprites)
         # debug(self.player.direction)
 
 
