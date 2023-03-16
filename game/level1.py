@@ -15,7 +15,7 @@ class Level:
         self.visible_sprites = YSortCameraGroup()
         self.obstacle_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
-        self.friendly_spriites = pygame.sprite.Group()
+        self.friendly_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
 
         # background music
@@ -502,7 +502,7 @@ class Level:
                 if col == "d":
                     Damsel(
                         (x, y),
-                        [self.visible_sprites, self.friendly_spriites],
+                        [self.visible_sprites, self.friendly_sprites],
                         self.obstacle_sprites,
                     )
         sizeOfLandBlock = 64
