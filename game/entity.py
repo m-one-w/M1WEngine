@@ -83,7 +83,7 @@ class Entity(pygame.sprite.Sprite, ABC):
 
         Parameters
         ----------
-        direction: str
+        direction : str
             the axis to check for a collision on
         """
 
