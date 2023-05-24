@@ -4,6 +4,10 @@
 ## Table of contents
 - [Objective](#objective)
 - [Game Flow](#game-flow)
+    - [Puzzle](#puzzle)
+    - [Defeat Enemies](#defeat-enemies)
+    - [Save Friendlies](#save-friendlies)
+    - [Escort](#escort)
 - [Player Movement](#player-movement)
     - [Wall Collisions](#wall-collisions)
     - [Player Rotation](#player-rotation)
@@ -42,15 +46,56 @@ Lunk negative interactions:
 * ingest non-tasty things
 
 ## Game Flow
-The game will start with Lunk spawning into a level facing towards the center of the map. Lunk will be always be moving.
+There will be a dynamic amount of enemies on the map based on difficulty.
+There will be a static amount of damsels in distress on the map.
+The map can have landscape entities that act as barriers.
 
-There will be a set amount of enemies on the map.
-There will be a set amount of damsels in distress on the map.
-The map will have landscape entities that act as barriers.
+A cutscene of the camera panning across the map should be shown at the start of each level for players to plan their approach.
 
-The player will be incentivized to plan an optimal route to save the maximum amount of damsels. Levels should be structured such that deviating from the optimal route should have negative consequences, but not be unfun to play.
+Level types include the following:
 
-A cut scene of the camera panning accross the map should be shown at the start of each level for players to plan their approach.
+### Puzzle
+Player explores a premade map. Player interacts with different entities (Items, enemies, friendlies) in a certain order to unlock the next part of the map.
+Hints are given through objects in the map or text prompts on the screen that lead towards solutions..
+
+#### Example:
+Prompt appears saying “Hungry!!”
+Go to berry bush because the player is hungry
+Player becomes able to destroy wall blocking the next area due to “no hungry”
+ETC…
+
+### Defeat Enemies
+Only enemy entities spawn, anywhere from a single boss that needs to be defeated with items to many small enemies that need to be defeated within a time limit.
+
+Difficulty is affected by previous completion times. Completion times taken into account are specifically the defeat enemy levels.
+
+#### Example:
+##### Regular Defeat Enemies
+Multiple enemies spawn on the map, the player must defeat them all as quickly as possible.
+The boredom meter will be emphasized on this level type as the lose condition. If the boredom meter hits 0, the player loses. Enemies will do increased damage to the boredom meter and the player will be told this in the starting prompt.
+
+At the end of the level of this type, the player will see a prompt with the end results of how many additional enemies will be added to the next level based on this level's completion performance.
+
+##### Boss Level Defeat Enemies
+A single enemy will have increased HP. Multiple attacks will be needed to defeat the boss. The player has the option to just run into the boss when the appropriate “Crush” action is queued up but this will give the minimum possible score for passing and make the next defeat multiple enemies level much harder.
+
+At the end of the level of this type, the player will see a prompt with the end results of how many additional hit points will be added to the next level based on this level's completion performance.
+
+### Save Friendlies
+Player will be incentivized to plan an optimal route to save the maximum amount of damsels. There should always be multiple paths the player can take to add variety and challenge to this level type. Levels should be structured such that deviating from the optimal route should have negative consequences, but not be unfun to play. The consequences will involve dead damsels or a lower completion time.
+
+#### Example:
+Multiple enemies are spawned near multiple damsels on the map in a way that the damsels are in immediate danger. The player will be able to save the damsels by running in a specific route and killing or distracting enemies in the correct order. If the wrong order is chosen, damsels will be killed due to not making it in time. If enemies are not killed or distracted, damsels may be killed.
+
+The level ends when every damsel is killed or saved. Damsels within a certain distance of the player will trail along and be considered “saved” after a certain amount of time but can still be killed by enemies. If enemies are within a certain distance of “saved” damsels they are no longer marked as “saved”.
+
+### Escort
+Damsel has a HP indicator based on the difficulty selected.
+A single NPC damsel in distress runs through the level in a set path slightly slower than the player. Enemies will attack the walking NPC until they make it to the end of the level. Player must defend the NPC, this can be through killing or distracting enemies before they kill the damsel.
+
+#### Example:
+The player moves faster than the damsel but not by too much. Enemies will ignore the player in this level type and target only the damsel. The damsel has a predefined path that must be completed without dying to complete the level.
+
 
 ## Player Movement
 Lunk always goes forward, but he can choose to turn to the left or the right.
