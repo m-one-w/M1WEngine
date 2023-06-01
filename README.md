@@ -11,6 +11,7 @@
     - [Recommended IDE](#recommended-ide)
     - [Running the Game](#running-the-game)
 - [Gameplay and Mechanics](#gameplay-and-mechanics)
+-[Agile Guidelines](#agile-guidelines)
 - [Further References](#further-references)
 
 ## Installation
@@ -68,6 +69,9 @@ The objective of Lunk Game is to maximize your score while traversing the map.
 A detailed spec sheet of the mechanics can be found [here](./docs/specSheet.md)
 
 Alternatively, right click on the game.py file and click 'run python file in terminal'
+
+## Agile Guidelines
+The agile story point estimates are defined in the following [documentation](./docs/agileGuideLines.md)
 
 ## Further references
 This project was initially based on the following youtube tutorial:
