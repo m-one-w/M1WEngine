@@ -18,15 +18,17 @@
     - [Landscape Map](#landscape-map)
     - [Entity Map](#entity-map)
     - [Entity Detection](#entity-detection)
+    - [Level Generation](#level-generation)
 - [Enemy Movement](#enemy-movement)
 - [Enemy Interaction](#enemy-interaction)
     - [Attack Enemy Options](#attack-enemy-options)
     - [Enemy Attack Damsel](#enemy-attack-damsel)
 - [Damsel Movement](#damsel-movement)
-- [Score System](#score-system)
-    - [Health Bar](#health-bar)
-    - [High Score](#high-score)
-    - [Boredom Meter](#boredom-meter)
+- [HUD Elements](#hud-elements)
+    - [Score System](#score-system)
+        - [Health Bar](#health-bar)
+        - [High Score](#high-score)
+        - [Boredom Meter](#boredom-meter)
 - [Map Rendering System](#map-rendering-system)
 - [Tile Set Support](#tile-set-support)
 
@@ -171,6 +173,11 @@ Any entities that can interact with each other will be listed on the entity map.
 
 Entities will know where they are on the entity map by storing their own location indivdually. Both the individual location and the entity map location should be updated on movement.
 
+### Level Generation
+Each map will be created manually in the Tiled map editor program.
+
+In the future, new maps will be automatically generated as they are needed for endless gameplay options. The algorithm to generate maps should be defined here at that time.
+
 ## Enemy Movement
 Enemies will wander the map after being spawned.
 
@@ -209,16 +216,24 @@ Damsels will wander the map when spawned.
 * if Lunk is within 12 squares of a damsel, they will walk towards Lunk
 * if Lunk is within 5 squares of a damsel, they will stand still and make heart emojis at Lunk
 
-## Score System
-### Health Bar
+## HUD Elements
+
+The HUD will show the following at all times of gameplay:
+
+* 3 score system components 
+* a pause game button
+    * when paused, allow the user to continue or exit the game.
+
+### Score System
+#### Health Bar
 Lunk can only do so many things he doesn't like doing before deciding to sleep and ignore everything.
 The health bar is a countdown to Lunk sleeping out of anger. When it reaches 0, the game is over.
 
-### High Score
+#### High Score
 Lunk gains points for doing things he likes to do.
 Each favorable action adds to the total high score for an amount specific to each action
 
-### Boredom Meter
+#### Boredom Meter
 Each level has a set timer that ticks up to the moment Lunk goes to sleep from boredom.
 
 ## Map Rendering System
