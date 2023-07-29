@@ -26,7 +26,6 @@
 - [Damsel Movement](#damsel-movement)
 - [HUD Elements](#hud-elements)
     - [Score System](#score-system)
-        - [Health Bar](#health-bar)
         - [High Score](#high-score)
         - [Boredom Meter](#boredom-meter)
 - [Map Rendering System](#map-rendering-system)
@@ -34,18 +33,28 @@
 
 
 ## Objective
-The main objective of Lunk, the player character, is to do what he wants and do it when he wants.
-The secondary objective is for Lunk to not do what he does not want to do.
+The main objective of Lunk, the player character, is to complete the level specific objective before the player character gets [bored](#boredom-meter).
+The secondary objective is for the player to get the highest score possible while playing each level.
 
 Lunk positive interactions:
 * Lunk wants to crush his enemies.
 * Lunk wants to save the damsels.
+
+Positive interactions will result in:
+* add gameplay time to the Player's [Boredom Meter](#boredom-meter)
+* add to the Player's [High Score](#high-score)
+* an affirmative grunt of approval from the player character
 
 
 Lunk negative interactions:
 * fall off the map, reappear somewhere random
 * crush damsel
 * ingest non-tasty things
+
+Negative interaction will result in:
+* removing gameplay time from the player's [Boredom Meter](#boredom-meter)
+* angry chat boxes from the player's character complaining and being distracting
+  * this will be increased in intensity as more negative interactions are completed
 
 ## Game Flow
 There will be a dynamic amount of enemies on the map based on difficulty.
@@ -156,6 +165,10 @@ The player status is determined by the current player rotation. The options are 
 
 The player status determines which animation frame will be active.
 
+## Wall Tracking
+The movable objects including the player, enemies, and allies will at all times be aware of the surrounding walls. This will be done by comparing the wall positions to the moveable entity positions on each move. For simple "turn around" logic, the moveable objects will store the last free tile location as well as the last wall hit location. when turning away from a wall it will help ensure they do not try to run through the wall and can turn around.
+
+
 ## Map
 There are multiple map files stored per level. A map file is a CSV file containing the location of a tilesheet asset. Each layer of objects within the map will have it's own CSV file.
 The 2 essential maps are the landscape map and the entity map, but there will be additional maps stored that contain item locations such as rocks, trees, shrubs, and sign posts ect.
@@ -225,15 +238,13 @@ The HUD will show the following at all times of gameplay:
     * when paused, allow the user to continue or exit the game.
 
 ### Score System
-#### Health Bar
-Lunk can only do so many things he doesn't like doing before deciding to sleep and ignore everything.
-The health bar is a countdown to Lunk sleeping out of anger. When it reaches 0, the game is over.
-
 #### High Score
 Lunk gains points for doing things he likes to do.
 Each favorable action adds to the total high score for an amount specific to each action
 
 #### Boredom Meter
+Lunk can only do so many things he doesn't like doing before deciding to sleep and ignore everything.
+The Boredom Meter is a countdown to Lunk sleeping out of anger. When it reaches 0, the game is over.
 Each level has a set timer that ticks up to the moment Lunk goes to sleep from boredom.
 
 ## Map Rendering System
