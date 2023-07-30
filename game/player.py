@@ -8,9 +8,10 @@ PLAYER_ROTATION_SPEED = 5
 SPRITE_WIDTH = 16
 SPRITE_HEIGHT = 20
 
-#modify model rect to have slightly less tall hitbox. Used for movement
+# modify model rect to have slightly less tall hitbox. Used for movement
 SPRITE_HITBOX_OFFSET = -26
 COLOR_BLACK = (0, 0, 0)
+
 
 class Player(Entity):
     """Player class which contains the object players will directly control
