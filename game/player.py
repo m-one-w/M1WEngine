@@ -8,6 +8,9 @@ PLAYER_ROTATION_SPEED = 5
 SPRITE_WIDTH = 16
 SPRITE_HEIGHT = 20
 
+#modify model rect to have slightly less tall hitbox. Used for movement
+SPRITE_HITBOX_OFFSET = -26
+COLOR_BLACK = (0, 0, 0)
 
 class Player(Entity):
     """Player class which contains the object players will directly control
@@ -24,14 +27,12 @@ class Player(Entity):
         playerMovementsPath = "graphics/player/playerWalking.png"
         self.playerAnimations = SpriteSheet(playerMovementsPath)
         playerSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        self.colorKeyBlack = (0, 0, 0)
+        self.colorKeyBlack = COLOR_BLACK
         self.image = self.playerAnimations.image_at(
             playerSelfImageRect, self.colorKeyBlack
         )
         self.rect = self.image.get_rect(topleft=pos)
-        # modify model rect to be a slightly less tall hitbox.
-        # this will be used for movement.
-        self.hitbox = self.rect.inflate(0, -26)
+        self.hitbox = self.rect.inflate(0, SPRITE_HITBOX_OFFSET)
         self.mapSize = pygame.math.Vector2(map_size)
 
         # movement
@@ -53,19 +54,22 @@ class Player(Entity):
         walkingLeftRect = (0, SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT)
         walkingRightRect = (0, SPRITE_HEIGHT * 2, SPRITE_WIDTH, SPRITE_HEIGHT)
 
+        # number of images for each directional animation
+        IMAGE_COUNT = 3
+
         # animation states in dictionary
         self.animations = {
             "up": self.playerAnimations.load_strip(
-                walkingUpRect, 3, self.colorKeyBlack
+                walkingUpRect, IMAGE_COUNT, self.colorKeyBlack
             ),
             "down": self.playerAnimations.load_strip(
-                walkingDownRect, 3, self.colorKeyBlack
+                walkingDownRect, IMAGE_COUNT, self.colorKeyBlack
             ),
             "left": self.playerAnimations.load_strip(
-                walkingLeftRect, 3, self.colorKeyBlack
+                walkingLeftRect, IMAGE_COUNT, self.colorKeyBlack
             ),
             "right": self.playerAnimations.load_strip(
-                walkingRightRect, 3, self.colorKeyBlack
+                walkingRightRect, IMAGE_COUNT, self.colorKeyBlack
             ),
             "up_idle": [],
             "down_idle": [],
