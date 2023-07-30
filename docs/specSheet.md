@@ -111,7 +111,7 @@ The player moves faster than the damsel but not by too much. Enemies will ignore
 ## Player Movement
 The player always goes forward, but he can choose to turn to the left or the right.
 
-This means movement is rotational in nature. The player's heading will be adjusted but not suddenly altered. The purpose of this movement system is to give the player the feeling of an unwieldy character who is hard to control directly. The player can steer be steered, but not commanded. The same thought process was used when creating the player character's abilities and enemy interactions.
+This means movement is rotational in nature. The player's heading will be adjusted but not suddenly altered. The purpose of this movement system is to give the player the feeling of an unwieldy character who is hard to control directly. The same thought process was used when creating the player character's abilities and enemy interactions.
 
 If the player falls off the map, he jumps back up so high that the landing spot is a random area within a 10 by 10 area near the fall point
 
