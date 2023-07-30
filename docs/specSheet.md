@@ -211,7 +211,7 @@ Options will rotate through every enemy interaction in a loop. The options to at
 * Throw
 
   Lunk chooses to remove his enemy from sight by tossing it out like the trash. Enemies will fly forward 2 or 3 spaces before dying in the embrace of the ground.
-If a damsel is crushed by Lunk's flying enemy, Lunk losses his points from his [health bar](#health-bar).
+If a damsel is crushed by Lunk's flying enemy, Lunk loses his points from his [health bar](#health-bar).
 * Eat
 
   Lunk gets hungry, he eats his enemy. Eating can be positive or negative depending on what is eaten.
