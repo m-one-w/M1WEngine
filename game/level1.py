@@ -3,7 +3,7 @@ from settings import TILESIZE, LOOP_MUSIC
 from wall import Wall
 from plant import Plant
 from player import Player
-from enemy1 import Enemy1
+from skeleton import Skeleton
 from damsel import Damsel
 
 
@@ -493,7 +493,7 @@ class Level:
                     Plant((x, y), [self.visible_sprites, self.obstacle_sprites])
 
                 if col == "e":
-                    Enemy1(
+                    Skeleton(
                         (x, y),
                         [self.visible_sprites, self.enemy_sprites],
                         self.obstacle_sprites,

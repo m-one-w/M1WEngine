@@ -4,8 +4,8 @@ import time
 from entity import Entity
 
 
-class Enemy1(Entity):
-    """First enemy class
+class Skeleton(Entity):
+    """First enemy class. Called Skeleton
 
     Inherits from Entity. Move method is overwritten using logic described
     in the docs. Still uses Entity's collision_check method.
@@ -13,9 +13,7 @@ class Enemy1(Entity):
 
     def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
-        self.image = pygame.image.load(
-            "graphics/enemy1/enemy1animation1.png"
-        ).convert_alpha()
+        self.image = pygame.image.load("graphics/skeleton/skeletonAnimation1.png")
         self.rect = self.image.get_rect(topleft=pos)
         # modify model rect to be a slightly less tall hitbox.
         # this will be used for movement.
@@ -27,6 +25,16 @@ class Enemy1(Entity):
         self.timer = 100
 
     def move(self, speed):
+        """Movement logic method
+
+        Handles movement logic. Currently random movement.
+        See documentation for actual movement logic.
+
+        Parameters
+        ----------
+        speed : int
+            Skeleton enemy's current speed. May be modified by items or by player.
+        """
         self.timer += 1
         # update direction every 100 ticks. Still moves every tick
         if self.timer >= 10:
@@ -91,7 +99,7 @@ class Enemy1(Entity):
                         self.hitbox.bottom = sprite.hitbox.top
 
     def update(self, enemy_sprites, friendly_sprites):
-        """Updates enemy behavior based on entities on the map
+        """Updates skeleton behavior based on entities on the map
 
         Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
 
