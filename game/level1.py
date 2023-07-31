@@ -1,7 +1,7 @@
 import pygame
 from settings import TILESIZE, LOOP_MUSIC
 from wall import Wall
-from plant import Plant
+from berryBush import BerryBush
 from player import Player
 from skeleton import Skeleton
 from damsel import Damsel
@@ -490,7 +490,7 @@ class Level:
                     Wall((x, y), [self.visible_sprites, self.obstacle_sprites])
 
                 if col == "t":
-                    Plant((x, y), [self.visible_sprites, self.obstacle_sprites])
+                    BerryBush((x, y), [self.visible_sprites, self.obstacle_sprites])
 
                 if col == "e":
                     Skeleton(
