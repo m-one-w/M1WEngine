@@ -97,7 +97,7 @@ class Damsel(Entity):
             ),
             "right": self.damselAnimations.load_strip(
                 walkingRightRect, 3, self.colorKeyWhite
-            )
+            ),
         }
 
     def move(self, speed):
