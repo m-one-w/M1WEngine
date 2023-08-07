@@ -490,9 +490,11 @@ class Level:
                     Wall((x, y), [self.visible_sprites, self.obstacle_sprites])
 
                 if col == "t":
+                    # berry bush image is 20x20 pixels
                     BerryBush((x, y), [self.visible_sprites, self.obstacle_sprites])
 
                 if col == "e":
+                    # skeleton image is 16x20 pixels
                     Skeleton(
                         (x, y),
                         [self.visible_sprites, self.enemy_sprites],
@@ -500,6 +502,7 @@ class Level:
                     )
 
                 if col == "d":
+                    # damsel image is 16x20 pixels
                     Damsel(
                         (x, y),
                         [self.visible_sprites, self.friendly_sprites],
