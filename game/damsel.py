@@ -57,9 +57,9 @@ class Damsel(Entity):
         self.damselAnimations = SpriteSheet(damselMovementImagePath)
         damselSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
         # r,g,b vals for key color
-        self.colorKeyBlack = (0, 0, 0)
+        self.colorKeyWhite = (255, 255, 255)
         self.image = self.damselAnimations.image_at(
-            damselSelfImageRect, self.colorKeyBlack
+            damselSelfImageRect, self.colorKeyWhite
         )
         self.rect = self.image.get_rect(topleft=pos)
         # modify model rect to be a slightly less tall hitbox.
@@ -87,17 +87,17 @@ class Damsel(Entity):
         # animation states in dictionary
         self.animations = {
             "up": self.damselAnimations.load_strip(
-                walkingUpRect, 3, self.colorKeyBlack
+                walkingUpRect, 3, self.colorKeyWhite
             ),
             "down": self.damselAnimations.load_strip(
-                walkingDownRect, 3, self.colorKeyBlack
+                walkingDownRect, 3, self.colorKeyWhite
             ),
             "left": self.damselAnimations.load_strip(
-                walkingLeftRect, 3, self.colorKeyBlack
+                walkingLeftRect, 3, self.colorKeyWhite
             ),
             "right": self.damselAnimations.load_strip(
-                walkingRightRect, 3, self.colorKeyBlack
-            ),
+                walkingRightRect, 3, self.colorKeyWhite
+            )
         }
 
     def move(self, speed):
