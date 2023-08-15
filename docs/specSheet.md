@@ -224,10 +224,12 @@ The mechanics of this are to be decided.
 ## Damsel Movement
 Damsels will wander the map when spawned.
 
-* if an enemy if within 6 squares of a damsel, they will walk in the opposite direction
-    * this is ignored if the player is nearby in favor of the player related logic
-* if the player is within 12 squares of a damsel, they will walk towards the player
-* if the player is within 5 squares of a damsel, they will stand still and make heart emojis at the player
+* Damsel movement logic is based on the tile length, 16x16 pixels
+* Initial damsel movement is slow. Will change depending on local conditions
+* If the player is within 12 tiles of a damsel, the damsel will walk towards the player
+* If the player is within 3 tiles of a damsel, the damsel will stand still and make heart emojis at the player, admiring the player
+* If an enemy is within 6 tiles of a damsel, damsel will run away from enemy
+    * This is ignored if the player is nearby in favor of the player related logic. Enemies will attack a player before attacking a damsel
 
 ## HUD Elements
 
