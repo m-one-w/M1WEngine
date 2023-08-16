@@ -1,5 +1,5 @@
 import pygame
-from game.settings import WINDOW_WIDTH
+from settings import WINDOW_WIDTH
 from settings import MAIN_MENU_BACKGROUND_PATH
 
 

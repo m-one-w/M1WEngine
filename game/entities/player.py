@@ -1,6 +1,6 @@
 import pygame
-from spriteSheet import SpriteSheet
-from entity import Entity
+from entities.entity import Entity
+from filemanagement.spriteSheet import SpriteSheet
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5

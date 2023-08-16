@@ -1,8 +1,8 @@
 import pygame
 import sys
 from settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
-from level import Level
-from gameData import level_1
+from levels.level import Level
+from levels.gameData import level_1
 
 
 class Game:

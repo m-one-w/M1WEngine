@@ -1,8 +1,8 @@
 import pygame
 import random
 import time
-from spriteSheet import SpriteSheet
-from entity import Entity
+from filemanagement.spriteSheet import SpriteSheet
+from entities.entity import Entity
 
 IMAGE_WIDTH = 48
 IMAGE_HEIGHT = 64
