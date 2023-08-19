@@ -56,11 +56,8 @@ class Damsel(Entity):
         damselMovementImagePath = "graphics/damsel/damselWalking.png"
         self.damselAnimations = SpriteSheet(damselMovementImagePath)
         damselSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        # r,g,b vals for key color
-        self.colorKeyWhite = (255, 255, 255)
-        self.image = self.damselAnimations.image_at(
-            damselSelfImageRect, self.colorKeyWhite
-        )
+        self.image = self.damselAnimations.image_at(damselSelfImageRect)
+        self.setColorKeyWhite()
         self.rect = self.image.get_rect(topleft=pos)
         # modify model rect to be a slightly less tall hitbox.
         self.hitbox = self.rect.inflate(0, -10)

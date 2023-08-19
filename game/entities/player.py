@@ -10,7 +10,6 @@ SPRITE_HEIGHT = 20
 
 # modify model rect to have slightly less tall hitbox. Used for movement
 SPRITE_HITBOX_OFFSET = -26
-COLOR_BLACK = (0, 0, 0)
 
 
 class Player(Entity):
@@ -28,10 +27,8 @@ class Player(Entity):
         playerMovementsPath = "graphics/player/playerWalking.png"
         self.playerAnimations = SpriteSheet(playerMovementsPath)
         playerSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        self.colorKeyBlack = COLOR_BLACK
-        self.image = self.playerAnimations.image_at(
-            playerSelfImageRect, self.colorKeyBlack
-        )
+        self.image = self.playerAnimations.image_at(playerSelfImageRect)
+        self.setColorKeyBlack()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, SPRITE_HITBOX_OFFSET)
         self.mapSize = pygame.math.Vector2(map_size)
@@ -60,18 +57,10 @@ class Player(Entity):
 
         # animation states in dictionary
         self.animations = {
-            "up": self.playerAnimations.load_strip(
-                walkingUpRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
-            "down": self.playerAnimations.load_strip(
-                walkingDownRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
-            "left": self.playerAnimations.load_strip(
-                walkingLeftRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
-            "right": self.playerAnimations.load_strip(
-                walkingRightRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
+            "up": self.playerAnimations.load_strip(walkingUpRect, IMAGE_COUNT),
+            "down": self.playerAnimations.load_strip(walkingDownRect, IMAGE_COUNT),
+            "left": self.playerAnimations.load_strip(walkingLeftRect, IMAGE_COUNT),
+            "right": self.playerAnimations.load_strip(walkingRightRect, IMAGE_COUNT),
             "up_idle": [],
             "down_idle": [],
             "left_idle": [],
@@ -234,6 +223,11 @@ class Player(Entity):
 
         Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
         """
+
+        # TODO: manage shift with camera manager class
+        shiftx = 0
+        shifty = 0
+        super().update(shiftx, shifty)
 
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites

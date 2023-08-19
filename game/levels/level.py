@@ -41,11 +41,10 @@ class Level:
         self.mixer.music.play(LOOP_MUSIC)
 
         # map size in number of 16 pixels = (20x, 20y size)
-        self.map_size = pygame.math.Vector2(20, 20)
+        self.map_size = pygame.math.Vector2(80, 80)
 
-        sizeOfLandBlock = 16
         self.player = Player(
-            (sizeOfLandBlock * 8, sizeOfLandBlock * 14),
+            (TILESIZE * 20, TILESIZE * 10),
             [self.visible_sprites],
             self.obstacle_sprites,
             self.map_size,
@@ -73,7 +72,8 @@ class Level:
                     # val will be the terrain tile index
 
                     tile_surface = terrain_tile_list[int(val)]
-                    sprite = StaticTile(TILESIZE, x, y, tile_surface)
+                    sprite = StaticTile(sprite_group, x, y, tile_surface)
+                    sprite.setColorKeyBlack()
                     sprite_group.add(sprite)
 
         return sprite_group

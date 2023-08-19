@@ -1,12 +1,12 @@
 import pygame
-from settings import TILESIZE
+from tile import Tile
 from abc import (
     ABC,
     abstractmethod,
 )
 
 
-class Entity(pygame.sprite.Sprite, ABC):
+class Entity(Tile, ABC):
     """Entity abstract class
 
     Base class for all entities including player, enemies, and damsels.
@@ -65,13 +65,6 @@ class Entity(pygame.sprite.Sprite, ABC):
         self.collision_check("vertical")
         self.rect.center = self.hitbox.center
 
-        # if we go beyond the map size, wrap around to the other side.
-        # Need to test hitbox collisions if wrap around into a wall or enemy..
-        if self.hitbox.x >= self.mapSize.x * TILESIZE:
-            self.hitbox.x = TILESIZE
-        if self.hitbox.y >= self.mapSize.y * TILESIZE:
-            self.hitbox.y = TILESIZE
-
     @abstractmethod
     def collision_check(self, direction):
         """Handles the collision check for entities
@@ -85,18 +78,6 @@ class Entity(pygame.sprite.Sprite, ABC):
         ----------
         direction : str
             the axis to check for a collision on
-        """
-
-        raise Exception("Not Implemented")
-
-    @abstractmethod
-    def update(self):
-        """Handles updating the entity with current information about the level
-
-        This method should be implemented in any child classes that use it.
-        The method should handle the following:
-        Handles passing of other entity's and obstacles in environment.
-        Handling of paramaters depends on entity type, described in documentation.
         """
 
         raise Exception("Not Implemented")

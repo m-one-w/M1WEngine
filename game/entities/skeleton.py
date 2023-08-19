@@ -12,7 +12,6 @@ SPRITE_HEIGHT = 20
 
 # modify model rect to have slightly less tall hitbox. Used for movement
 SPRITE_HITBOX_OFFSET = -4
-COLOR_BLACK = (0, 0, 0)
 
 
 class Skeleton(Entity):
@@ -29,10 +28,10 @@ class Skeleton(Entity):
         skeletonMovementsPath = "graphics/skeleton/skeleton.png"
         self.skeletonAnimations = SpriteSheet(skeletonMovementsPath)
         skeletonSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        self.colorKeyBlack = COLOR_BLACK
         self.image = self.skeletonAnimations.image_at(
-            skeletonSelfImageRect, self.colorKeyBlack
+            skeletonSelfImageRect
         ).convert_alpha()
+        self.setColorKeyBlack()
         self.rect = self.image.get_rect(topleft=pos)
 
         # modify model rect to be a slightly less tall hitbox.
