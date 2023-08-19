@@ -7,9 +7,28 @@ from settings import TILESIZE, LOOP_MUSIC
 
 
 class Level:
+
+    """Level class
+
+    The Level class will instantiate all objects required for a single level to run.
+
+    """
+
     def __init__(self, level_data, surface):
+        """Constructor
+
+        This method will instantiate all required sprite groups for the current level
+
+        Parameters
+        ----------
+        level_data: the game asset information for the current level
+        surface: the surface to contain the game screen's full window
+        """
+
         # display surface
         self.display_surface = surface
+
+        # TODO: move any level specific setup steps into a method
 
         # setup map
         terrain_layout = import_csv_layout(level_data["ground"])
@@ -57,6 +76,7 @@ class Level:
         ----------
         layout: array of values to represent a individual sprite
         type: indentifier to read in the correct graphics
+
         """
 
         sprite_group = pygame.sprite.Group()
@@ -79,6 +99,8 @@ class Level:
         return sprite_group
 
     def run(self):
+        """Draw and update all sprite groups"""
+
         # update and draw the game
         self.terrain_sprites.draw(self.display_surface)
         self.plant_sprites.draw(self.display_surface)

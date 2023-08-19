@@ -7,6 +7,7 @@ from abc import (
 
 
 class Entity(Tile, ABC):
+
     """Entity abstract class
 
     Base class for all entities including player, enemies, and damsels.
@@ -30,6 +31,7 @@ class Entity(Tile, ABC):
         Handles movement of the entity
     collision_check(self, direction)
         Handles the collision check for entities
+
     """
 
     def __init__(self, groups):

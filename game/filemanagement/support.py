@@ -5,6 +5,13 @@ from settings import TILESIZE
 
 
 def import_csv_layout(path):
+    """Read in csv values into an array
+
+    Parameters
+    ----------
+    path: the filepath to read from
+
+    """
     terrain_map = []
     with open(path) as level_map:
         layout = reader(level_map, delimiter=",")
@@ -14,6 +21,13 @@ def import_csv_layout(path):
 
 
 def import_folder(path):
+    """Import all the surfaces in a directory
+
+    Parameters
+    ----------
+    path: the filepath to import from
+
+    """
     surface_list = []
     # import all images from a folder
     for _, __, image_files in walk(path):
@@ -29,6 +43,7 @@ def import_cut_graphic(path):
     Parameters
     ----------
     path: the filepath to find the tileset
+
     """
 
     surface = pygame.image.load(path).convert_alpha()

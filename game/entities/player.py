@@ -13,11 +13,13 @@ SPRITE_HITBOX_OFFSET = -26
 
 
 class Player(Entity):
+
     """Player class which contains the object players will directly control
 
     The player class will handle movement logic and sprite changing logic for the player
     object. The player class will also handle any collision logic that influences the
     player object.
+
     """
 
     def __init__(self, pos, groups, obstacle_sprites, map_size):
@@ -68,6 +70,7 @@ class Player(Entity):
 
         This function inspects the current direction and determines
         what the status should be.
+
         """
         # -- xy | xy +-
         # -+ xy | xy ++
@@ -100,6 +103,7 @@ class Player(Entity):
         """Input function to handle keyboard input to the player class
 
         This function will handle turning the player object as input is received.
+
         """
         if not self.attacking:
             keys = pygame.key.get_pressed()
@@ -131,6 +135,7 @@ class Player(Entity):
         """Gets the angle for sprite rotation based on the direction
 
         Angle returned will need to be inverted for 'down' and 'left'.
+
         """
         angle = 0
 
@@ -147,6 +152,7 @@ class Player(Entity):
         Return the rotated image correlating to the correct rotation.
         Rotation is based on the status, so image rotations are defined by the
         current status.
+
         """
         angle = 0
 
@@ -191,6 +197,7 @@ class Player(Entity):
         ----------
         direction: str
             the axis to check for collisions on. It can be 'horizontal' or 'vertical'.
+
         """
 
         # horizontal collision detection
@@ -214,6 +221,7 @@ class Player(Entity):
         """Update player behavior based on player input
 
         Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
+
         """
 
         # TODO: manage shift with camera manager class

@@ -2,6 +2,7 @@ import pygame
 
 
 class Tile(pygame.sprite.Sprite):
+
     """Base class for all game :func:`Sprite<pygame.sprite.Sprite>`"""
 
     # other init options: sprite_type, surface = pygame.Surface((TILESIZE, TILESIZE))
@@ -10,9 +11,7 @@ class Tile(pygame.sprite.Sprite):
 
         Parameters
         ----------
-        size: the filepath to find the tileset
-        x: the x location to render
-        y: the y location to render
+        groups: the groups this sprite is a part of
         """
         super().__init__(groups)
         # r,g,b vals for key color
@@ -31,9 +30,11 @@ class Tile(pygame.sprite.Sprite):
         self.rect.y += shifty
 
     def setColorKeyBlack(self):
+        """Set the sprite alpha channel to ignore black backgrounds"""
         self.image.set_colorkey(self.colorKeyBlack, pygame.RLEACCEL)
 
     def setColorKeyWhite(self):
+        """Set the sprite alpha channel to ignore white backgrounds"""
         self.image.set_colorkey(self.colorKeyWhite, pygame.RLEACCEL)
 
 

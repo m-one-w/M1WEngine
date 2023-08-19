@@ -2,10 +2,12 @@ import pygame
 
 
 class SpriteSheet:
+
     """This class handles sprite sheets
 
     Note: When calling images_at the rect is the format:
     (x, y, x + offset, y + offset)
+
     """
 
     def __init__(self, filename):
