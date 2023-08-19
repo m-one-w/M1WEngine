@@ -61,14 +61,6 @@ class Player(Entity):
             "down": self.playerAnimations.load_strip(walkingDownRect, IMAGE_COUNT),
             "left": self.playerAnimations.load_strip(walkingLeftRect, IMAGE_COUNT),
             "right": self.playerAnimations.load_strip(walkingRightRect, IMAGE_COUNT),
-            "up_idle": [],
-            "down_idle": [],
-            "left_idle": [],
-            "right_idle": [],
-            "up_attack": [],
-            "down_attack": [],
-            "left_attack": [],
-            "right_attack": [],
         }
 
     def set_status_by_curr_rotation(self):
