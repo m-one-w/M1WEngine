@@ -54,6 +54,7 @@ class StaticTile(Tile):
         super().__init__(group)
         self.image = surface
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.hitbox = self.rect
 
 
 class DynamicTile(Tile):
@@ -76,3 +77,4 @@ class DynamicTile(Tile):
         super().__init__(size, x, y)
         self.image = pygame.Surface((size, size))
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.hitbox = self.rect
