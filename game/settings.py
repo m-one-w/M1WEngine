@@ -9,8 +9,8 @@ TILESIZE = 16
 
 # image paths
 
-GAME_ICON_PATH = "graphics/game_icon.jpg"
-MAIN_MENU_BACKGROUND_PATH = "graphics/sad_start_screen.png"
+GAME_ICON_PATH = "graphics/game_icon.png"
+MAIN_MENU_BACKGROUND_PATH = "graphics/floor_surface/ground.png"
 
 # Constant used to loop game music
 LOOP_MUSIC = -1

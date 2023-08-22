@@ -17,7 +17,7 @@ class MainMenu:
         This method will instantiate all required sprite groups for the main menu level
 
         """
-        self.start_screen_path = "images/start_screen.png"
+        self.start_screen_path = "graphics/m1w-gaming.png"
         # load menu image
         self.menu_image = pygame.image.load(MAIN_MENU_BACKGROUND_PATH)
         # font
