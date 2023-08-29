@@ -87,7 +87,7 @@ class Level:
                     y = row_index * TILESIZE
 
                     terrain_tile_list = import_cut_graphic(
-                        "graphics/tilesets/original_atlas.png"
+                        "graphics/tilesets/tiny_atlas.png"
                     )
                     # val will be the terrain tile index
 
