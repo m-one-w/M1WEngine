@@ -11,7 +11,7 @@ class Game:
         pygame.init()
         # display setup
         self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-        pygame.display.set_caption("Lunk Game")
+        pygame.display.set_caption("Reluctant Hero")
         pygame.display.set_icon(self.screen)
         self.clock = pygame.time.Clock()
 
