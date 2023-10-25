@@ -36,7 +36,7 @@ class Player(Entity):
         self.mapSize = pygame.math.Vector2(map_size)
 
         # movement
-        self.speed = 3
+        self.speed = 1.5
         self.attacking = False
         self.attackCooldown = 400
         self.attackTime = 0
@@ -44,8 +44,8 @@ class Player(Entity):
         self.obstacleSprites = obstacle_sprites
 
         # starting position is running north
-        self.direction.y = -1
-        self.status = "up"
+        self.direction.x = 1
+        self.status = "right"
         self.import_player_asset()
 
     def import_player_asset(self):
