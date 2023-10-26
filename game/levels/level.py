@@ -4,6 +4,7 @@ from filemanagement.support import import_cut_graphic
 from tile import StaticTile
 from filemanagement.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
+from cameraControl.cameraManager import CameraManager
 
 
 class Level:
@@ -69,6 +70,12 @@ class Level:
             self.map_size,
         )
 
+        self.camera = CameraManager(self.player)
+        self.camera.add(self.terrain_sprites)
+        self.camera.add(self.plant_sprites)
+        self.camera.add(self.fence_sprites)
+        self.camera.add(self.extra_sprites)
+
     def create_tile_group(self, layout):
         """Create the :func:`Sprite group<pygame.sprite.Group>` for a layout.
 
@@ -101,16 +108,10 @@ class Level:
     def run(self):
         """Draw and update all sprite groups"""
 
-        # update and draw the game
-        self.terrain_sprites.draw(self.display_surface)
-        self.plant_sprites.draw(self.display_surface)
-        self.fence_sprites.draw(self.display_surface)
-        self.extra_sprites.draw(self.display_surface)
-        self.visible_sprites.draw(self.display_surface)
-        # TODO: These values will be determined by a camera manager
-        shiftx = 0
-        shifty = 0
-        self.terrain_sprites.update(shiftx, shifty)
-
         self.visible_sprites.update(self.enemy_sprites, self.friendly_sprites)
         self.enemy_sprites.update(self.enemy_sprites, self.friendly_sprites)
+
+        # draw the game behind the player character
+        self.camera.camera_draw()
+        # draw the player chacter
+        self.visible_sprites.draw(self.display_surface)
