@@ -178,7 +178,6 @@ class Player(Entity):
             self.frameIndex = 0
 
         self.image = self.set_image_rotation(animation[int(self.frameIndex)])
-        self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def cooldowns(self):
         currentTime = pygame.time.get_ticks()
