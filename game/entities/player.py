@@ -36,7 +36,8 @@ class Player(Entity):
         self.mapSize = pygame.math.Vector2(map_size)
 
         # movement
-        self.speed = 1.5
+        # speed can be any integer
+        self.speed = 1
         self.attacking = False
         self.attackCooldown = 400
         self.attackTime = 0
