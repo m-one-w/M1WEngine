@@ -185,7 +185,7 @@ class Player(Entity):
             if currentTime - self.attackTime >= self.attackCooldown:
                 self.attacking = False
 
-    def collision_check(self, direction):
+    def collision_check(self):
         """Collision check for entity
 
         Handles collision checks for entities and other entities/the environment.
@@ -198,22 +198,70 @@ class Player(Entity):
 
         """
 
-        # horizontal collision detection
-        if direction == "horizontal":
-            # look at all sprites
-            for sprite in self.obstacleSprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # reverse direction
-                    self.direction.x *= -1
-        # vertical collision detection
-        if direction == "vertical":
-            # look at all sprites
-            for sprite in self.obstacleSprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # reverse direction
-                    self.direction.y *= -1
+        collision_count = {"left": 0, "right": 0, "up": 0, "down": 0}
+
+        # get list of sprites from obstacleSprites
+        obstacleSpritesList = self.obstacleSprites.sprites()
+
+        # list of all obstacleSprite indicies player has collisions with
+        collisions = self.rect.collidelistall(obstacleSpritesList)
+
+        # if collisions are detected
+        if collisions:
+            for collisionIndex in collisions:
+                # check status then add to appropriate collision direction
+                if self.status == "up" or self.status == "down":
+                    if (
+                        obstacleSpritesList[collisionIndex].hitbox.centery
+                        < self.hitbox.centery
+                    ):
+                        collision_count["up"] += 1
+                    elif (
+                        obstacleSpritesList[collisionIndex].hitbox.centery
+                        > self.hitbox.centery
+                    ):
+                        collision_count["down"] += 1
+
+                if self.status == "left" or self.status == "right":
+                    if (
+                        obstacleSpritesList[collisionIndex].hitbox.centerx
+                        < self.hitbox.centerx
+                    ):
+                        collision_count["left"] += 1
+                    elif (
+                        obstacleSpritesList[collisionIndex].hitbox.centerx
+                        > self.hitbox.centerx
+                    ):
+                        collision_count["right"] += 1
+
+            # update self.direction based on direction with most collisions
+            self.collision_update_direction(max(collision_count))
+
+    def collision_update_direction(self, collision_direction):
+        """Changes self.direction based off of the collision_direction
+
+        Parameters
+        ----------
+        collision_direction : str
+            a string representing which direction the collision issue is taking place.
+
+        """
+
+        # change self.direction value
+        if collision_direction == "up":
+            # protection against edge case when self.status hasn't been updated
+            if self.direction.y < 0:
+                self.direction.y *= -1
+        elif collision_direction == "down":
+            if self.direction.y > 0:
+                self.direction.y *= -1
+
+        elif collision_direction == "left":
+            if self.direction.x < 0:
+                self.direction.x *= 1
+        elif collision_direction == "right":
+            if self.direction.x > 0:
+                self.direction.x *= -1
 
     def update(self, enemy_sprites, friendly_sprites):
         """Update player behavior based on player input

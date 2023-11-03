@@ -90,6 +90,8 @@ class Entity(Tile, ABC):
             self.move_right(speed)
             self.movementTracker["horizontal"] += left
 
+        self.collision_check()
+
     def move_left(self, speed):
         """Move to the left
 
@@ -150,7 +152,7 @@ class Entity(Tile, ABC):
         self.movementTracker["vertical"] += self.direction.y
 
     @abstractmethod
-    def collision_check(self, direction):
+    def collision_check(self):
         """Handles the collision check for entities
 
         This method should be implemented in any child classes that use it.

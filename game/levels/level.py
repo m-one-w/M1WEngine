@@ -57,6 +57,9 @@ class Level:
         self.friendly_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
 
+        # add fence_sprites to obstacle_sprites
+        self.obstacle_sprites.add(self.fence_sprites)
+
         # background music
         self.mixer = pygame.mixer
         self.mixer.init()
