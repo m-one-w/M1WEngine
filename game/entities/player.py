@@ -112,10 +112,8 @@ class Player(Entity):
             # left/right input
             if keys[pygame.K_LEFT]:
                 self.direction.rotate_ip(-PLAYER_ROTATION_SPEED)
-                self.set_status_by_curr_rotation()
             elif keys[pygame.K_RIGHT]:
                 self.direction.rotate_ip(PLAYER_ROTATION_SPEED)
-                self.set_status_by_curr_rotation()
 
     def get_status(self):
         # attack animation
@@ -232,7 +230,8 @@ class Player(Entity):
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites
         self.input()
-        self.cooldowns()
+        self.set_status_by_curr_rotation()
         self.get_status()
+        self.cooldowns()
         self.animate()
         self.move(self.speed)
