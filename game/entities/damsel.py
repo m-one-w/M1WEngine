@@ -1,8 +1,8 @@
 import pygame
 import random
 import time
-from spriteSheet import SpriteSheet
-from entity import Entity
+from filemanagement.spriteSheet import SpriteSheet
+from entities.entity import Entity
 
 # consts for damsel
 SPRITE_WIDTH = 16
@@ -83,18 +83,10 @@ class Damsel(Entity):
 
         # animation states in dictionary
         self.animations = {
-            "up": self.damselAnimations.load_strip(
-                walkingUpRect, 3, self.colorKeyWhite
-            ),
-            "down": self.damselAnimations.load_strip(
-                walkingDownRect, 3, self.colorKeyWhite
-            ),
-            "left": self.damselAnimations.load_strip(
-                walkingLeftRect, 3, self.colorKeyWhite
-            ),
-            "right": self.damselAnimations.load_strip(
-                walkingRightRect, 3, self.colorKeyWhite
-            ),
+            "up": self.damselAnimations.load_strip(walkingUpRect, 3),
+            "down": self.damselAnimations.load_strip(walkingDownRect, 3),
+            "left": self.damselAnimations.load_strip(walkingLeftRect, 3),
+            "right": self.damselAnimations.load_strip(walkingRightRect, 3),
         }
 
     def move(self, speed):

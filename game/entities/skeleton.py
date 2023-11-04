@@ -70,18 +70,10 @@ class Skeleton(Entity):
 
         # animation states in dictionary
         self.animations = {
-            "up": self.skeletonAnimations.load_strip(
-                walkingUpRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
-            "down": self.skeletonAnimations.load_strip(
-                walkingDownRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
-            "left": self.skeletonAnimations.load_strip(
-                walkingLeftRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
-            "right": self.skeletonAnimations.load_strip(
-                walkingRightRect, IMAGE_COUNT, self.colorKeyBlack
-            ),
+            "up": self.skeletonAnimations.load_strip(walkingUpRect, IMAGE_COUNT),
+            "down": self.skeletonAnimations.load_strip(walkingDownRect, IMAGE_COUNT),
+            "left": self.skeletonAnimations.load_strip(walkingLeftRect, IMAGE_COUNT),
+            "right": self.skeletonAnimations.load_strip(walkingRightRect, IMAGE_COUNT),
         }
 
     def get_status(self):
