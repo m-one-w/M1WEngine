@@ -117,7 +117,7 @@ class Level:
 
         Parameters
         ----------
-        layout: array of values to represent a individual sprite
+        layout: array of values each representing an individual sprite
         type: indentifier to read in the correct graphics
 
         """
