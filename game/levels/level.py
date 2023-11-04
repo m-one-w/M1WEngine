@@ -63,13 +63,6 @@ class Level:
         # map size in number of 16 pixels = (20x, 20y size)
         self.map_size = pygame.math.Vector2(80, 80)
 
-        self.player = Player(
-            (TILESIZE * 20, TILESIZE * 10),
-            [self.visible_sprites],
-            self.obstacle_sprites,
-            self.map_size,
-        )
-
         self.camera = CameraManager(self.player)
         self.camera.add(self.terrain_sprites)
         self.camera.add(self.plant_sprites)
