@@ -2,7 +2,6 @@ import pygame
 import sys
 from settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
 from levels.level import Level
-from levels.gameData import level_1
 
 
 class Game:
@@ -16,7 +15,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         # level csv's are saved in game data
-        self.level = Level(level_1, self.screen)
+        self.level = Level(self.screen)
 
     def run(self):
         while True:

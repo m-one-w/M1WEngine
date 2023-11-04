@@ -1,10 +1,14 @@
 import pygame
 from entities.player import Player
 from filemanagement.support import import_cut_graphic
+from entities.damsel import Damsel
+from entities.skeleton import Skeleton
 from tile import StaticTile
 from filemanagement.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
 from cameraControl.cameraManager import CameraManager
+from levels.gameData import level_1 as level_data
+from levels.gameData import character_keys
 
 
 class Level:
@@ -15,7 +19,7 @@ class Level:
 
     """
 
-    def __init__(self, level_data, surface):
+    def __init__(self, surface):
         """Constructor
 
         This method will instantiate all required sprite groups for the current level
@@ -38,6 +42,7 @@ class Level:
         plants_layout = import_csv_layout(level_data["plants"])
         fence_layout = import_csv_layout(level_data["fence"])
         extra_layout = import_csv_layout(level_data["extra"])
+        character_layout = import_csv_layout(level_data["characters"])
         self.terrain_sprites = self.create_tile_group(terrain_layout)
         self.terrain_sprites.add(self.create_tile_group(rocks_layout))
         self.terrain_sprites.add(self.create_tile_group(raised_ground_layout))
@@ -63,11 +68,49 @@ class Level:
         # map size in number of 16 pixels = (20x, 20y size)
         self.map_size = pygame.math.Vector2(80, 80)
 
+        self.create_entities_from_layout(character_layout)
+        self.visible_sprites.add(self.friendly_sprites)
+        self.visible_sprites.add(self.enemy_sprites)
+
         self.camera = CameraManager(self.player)
         self.camera.add(self.terrain_sprites)
         self.camera.add(self.plant_sprites)
         self.camera.add(self.fence_sprites)
         self.camera.add(self.extra_sprites)
+
+    def create_entities_from_layout(self, layout):
+        """Initialize the entities on a layout.
+
+        Parameters
+        ----------
+        layout: array of values each representing an individual entity
+        """
+
+        # default location of top left corner should never be used
+        x = 0
+        y = 0
+        position = (x, y)
+        for row_index, row in enumerate(layout):
+            for col_index, val in enumerate(row):
+                # all logic for every entity
+                if val != -1:
+                    x = col_index * TILESIZE
+                    y = row_index * TILESIZE
+                    position = (x, y)
+                # initialize the player
+                if val == character_keys["player"]:
+                    self.player = Player(
+                        position,
+                        [self.visible_sprites],
+                        self.obstacle_sprites,
+                        self.map_size,
+                    )
+                # initialize damsels
+                elif val == character_keys["damsel"]:
+                    Damsel(position, self.friendly_sprites, self.obstacle_sprites)
+                # initialize skeletons
+                elif val == character_keys["skeleton"]:
+                    Skeleton(position, self.enemy_sprites, self.obstacle_sprites)
 
     def create_tile_group(self, layout):
         """Create the :func:`Sprite group<pygame.sprite.Group>` for a layout.
