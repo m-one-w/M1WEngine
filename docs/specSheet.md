@@ -28,6 +28,12 @@
     - [Score System](#score-system)
         - [High Score](#high-score)
         - [Boredom Meter](#boredom-meter)
+- [Pause Menu](#pause-menu)
+    - [Menu Options](#menu-options)
+        - [Resume Game](#resume-game)
+        - [Restart Level](#restart-level)
+        - [Settings](#settings)
+        - [Quit Game](#quit-game)
 - [Map Rendering System](#map-rendering-system)
 - [Tile Set Support](#tile-set-support)
 
@@ -248,6 +254,28 @@ Each favorable action adds to the total high score for an amount specific to eac
 The player can only do so many things he doesn't like doing before deciding to sleep and ignore everything.
 The Boredom Meter is a countdown to the player character sleeping out of anger. When it reaches 0, the game is over.
 Each level has a set timer that ticks up to the moment the player character goes to sleep from boredom.
+
+## Pause Menu
+### Menu Options
+The pause menu will have the following options. [Resume Game](#resume-game), [Restart Level](#restart-level), [Settings](#settings), and [Quit Game](#quit-game).
+
+#### Resume Game
+* When selected, the pause menu is destroyed and gameplay resumes.
+
+#### Restart Level
+* When selected, the current level is restarted. No progress is saved.
+
+#### Settings
+* When selected a submenu will open with General, Audio, and Video setting options.
+  * General Settings
+    * Menu to change general settings of the game.
+  * Audio Settings
+    * Menu to change audio settings. Includes music volume, effects volume, and menu music.
+  * Video Settings
+    * Menu to change video settings. Includes brightness, window mode, aspect ratio, and resolution settings.
+
+#### Quit Game
+* When selected end the current game and return to main menu.
 
 ## Map Rendering System
 The map shall not be rerendered unless the player object is within x% of the screen width.
