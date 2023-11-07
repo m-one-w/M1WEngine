@@ -151,6 +151,7 @@ class Level:
         self.enemy_sprites.update(self.enemy_sprites, self.friendly_sprites)
 
         # draw the game behind the player character
-        self.camera.camera_draw()
+        self.camera.camera_update()
+        self.camera.draw(self.display_surface)
         # draw the player chacter
         self.visible_sprites.draw(self.display_surface)

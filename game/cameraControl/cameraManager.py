@@ -36,6 +36,7 @@ class CameraManager(pygame.sprite.Group):
         ----------
         playerCharacter: the player character
         """
+
         super().__init__()
         surfaceX = 0
         surfaceY = 1
@@ -50,16 +51,13 @@ class CameraManager(pygame.sprite.Group):
         self.offset = pygame.math.Vector2()
         self.playerCharacter = playerCharacter
 
-    def camera_draw(self):
-        """camera_draw
-        This method will render all sprites in the camera at an offset
-        relative to the player's current position.
+    def camera_update(self):
+        """camera_update
+        This method will set the direction of camera sprites to be the
+        opposite direction of the player's heading.
         """
-        # calculate offset
-        self.offset.x = self.playerCharacter.rect.centerx - self.halfWidth
-        self.offset.y = self.playerCharacter.rect.centery - self.halfHeight
 
-        # draw the sprites, sort by center y-coord for overlap
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
-            offset = sprite.rect.topleft - self.offset
-            self.displaySurface.blit(sprite.image, offset)
+            # offset = sprite.rect.topleft - self.offset
+            sprite.direction = self.playerCharacter.direction * -1
+            sprite.move(self.playerCharacter.speed)

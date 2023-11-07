@@ -270,11 +270,6 @@ class Player(Entity):
 
         """
 
-        # TODO: manage shift with camera manager class
-        shiftx = 0
-        shifty = 0
-        super().update(shiftx, shifty)
-
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites
         self.input()
