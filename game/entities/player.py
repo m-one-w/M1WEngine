@@ -115,21 +115,6 @@ class Player(Entity):
             elif keys[pygame.K_RIGHT]:
                 self.direction.rotate_ip(PLAYER_ROTATION_SPEED)
 
-    def get_status(self):
-        # attack animation
-        if self.attacking:
-            # no moving while attacking
-            self.direction.x = 0
-            self.direction.y = 0
-            if "attack" not in self.status:
-                if "idle" in self.status:
-                    self.status = self.status.replace("_idle", "_attack")
-                    self.status = self.status + "_attack"
-
-        else:
-            if "attack" in self.status:
-                self.status = self.status.replace("_attack", "")
-
     def get_angle_from_direction(self, axis):
         """Gets the angle for sprite rotation based on the direction
 
@@ -274,7 +259,6 @@ class Player(Entity):
         self.friendly_sprites = friendly_sprites
         self.input()
         self.set_status_by_curr_rotation()
-        self.get_status()
         self.cooldowns()
         self.animate()
         self.move(self.speed)
