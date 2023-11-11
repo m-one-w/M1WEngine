@@ -59,5 +59,5 @@ class CameraManager(pygame.sprite.Group):
 
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             # offset = sprite.rect.topleft - self.offset
-            sprite.direction = self.playerCharacter.direction * -1
+            sprite.compass = self.playerCharacter.compass * -1
             sprite.move(self.playerCharacter.speed)

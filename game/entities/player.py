@@ -46,7 +46,7 @@ class Player(Entity):
         self.obstacleSprites = obstacle_sprites
 
         # starting position is running north
-        self.direction.x = Direction.right.value
+        self.compass.x = Direction.right.value
         self.status = "right"
         self.import_player_asset()
 
@@ -76,29 +76,13 @@ class Player(Entity):
         """
         # -- xy | xy +-
         # -+ xy | xy ++
-        if (
-            self.direction.x > 0
-            and self.direction.y < 0.25
-            and self.direction.y > -0.25
-        ):
+        if self.compass.x > 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
             self.status = "right"
-        if (
-            self.direction.x < 0
-            and self.direction.y < 0.25
-            and self.direction.y > -0.25
-        ):
+        if self.compass.x < 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
             self.status = "left"
-        if (
-            self.direction.y > 0
-            and self.direction.x < 0.25
-            and self.direction.x > -0.25
-        ):
+        if self.compass.y > 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
             self.status = "down"
-        if (
-            self.direction.y < 0
-            and self.direction.x < 0.25
-            and self.direction.x > -0.25
-        ):
+        if self.compass.y < 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
             self.status = "up"
 
     def input(self):
@@ -110,9 +94,9 @@ class Player(Entity):
 
         # left/right input
         if keys[pygame.K_LEFT]:
-            self.direction.rotate_ip(-PLAYER_ROTATION_SPEED)
+            self.compass.rotate_ip(-PLAYER_ROTATION_SPEED)
         elif keys[pygame.K_RIGHT]:
-            self.direction.rotate_ip(PLAYER_ROTATION_SPEED)
+            self.compass.rotate_ip(PLAYER_ROTATION_SPEED)
 
     def get_angle_from_direction(self, axis):
         """Gets the angle for sprite rotation based on the direction
@@ -123,9 +107,9 @@ class Player(Entity):
         angle = 0
 
         if axis == "x":
-            angle = self.direction.y * 45
+            angle = self.compass.y * 45
         if axis == "y":
-            angle = self.direction.x * 45
+            angle = self.compass.x * 45
 
         return -angle
 
@@ -223,16 +207,16 @@ class Player(Entity):
 
         # change self.direction value
         if collision_direction == "up":
-            self.direction.y = Direction.down.value
+            self.compass.y = Direction.down.value
             self.status = "down"
         elif collision_direction == "down":
-            self.direction.y = Direction.up.value
+            self.compass.y = Direction.up.value
             self.status = "up"
         elif collision_direction == "left":
-            self.direction.x = Direction.right.value
+            self.compass.x = Direction.right.value
             self.status = "right"
         elif collision_direction == "right":
-            self.direction.x = Direction.left.value
+            self.compass.x = Direction.left.value
             self.status = "left"
 
     def update(self, enemy_sprites, friendly_sprites):

@@ -70,7 +70,7 @@ class Damsel(Entity):
         self.obstacle_sprites = obstacle_sprites
 
         # starting position is facing down
-        self.direction.y = Direction.down.value
+        self.compass.y = Direction.down.value
         self.status = "down"
         self.import_damsel_assets()
 
@@ -109,23 +109,23 @@ class Damsel(Entity):
             seed = random.randint(1, 1000)
             # if odd turn left else right
             if seed % 2:
-                self.direction.x = -1
+                self.compass.x = -1
             else:
-                self.direction.x = 1
+                self.compass.x = 1
             # if %3 false turn up else down
             if seed % 3:
-                self.direction.y = -1
+                self.compass.y = -1
             else:
-                self.direction.y = 1
+                self.compass.y = 1
             self.timer = 0
 
         # prevent diagonal moving from increasing speed
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
+        if self.compass.magnitude() != 0:
+            self.compass = self.compass.normalize()
         # update hitbox based on move speed
-        self.hitbox.x += self.direction.x * speed
+        self.hitbox.x += self.compass.x * speed
         self.collision_handler("horizontal")
-        self.hitbox.y += self.direction.y * speed
+        self.hitbox.y += self.compass.y * speed
         self.collision_handler("vertical")
         self.rect.center = self.hitbox.center
 
@@ -137,13 +137,13 @@ class Damsel(Entity):
         """
 
         # will only display "up" and "down". Need to rework
-        if self.direction.x > 0 and self.status != "right":
+        if self.compass.x > 0 and self.status != "right":
             self.status = "right"
-        elif self.direction.x < 0 and self.status != "left":
+        elif self.compass.x < 0 and self.status != "left":
             self.status = "left"
-        if self.direction.y > 0 and self.status != "down":
+        if self.compass.y > 0 and self.status != "down":
             self.status = "down"
-        elif self.direction.y < 0 and self.status != "up":
+        elif self.compass.y < 0 and self.status != "up":
             self.status = "up"
 
     def set_image_direction(self, image):
@@ -158,22 +158,22 @@ class Damsel(Entity):
         """
 
         if self.status == "right":
-            self.direction.x = 1
+            self.compass.x = 1
             direction = "x"
         if self.status == "left":
-            self.direction.x = -1
+            self.compass.x = -1
             direction = "x"
         if self.status == "up":
-            self.direction.y = -1
+            self.compass.y = -1
             direction = "y"
         if self.status == "down":
-            self.direction.y = 1
+            self.compass.y = 1
             direction = "y"
 
         if direction == "y":
-            return pygame.transform.rotate(image, self.direction.y)
+            return pygame.transform.rotate(image, self.compass.y)
         if direction == "x":
-            return pygame.transform.rotate(image, self.direction.x)
+            return pygame.transform.rotate(image, self.compass.x)
 
     def animate(self):
         """Method to loop through damsel animations"""
@@ -206,9 +206,9 @@ class Damsel(Entity):
                 # check if rects collide
                 if sprite.hitbox.colliderect(self.hitbox):
                     # check direction of collision
-                    if self.direction.x > 0:  # moving right
+                    if self.compass.x > 0:  # moving right
                         self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0:  # moving left
+                    if self.compass.x < 0:  # moving left
                         self.hitbox.left = sprite.hitbox.right
 
         # vertical collision detection
@@ -218,9 +218,9 @@ class Damsel(Entity):
                 # check if rects collide
                 if sprite.hitbox.colliderect(self.hitbox):
                     # check direction of collision
-                    if self.direction.y < 0:  # moving up
+                    if self.compass.y < 0:  # moving up
                         self.hitbox.top = sprite.hitbox.bottom
-                    if self.direction.y > 0:  # moving down
+                    if self.compass.y > 0:  # moving down
                         self.hitbox.bottom = sprite.hitbox.top
 
     def update(self, enemy_sprites, friendly_sprites):

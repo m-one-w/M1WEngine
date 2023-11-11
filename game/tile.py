@@ -43,7 +43,7 @@ class Tile(pygame.sprite.Sprite):
         groups: the groups this sprite is a part of
         """
         super().__init__(groups)
-        self.direction = pygame.math.Vector2()
+        self.compass = pygame.math.Vector2()
         self.movementTracker = {"vertical": 0.0, "horizontal": 0.0}
 
         # r,g,b vals for key color
@@ -155,8 +155,8 @@ class Tile(pygame.sprite.Sprite):
         Speed can multiply the number of pixels moved at a time.
         """
 
-        self.movementTracker["horizontal"] += self.direction.x
-        self.movementTracker["vertical"] += self.direction.y
+        self.movementTracker["horizontal"] += self.compass.x
+        self.movementTracker["vertical"] += self.compass.y
 
 
 class StaticTile(Tile):

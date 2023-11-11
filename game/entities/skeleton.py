@@ -49,7 +49,7 @@ class Skeleton(Entity):
         self.timer = 100
 
         # starting position is facing and running down
-        self.direction.y = Direction.down.value
+        self.compass.y = Direction.down.value
         self.status = "down"
         self.import_skeleton_assets()
 
@@ -88,8 +88,8 @@ class Skeleton(Entity):
         # attack animation
         if self.attacking:
             # no moving while attacking
-            self.direction.x = 0
-            self.direction.y = 0
+            self.compass.x = 0
+            self.compass.y = 0
             if "attack" not in self.status:
                 if "idle" in self.status:
                     self.status = self.status.replace("_idle", "_attack")
@@ -119,23 +119,23 @@ class Skeleton(Entity):
             seed = random.randint(1, 1000)
             # if odd turn left else right
             if seed % 2:
-                self.direction.x = -1
+                self.compass.x = -1
             else:
-                self.direction.x = 1
+                self.compass.x = 1
             # if %3 false turn up else down
             if seed % 3:
-                self.direction.y = -1
+                self.compass.y = -1
             else:
-                self.direction.y = 1
+                self.compass.y = 1
             self.timer = 0
 
         # prevent diagonal moving from increasing speed
-        if self.direction.magnitude() != 0:
-            self.direction = self.direction.normalize()
+        if self.compass.magnitude() != 0:
+            self.compass = self.compass.normalize()
         # update
-        self.hitbox.x += self.direction.x * speed
+        self.hitbox.x += self.compass.x * speed
         self.collision_handler("horizontal")
-        self.hitbox.y += self.direction.y * speed
+        self.hitbox.y += self.compass.y * speed
         self.collision_handler("vertical")
         self.rect.center = self.hitbox.center
 
@@ -186,9 +186,9 @@ class Skeleton(Entity):
                 # check if rects collide
                 if sprite.hitbox.colliderect(self.hitbox):
                     # check direction of collision
-                    if self.direction.x > 0:  # moving right
+                    if self.compass.x > 0:  # moving right
                         self.hitbox.right = sprite.hitbox.left
-                    if self.direction.x < 0:  # moving left
+                    if self.compass.x < 0:  # moving left
                         self.hitbox.left = sprite.hitbox.right
         # vertical collision detection
         if direction == "vertical":
@@ -197,9 +197,9 @@ class Skeleton(Entity):
                 # check if rects collide
                 if sprite.hitbox.colliderect(self.hitbox):
                     # check direction of collision
-                    if self.direction.y < 0:  # moving up
+                    if self.compass.y < 0:  # moving up
                         self.hitbox.top = sprite.hitbox.bottom
-                    if self.direction.y > 0:  # moving down
+                    if self.compass.y > 0:  # moving down
                         self.hitbox.bottom = sprite.hitbox.top
 
     def update(self, enemy_sprites, friendly_sprites):
