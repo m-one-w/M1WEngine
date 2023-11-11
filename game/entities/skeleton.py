@@ -3,6 +3,7 @@ import random
 import time
 from filemanagement.spriteSheet import SpriteSheet
 from entities.entity import Entity
+from direction import Direction
 
 IMAGE_WIDTH = 48
 IMAGE_HEIGHT = 64
@@ -48,7 +49,7 @@ class Skeleton(Entity):
         self.timer = 100
 
         # starting position is facing and running down
-        self.direction.y = 1
+        self.direction.y = Direction.down.value
         self.status = "down"
         self.import_skeleton_assets()
 

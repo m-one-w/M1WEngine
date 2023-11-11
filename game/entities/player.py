@@ -1,6 +1,7 @@
 import pygame
 from entities.entity import Entity
 from filemanagement.spriteSheet import SpriteSheet
+from direction import Direction
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5
@@ -45,7 +46,7 @@ class Player(Entity):
         self.obstacleSprites = obstacle_sprites
 
         # starting position is running north
-        self.direction.x = 1
+        self.direction.x = Direction.right.value
         self.status = "right"
         self.import_player_asset()
 

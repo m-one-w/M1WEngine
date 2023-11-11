@@ -3,6 +3,7 @@ import random
 import time
 from filemanagement.spriteSheet import SpriteSheet
 from entities.entity import Entity
+from direction import Direction
 
 # consts for damsel
 SPRITE_WIDTH = 16
@@ -69,7 +70,7 @@ class Damsel(Entity):
         self.obstacle_sprites = obstacle_sprites
 
         # starting position is facing down
-        self.direction.y = 1
+        self.direction.y = Direction.down.value
         self.status = "down"
         self.import_damsel_assets()
 

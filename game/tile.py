@@ -1,4 +1,5 @@
 import pygame
+from direction import Direction
 
 
 class Tile(pygame.sprite.Sprite):
@@ -68,14 +69,13 @@ class Tile(pygame.sprite.Sprite):
             the multiplier for changing the sprite position
         """
 
-        # define the coordinate system
-        left = -1
-        right = 1
-        up = -1
-        down = 1
-
         # move each time a tracker is 1 or -1 and then reset the tracker
         self.update_movement_tracker()
+
+        up = Direction.up.value
+        down = Direction.down.value
+        left = Direction.left.value
+        right = Direction.right.value
 
         if self.movementTracker["vertical"] <= up:
             self.move_up(speed)
