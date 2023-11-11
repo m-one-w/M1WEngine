@@ -185,8 +185,8 @@ class Player(Entity):
             if currentTime - self.attackTime >= self.attackCooldown:
                 self.attacking = False
 
-    def collision_check(self):
-        """Collision check for entity
+    def collision_handler(self):
+        """Collision handler for entity
 
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.

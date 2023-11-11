@@ -123,9 +123,9 @@ class Damsel(Entity):
             self.direction = self.direction.normalize()
         # update hitbox based on move speed
         self.hitbox.x += self.direction.x * speed
-        self.collision_check("horizontal")
+        self.collision_handler("horizontal")
         self.hitbox.y += self.direction.y * speed
-        self.collision_check("vertical")
+        self.collision_handler("vertical")
         self.rect.center = self.hitbox.center
 
     def set_status_by_curr_direction(self):
@@ -187,7 +187,7 @@ class Damsel(Entity):
         self.image = self.set_image_direction(animation[int(self.frameIndex)])
         self.rect = self.image.get_rect(center=self.hitbox.center)
 
-    def collision_check(self, direction):
+    def collision_handler(self, direction):
         """Method to handle interaction with environment
 
         Parameter required for vertical and horizontal checking.

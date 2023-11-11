@@ -35,7 +35,7 @@ class Entity(Tile, ABC):
         self.speed = 0
 
     @abstractmethod
-    def collision_check(self):
+    def collision_handler(self):
         """Handles the collision check for entities
 
         This method should be implemented in any child classes that use it.

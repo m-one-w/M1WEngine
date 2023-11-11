@@ -133,9 +133,9 @@ class Skeleton(Entity):
             self.direction = self.direction.normalize()
         # update
         self.hitbox.x += self.direction.x * speed
-        self.collision_check("horizontal")
+        self.collision_handler("horizontal")
         self.hitbox.y += self.direction.y * speed
-        self.collision_check("vertical")
+        self.collision_handler("vertical")
         self.rect.center = self.hitbox.center
 
     def animate(self):
@@ -166,7 +166,7 @@ class Skeleton(Entity):
             if currentTime - self.attackTime >= self.attackCooldown:
                 self.attacking = False
 
-    def collision_check(self, direction):
+    def collision_handler(self, direction):
         """Collision check for entity
 
         Handles collision checks for entities and other entities/the environment.
