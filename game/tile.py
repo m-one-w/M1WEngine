@@ -4,7 +4,6 @@ import pygame
 class Tile(pygame.sprite.Sprite):
 
     """Base class for all game :func:`Sprite<pygame.sprite.Sprite>`
-    ...
 
     Attributes
     ----------
