@@ -104,16 +104,14 @@ class Player(Entity):
         """Input function to handle keyboard input to the player class
 
         This function will handle turning the player object as input is received.
-
         """
-        if not self.attacking:
-            keys = pygame.key.get_pressed()
+        keys = pygame.key.get_pressed()
 
-            # left/right input
-            if keys[pygame.K_LEFT]:
-                self.direction.rotate_ip(-PLAYER_ROTATION_SPEED)
-            elif keys[pygame.K_RIGHT]:
-                self.direction.rotate_ip(PLAYER_ROTATION_SPEED)
+        # left/right input
+        if keys[pygame.K_LEFT]:
+            self.direction.rotate_ip(-PLAYER_ROTATION_SPEED)
+        elif keys[pygame.K_RIGHT]:
+            self.direction.rotate_ip(PLAYER_ROTATION_SPEED)
 
     def get_angle_from_direction(self, axis):
         """Gets the angle for sprite rotation based on the direction
