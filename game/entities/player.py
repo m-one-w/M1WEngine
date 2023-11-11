@@ -208,7 +208,8 @@ class Player(Entity):
                         collision_count["right"] += 1
 
             # update self.direction based on direction with most collisions
-            self.collision_update_direction(max(collision_count))
+            most_collided_direction = max(collision_count, key=collision_count.get)
+            self.collision_update_direction(most_collided_direction)
 
     def collision_update_direction(self, collision_direction):
         """Changes self.direction based off of the collision_direction
@@ -222,19 +223,17 @@ class Player(Entity):
 
         # change self.direction value
         if collision_direction == "up":
-            # protection against edge case when self.status hasn't been updated
-            if self.direction.y < 0:
-                self.direction.y *= -1
+            self.direction.y = Direction.down.value
+            self.status = "down"
         elif collision_direction == "down":
-            if self.direction.y > 0:
-                self.direction.y *= -1
-
+            self.direction.y = Direction.up.value
+            self.status = "up"
         elif collision_direction == "left":
-            if self.direction.x < 0:
-                self.direction.x *= 1
+            self.direction.x = Direction.right.value
+            self.status = "right"
         elif collision_direction == "right":
-            if self.direction.x > 0:
-                self.direction.x *= -1
+            self.direction.x = Direction.left.value
+            self.status = "left"
 
     def update(self, enemy_sprites, friendly_sprites):
         """Update player behavior based on player input
