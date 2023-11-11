@@ -91,6 +91,9 @@ class Tile(pygame.sprite.Sprite):
             self.move_right(speed)
             self.movementTracker["horizontal"] += left
 
+        # align hitbox with the new position
+        self.hitbox.center = self.rect.center
+
     def move_left(self, speed):
         """Move to the left
 
