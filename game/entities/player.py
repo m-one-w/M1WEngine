@@ -259,4 +259,6 @@ class Player(Entity):
         self.set_status_by_curr_rotation()
         self.cooldowns()
         self.animate()
+        # a new direction may be set by the collision handler
+        self.collision_handler()
         self.move(self.speed)
