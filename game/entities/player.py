@@ -193,29 +193,18 @@ class Player(Entity):
         # if collisions are detected
         if collisions:
             for collisionIndex in collisions:
+                collided_sprite = obstacleSpritesList[collisionIndex]
                 # check status then add to appropriate collision direction
                 if self.status == "up" or self.status == "down":
-                    if (
-                        obstacleSpritesList[collisionIndex].hitbox.centery
-                        < self.hitbox.centery
-                    ):
+                    if collided_sprite.hitbox.centery < self.hitbox.centery:
                         collision_count["up"] += 1
-                    elif (
-                        obstacleSpritesList[collisionIndex].hitbox.centery
-                        > self.hitbox.centery
-                    ):
+                    elif collided_sprite.hitbox.centery > self.hitbox.centery:
                         collision_count["down"] += 1
 
                 if self.status == "left" or self.status == "right":
-                    if (
-                        obstacleSpritesList[collisionIndex].hitbox.centerx
-                        < self.hitbox.centerx
-                    ):
+                    if collided_sprite.hitbox.centerx < self.hitbox.centerx:
                         collision_count["left"] += 1
-                    elif (
-                        obstacleSpritesList[collisionIndex].hitbox.centerx
-                        > self.hitbox.centerx
-                    ):
+                    elif collided_sprite.hitbox.centerx > self.hitbox.centerx:
                         collision_count["right"] += 1
 
             # update self.direction based on direction with most collisions
