@@ -1,3 +1,4 @@
+from direction import Direction
 from tile import Tile
 from abc import (
     ABC,
@@ -33,6 +34,8 @@ class Entity(Tile, ABC):
         self.frameIndex = 0
         self.animationSpeed = 0.15
         self.speed = 0
+        self.compass.x = Direction.right.value
+        self.status = "right"
 
     @abstractmethod
     def collision_handler(self):

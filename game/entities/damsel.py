@@ -3,7 +3,6 @@ import random
 import time
 from filemanagement.spriteSheet import SpriteSheet
 from entities.entity import Entity
-from direction import Direction
 
 # consts for damsel
 SPRITE_WIDTH = 16
@@ -62,16 +61,9 @@ class Damsel(Entity):
         self.rect = self.image.get_rect(topleft=pos)
         # modify model rect to be a slightly less tall hitbox.
         self.hitbox = self.rect.inflate(0, -10)
-
-        self.speed = 0.5
         random.seed(time.time())
         self.timer = 100
-
         self.obstacle_sprites = obstacle_sprites
-
-        # starting position is facing down
-        self.compass.y = Direction.down.value
-        self.status = "down"
         self.import_damsel_assets()
 
     def import_damsel_assets(self):

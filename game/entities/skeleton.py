@@ -3,7 +3,6 @@ import random
 import time
 from filemanagement.spriteSheet import SpriteSheet
 from entities.entity import Entity
-from direction import Direction
 
 IMAGE_WIDTH = 48
 IMAGE_HEIGHT = 64
@@ -42,15 +41,10 @@ class Skeleton(Entity):
         self.attacking = False
         self.attackCooldown = 100
         self.attackTime = 0
-        self.speed = 0.5
         random.seed(time.time())
 
         self.obstacleSprites = obstacle_sprites
         self.timer = 100
-
-        # starting position is facing and running down
-        self.compass.y = Direction.down.value
-        self.status = "down"
         self.import_skeleton_assets()
 
     def import_skeleton_assets(self):
