@@ -93,46 +93,6 @@ class Skeleton(Entity):
             if "attack" in self.status:
                 self.status = self.status.replace("_attack", "")
 
-    def move(self, speed):
-        """Movement logic method
-
-        Handles movement logic. Currently random movement.
-        See documentation for actual movement logic.
-
-        Parameters
-        ----------
-        speed : int
-            Skeleton enemy's current speed. May be modified by items or by player.
-        """
-
-        self.timer += 1
-        # update direction every 100 ticks. Still moves every tick
-        if self.timer >= 10:
-            # update/randomize direction
-            # get random number
-            seed = random.randint(1, 1000)
-            # if odd turn left else right
-            if seed % 2:
-                self.compass.x = -1
-            else:
-                self.compass.x = 1
-            # if %3 false turn up else down
-            if seed % 3:
-                self.compass.y = -1
-            else:
-                self.compass.y = 1
-            self.timer = 0
-
-        # prevent diagonal moving from increasing speed
-        if self.compass.magnitude() != 0:
-            self.compass = self.compass.normalize()
-        # update
-        self.hitbox.x += self.compass.x * speed
-        self.collision_handler("horizontal")
-        self.hitbox.y += self.compass.y * speed
-        self.collision_handler("vertical")
-        self.rect.center = self.hitbox.center
-
     def animate(self):
         """Animation loop for the skeleton
 

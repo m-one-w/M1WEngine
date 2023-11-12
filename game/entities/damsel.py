@@ -82,45 +82,6 @@ class Damsel(Entity):
             "right": self.damselAnimations.load_strip(walkingRightRect, 3),
         }
 
-    def move(self, speed):
-        """Handles movement of the damsel
-
-        Movement logic is as described in documentation using current speed.
-
-        Parameters
-        ----------
-        speed : int
-            the multiplier for changing the sprite position.
-        """
-
-        self.timer += 1
-        # update direction every 100 ticks. Still moves every tick
-        if self.timer >= 10:
-            # update/randomize direction
-            # get random number
-            seed = random.randint(1, 1000)
-            # if odd turn left else right
-            if seed % 2:
-                self.compass.x = -1
-            else:
-                self.compass.x = 1
-            # if %3 false turn up else down
-            if seed % 3:
-                self.compass.y = -1
-            else:
-                self.compass.y = 1
-            self.timer = 0
-
-        # prevent diagonal moving from increasing speed
-        if self.compass.magnitude() != 0:
-            self.compass = self.compass.normalize()
-        # update hitbox based on move speed
-        self.hitbox.x += self.compass.x * speed
-        self.collision_handler("horizontal")
-        self.hitbox.y += self.compass.y * speed
-        self.collision_handler("vertical")
-        self.rect.center = self.hitbox.center
-
     def set_status_by_curr_direction(self):
         """Sets the correct status based on the current direction
 
