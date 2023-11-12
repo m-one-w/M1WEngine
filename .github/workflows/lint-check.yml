@@ -29,3 +29,7 @@ jobs:
       run: |
         pip install black
         black . --check
+    - name: Lint with pydocstyle
+      run: |
+        pip install pydocstyle
+        pydocstyle .

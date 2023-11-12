@@ -41,6 +41,10 @@ The project utilizes pygame as the main game engine.
 To ensure quality code is being committed to this project, the following linters are currently in use:
 * Flake8 is used for style guide quality ensurance.
 * Black python code formatter is used for formatting code consistently across developers and commits.
+* PyDocStyle is used to ensure proper documentation is present throughout the code base.
+
+There is a script "linter.sh" at the base of the repository that will run all of the above linters.
+Extension settings have been included to run this script on every save in the .vscode settings file.
 
 ### GitHub Actions
 On pull requests, a GitHub action will be run to lint commits being submitted for merging.
