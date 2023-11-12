@@ -32,6 +32,8 @@ class Tile(pygame.sprite.Sprite):
         Moves down
     update_movement_tracker(self)
         Tracks where to move
+    set_tile(self, x, y, surface)
+        sets all info for a background tile
     """
 
     # other init options: sprite_type, surface = pygame.Surface((TILESIZE, TILESIZE))
@@ -158,44 +160,18 @@ class Tile(pygame.sprite.Sprite):
         self.movementTracker["horizontal"] += self.compass.x
         self.movementTracker["vertical"] += self.compass.y
 
-
-class StaticTile(Tile):
-    """Cut a tileset into correct sprites"""
-
-    def __init__(self, group, x, y, surface):
-        """Initialize a static tile
+    def set_tile(self, x, y, surface):
+        """set the position and surface of a tile
 
         Parameters
         ----------
-        size: the filepath to find the tileset
-        x: the x location to render
-        y: the y location to render
-        surface: the :func:`Sprite<pygame.sprite.Sprite>` image to display
+        x: int
+            the x location to render
+        y: int
+            the y location to render
+        surface: pygame.surface
+            the :func:`Sprite<pygame.sprite.Sprite>` image to display
         """
-        super().__init__(group)
         self.image = surface
-        self.rect = self.image.get_rect(topleft=(x, y))
-        self.hitbox = self.rect
-
-
-class DynamicTile(Tile):
-    """Cut a tileset into correct sprites
-
-    Parameters
-    ----------
-    path: the filepath to find the tileset
-    """
-
-    def __init__(self, size, x, y):
-        """Initialize a dynamic tile
-
-        Parameters
-        ----------
-        size: the filepath to find the tileset
-        x: the x location to render
-        y: the y location to render
-        """
-        super().__init__(size, x, y)
-        self.image = pygame.Surface((size, size))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.hitbox = self.rect

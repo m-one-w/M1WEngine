@@ -3,7 +3,7 @@ from entities.player import Player
 from filemanagement.support import import_cut_graphic
 from entities.damsel import Damsel
 from entities.skeleton import Skeleton
-from tile import StaticTile
+from tile import Tile
 from filemanagement.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
 from cameraControl.cameraManager import CameraManager
@@ -138,7 +138,8 @@ class Level:
                     # val will be the terrain tile index
 
                     tile_surface = terrain_tile_list[int(val)]
-                    sprite = StaticTile(sprite_group, x, y, tile_surface)
+                    sprite = Tile(sprite_group)
+                    sprite.set_tile(x, y, tile_surface)
                     sprite.setColorKeyBlack()
                     sprite_group.add(sprite)
 
