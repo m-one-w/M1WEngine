@@ -51,11 +51,11 @@ class Level:
         self.extra_sprites = self.create_tile_group(extra_layout)
 
         # sprite groups
-        self.visible_sprites = pygame.sprite.Group()
         self.obstacle_sprites = pygame.sprite.Group()
         self.enemy_sprites = pygame.sprite.Group()
         self.friendly_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
+        self.player_group = pygame.sprite.GroupSingle()
 
         # add fence_sprites to obstacle_sprites
         self.obstacle_sprites.add(self.fence_sprites)
@@ -69,14 +69,15 @@ class Level:
         self.mixer.music.play(LOOP_MUSIC)
 
         self.create_entities_from_layout(character_layout)
-        self.visible_sprites.add(self.friendly_sprites)
-        self.visible_sprites.add(self.enemy_sprites)
 
         self.camera = CameraManager(self.player)
         self.camera.add(self.terrain_sprites)
         self.camera.add(self.plant_sprites)
         self.camera.add(self.fence_sprites)
         self.camera.add(self.extra_sprites)
+
+        self.camera.add(self.friendly_sprites)
+        self.camera.add(self.enemy_sprites)
 
     def create_entities_from_layout(self, layout):
         """Initialize the entities on a layout.
@@ -101,7 +102,7 @@ class Level:
                 if val == character_keys["player"]:
                     self.player = Player(
                         position,
-                        [self.visible_sprites],
+                        [self.player_group],
                         self.obstacle_sprites,
                     )
                 # initialize damsels
@@ -144,11 +145,12 @@ class Level:
     def run(self):
         """Draw and update all sprite groups"""
 
-        self.visible_sprites.update(self.enemy_sprites, self.friendly_sprites)
+        self.player_group.update(self.enemy_sprites, self.friendly_sprites)
         self.enemy_sprites.update(self.enemy_sprites, self.friendly_sprites)
+        self.friendly_sprites.update(self.enemy_sprites, self.friendly_sprites)
 
         # draw the game behind the player character
         self.camera.camera_update()
         self.camera.draw(self.display_surface)
         # draw the player chacter
-        self.visible_sprites.draw(self.display_surface)
+        self.player_group.draw(self.display_surface)
