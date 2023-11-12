@@ -146,13 +146,6 @@ class Player(Entity):
 
         self.image = self.set_image_rotation(animation[int(self.frameIndex)])
 
-    def cooldowns(self):
-        currentTime = pygame.time.get_ticks()
-
-        if self.attacking:
-            if currentTime - self.attackTime >= self.attackCooldown:
-                self.attacking = False
-
     def collision_handler(self):
         """Collision handler for entity
 
@@ -230,7 +223,6 @@ class Player(Entity):
         self.friendly_sprites = friendly_sprites
         self.input()
         self.set_status_by_curr_rotation()
-        self.cooldowns()
         self.animate()
         # a new direction may be set by the collision handler
         self.collision_handler()

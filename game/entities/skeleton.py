@@ -1,6 +1,4 @@
 import pygame
-import random
-import time
 from filemanagement.spriteSheet import SpriteSheet
 from entities.entity import Entity
 
@@ -38,13 +36,7 @@ class Skeleton(Entity):
         # this will be used for movement.
         self.hitbox = self.rect.inflate(0, SPRITE_HITBOX_OFFSET)
 
-        self.attacking = False
-        self.attackCooldown = 100
-        self.attackTime = 0
-        random.seed(time.time())
-
         self.obstacleSprites = obstacle_sprites
-        self.timer = 100
         self.import_skeleton_assets()
 
     def import_skeleton_assets(self):
@@ -71,55 +63,6 @@ class Skeleton(Entity):
             "right": self.skeletonAnimations.load_strip(walkingRightRect, IMAGE_COUNT),
         }
 
-    def get_status(self):
-        """Check current status and update status based on current
-
-        Checks whether entity is attacking. If yes, then stop movement, change status to
-        "attacking". If not attacking but status is still "attack" update status to be
-        attacking.
-        """
-
-        # attack animation
-        if self.attacking:
-            # no moving while attacking
-            self.compass.x = 0
-            self.compass.y = 0
-            if "attack" not in self.status:
-                if "idle" in self.status:
-                    self.status = self.status.replace("_idle", "_attack")
-                    self.status = self.status + "_attack"
-
-        else:
-            if "attack" in self.status:
-                self.status = self.status.replace("_attack", "")
-
-    def animate(self):
-        """Animation loop for the skeleton
-
-        Loops through the 3 images to show walking animation.
-        Works for each cardinal direction.
-        """
-
-        animation = self.animations[self.status]
-
-        self.frameIndex += self.animationSpeed
-
-        if self.frameIndex >= len(animation):
-            self.frameIndex = 0
-
-        self.image = animation[int(self.frameIndex)]
-
-    def cooldowns(self):
-        """Prevent entity from doing anything while it is attacking
-
-        This method prevents the entity from doing multiple actions while attacking.
-        """
-        currentTime = pygame.time.get_ticks()
-
-        if self.attacking:
-            if currentTime - self.attackTime >= self.attackCooldown:
-                self.attacking = False
-
     def collision_handler(self, direction):
         """Collision check for entity
 
@@ -131,29 +74,7 @@ class Skeleton(Entity):
         direction: str
             the axis to check for collisions on. It can be 'horizontal' or 'vertical'.
         """
-
-        # horizontal collision detection
-        if direction == "horizontal":
-            # look at all sprites
-            for sprite in self.obstacleSprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # check direction of collision
-                    if self.compass.x > 0:  # moving right
-                        self.hitbox.right = sprite.hitbox.left
-                    if self.compass.x < 0:  # moving left
-                        self.hitbox.left = sprite.hitbox.right
-        # vertical collision detection
-        if direction == "vertical":
-            # look at all sprites
-            for sprite in self.obstacleSprites:
-                # check if rects collide
-                if sprite.hitbox.colliderect(self.hitbox):
-                    # check direction of collision
-                    if self.compass.y < 0:  # moving up
-                        self.hitbox.top = sprite.hitbox.bottom
-                    if self.compass.y > 0:  # moving down
-                        self.hitbox.bottom = sprite.hitbox.top
+        return
 
     def update(self, enemy_sprites, friendly_sprites):
         """Updates skeleton behavior based on entities on the map
@@ -168,6 +89,5 @@ class Skeleton(Entity):
 
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites
-        self.get_status()
         self.animate()
         self.move(self.speed)
