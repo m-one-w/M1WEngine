@@ -165,4 +165,5 @@ class Player(Entity):
         self.animate()
         # a new direction may be set by the collision handler
         self.collision_handler()
+        # will move twice as fast as any other entity at the same speed due to camera.
         self.move(self.speed)
