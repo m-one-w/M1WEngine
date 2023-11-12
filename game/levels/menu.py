@@ -1,21 +1,20 @@
+"""This module contains the MainMenu class."""
 import pygame
 from settings import WINDOW_WIDTH
 from settings import MAIN_MENU_BACKGROUND_PATH
 
 
 class MainMenu:
-
-    """Main Menu Level
+    """Main Menu Level.
 
     This class will manage and load all sprites for the main menu level
     """
 
     # Contains game state and vars for the main menu
     def __init__(self):
-        """Constructor
+        """Construct the main menu class.
 
         This method will instantiate all required sprite groups for the main menu level
-
         """
         self.start_screen_path = "graphics/m1w-gaming.png"
         # load menu image
@@ -42,17 +41,18 @@ class MainMenu:
 
     # destructor that returns the main menu user input
     def __del__(self):
+        """Deconstructor for menu."""
         # return self.men
         pass
 
     def run(self):
-        """Draw and update all sprite groups"""
+        """Draw and update all sprite groups."""
         self.display_surface.blit(self.menu_image, (0, 0))
         self.draw_menu_options()
         self.menu_selection()
 
     def draw_menu_options(self):
-        """Draw and update all menu option sprite groups"""
+        """Draw and update all menu option sprite groups."""
         # get mouse position as tuple
         self.mouse = pygame.mouse.get_pos()
         # shade in button when mouse hovers over it
@@ -92,7 +92,7 @@ class MainMenu:
         self.text_increment = 50
 
     def menu_selection(self):
-        """Manage menu button interactions"""
+        """Manage menu button interactions."""
         # event to handle clicking on menu options
         self.text_increment = 50
         for event in pygame.event.get():

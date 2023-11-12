@@ -1,10 +1,10 @@
+"""This module contains the Tile class."""
 import pygame
 from direction import Direction
 
 
 class Tile(pygame.sprite.Sprite):
-
-    """Base class for all game :func:`Sprite<pygame.sprite.Sprite>`
+    """Base class for all game :func:`Sprite<pygame.sprite.Sprite>`.
 
     Attributes
     ----------
@@ -38,7 +38,7 @@ class Tile(pygame.sprite.Sprite):
 
     # other init options: sprite_type, surface = pygame.Surface((TILESIZE, TILESIZE))
     def __init__(self, groups):
-        """Initialize a tile
+        """Initialize a tile.
 
         Parameters
         ----------
@@ -53,15 +53,15 @@ class Tile(pygame.sprite.Sprite):
         self.colorKeyBlack = (0, 0, 0)
 
     def setColorKeyBlack(self):
-        """Set the sprite alpha channel to ignore black backgrounds"""
+        """Set the sprite alpha channel to ignore black backgrounds."""
         self.image.set_colorkey(self.colorKeyBlack, pygame.RLEACCEL)
 
     def setColorKeyWhite(self):
-        """Set the sprite alpha channel to ignore white backgrounds"""
+        """Set the sprite alpha channel to ignore white backgrounds."""
         self.image.set_colorkey(self.colorKeyWhite, pygame.RLEACCEL)
 
     def move(self, speed):
-        """Handles movement of the tile
+        """Handle movement of the tile.
 
         Updates position of the tile using current heading and speed.
 
@@ -70,7 +70,6 @@ class Tile(pygame.sprite.Sprite):
         speed : int
             the multiplier for changing the sprite position
         """
-
         # move each time a tracker is 1 or -1 and then reset the tracker
         self.update_movement_tracker()
 
@@ -97,71 +96,66 @@ class Tile(pygame.sprite.Sprite):
         self.hitbox.center = self.rect.center
 
     def move_left(self, speed):
-        """Move to the left
+        """Move to the left.
 
         Parameters
         ----------
         speed : int
             the multiplier for changing the sprite position
         """
-
         move_pixels_x = -1 * speed
         move_pixels_y = 0
         self.rect.move_ip(move_pixels_x, move_pixels_y)
 
     def move_right(self, speed):
-        """Move to the right
+        """Move to the right.
 
         Parameters
         ----------
         speed : int
             the multiplier for changing the sprite position
         """
-
         move_pixels_x = 1 * speed
         move_pixels_y = 0
         self.rect.move_ip(move_pixels_x, move_pixels_y)
 
     def move_up(self, speed):
-        """Move up
+        """Move up.
 
         Parameters
         ----------
         speed : int
             the multiplier for changing the sprite position
         """
-
         move_pixels_x = 0
         move_pixels_y = -1 * speed
         self.rect.move_ip(move_pixels_x, move_pixels_y)
 
     def move_down(self, speed):
-        """Move down
+        """Move down.
 
         Parameters
         ----------
         speed : int
             the multiplier for changing the sprite position
         """
-
         move_pixels_x = 0
         move_pixels_y = 1 * speed
         self.rect.move_ip(move_pixels_x, move_pixels_y)
 
     def update_movement_tracker(self):
-        """Update movement tracker
+        """Update movement tracker.
 
         Keeps tracker of how far the entity has moved without yet accounting for that
         movement. Each time a movement of 1 pixel is detected, the move will be made,
         and the tracker will be modified by that move distance in pixels towards 0.
         Speed can multiply the number of pixels moved at a time.
         """
-
         self.movementTracker["horizontal"] += self.compass.x
         self.movementTracker["vertical"] += self.compass.y
 
     def set_tile(self, x, y, surface):
-        """set the position and surface of a tile
+        """Set the position and surface of a tile.
 
         Parameters
         ----------

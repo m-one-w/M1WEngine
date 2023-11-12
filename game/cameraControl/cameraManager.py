@@ -1,9 +1,10 @@
+"""This module contains the CameraManager class."""
 import pygame
 
 
 class CameraManager(pygame.sprite.Group):
+    """Camera Manager class.
 
-    """Camera Manager
     This class will render each sprite in the game at an offset relative to the players
     x and y. As the positions are manipulated, there will be an illusion of camera
     movement.
@@ -29,14 +30,14 @@ class CameraManager(pygame.sprite.Group):
 
     # initialize all groups and their current positions
     def __init__(self, playerCharacter):
-        """Constructor
+        """Construct a CameraManager object.
+
         This method will instantiate the camera controller.
         A single camera controller should be used to manage all rendered sprites.
         Parameters
         ----------
         playerCharacter: the player character
         """
-
         super().__init__()
         surfaceX = 0
         surfaceY = 1
@@ -52,11 +53,14 @@ class CameraManager(pygame.sprite.Group):
         self.playerCharacter = playerCharacter
 
     def camera_update(self):
-        """camera_update
+        """Update the camera sprites.
+
         This method will set the direction of camera sprites to be the
         opposite direction of the player's heading.
+        Note that non-player entities will move at a slower speed than the player
+        due to being moved in the opposite direction of the player at the
+        player's speed.
         """
-
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             # offset = sprite.rect.topleft - self.offset
             prevDirection = sprite.compass

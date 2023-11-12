@@ -1,3 +1,4 @@
+"""This module contains the Player class."""
 import pygame
 from entities.entity import Entity
 from filemanagement.spriteSheet import SpriteSheet
@@ -14,16 +15,18 @@ SPRITE_HITBOX_OFFSET = -26
 
 
 class Player(Entity):
-
-    """Player class which contains the object players will directly control
+    """Player class which contains the object players will directly control.
 
     The player class will handle movement logic and sprite changing logic for the player
     object. The player class will also handle any collision logic that influences the
     player object.
-
     """
 
     def __init__(self, pos, groups, obstacle_sprites):
+        """Construct the player object.
+
+        Sets all required values to construct the player object.
+        """
         super().__init__(groups)
 
         # grab self image
@@ -44,6 +47,7 @@ class Player(Entity):
         self.import_player_asset()
 
     def import_player_asset(self):
+        """Set the player animation strips."""
         walkingUpRect = (0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT)
         walkingDownRect = (0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
         walkingLeftRect = (0, SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT)
@@ -61,7 +65,7 @@ class Player(Entity):
         }
 
     def input(self):
-        """Input function to handle keyboard input to the player class
+        """Input function to handle keyboard input to the player class.
 
         This function will handle turning the player object as input is received.
         """
@@ -75,6 +79,7 @@ class Player(Entity):
 
     # animation loop for the player
     def animate(self):
+        """Animate the sprite."""
         animation = self.animations[self.status]
 
         # loop over the frame index
@@ -86,7 +91,7 @@ class Player(Entity):
         self.image = self.set_image_rotation(animation[int(self.frameIndex)])
 
     def collision_handler(self):
-        """Collision handler for entity
+        """Collision handler for entity.
 
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
@@ -95,9 +100,7 @@ class Player(Entity):
         ----------
         direction: str
             the axis to check for collisions on. It can be 'horizontal' or 'vertical'.
-
         """
-
         collision_count = {"left": 0, "right": 0, "up": 0, "down": 0}
 
         # get list of sprites from obstacleSprites
@@ -128,15 +131,13 @@ class Player(Entity):
             self.collision_update_direction(most_collided_direction)
 
     def collision_update_direction(self, collision_direction):
-        """Changes self.direction based off of the collision_direction
+        """Change self.compass based off of the collision_direction.
 
         Parameters
         ----------
         collision_direction : str
             a string representing which direction the collision issue is taking place.
-
         """
-
         # change self.direction value
         if collision_direction == "up":
             self.compass.y = Direction.down.value
@@ -152,12 +153,10 @@ class Player(Entity):
             self.status = "left"
 
     def update(self, enemy_sprites, friendly_sprites):
-        """Update player behavior based on player input
+        """Update player behavior based on player input.
 
         Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
-
         """
-
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites
         self.input()

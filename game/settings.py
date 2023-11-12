@@ -1,3 +1,4 @@
+"""This module contains the general game settings."""
 # Screen dimensions
 WINDOW_SIZE = (1280, 720)
 WINDOW_WIDTH = WINDOW_SIZE[0]

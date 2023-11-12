@@ -1,9 +1,9 @@
+"""This module contains the Direction class."""
 from enum import Enum
 
 
 class Direction(Enum):
-
-    """Direction class which contains the enum of all possible directions
+    """Direction class which contains the enum of all possible directions.
 
     Attributes
     ----------

@@ -1,3 +1,4 @@
+"""This module contains the Debug game class."""
 import pygame
 
 pygame.init()
@@ -5,6 +6,7 @@ font = pygame.font.Font(None, 30)
 
 
 def debug(info, y=10, x=10):
+    """Debug method to run debug code."""
     display_surface = pygame.display.get_surface()
     debug_surf = font.render(str(info), True, "White")
     debug_rect = debug_surf.get_rect(topleft=(x, y))

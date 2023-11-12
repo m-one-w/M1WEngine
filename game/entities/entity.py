@@ -1,3 +1,4 @@
+"""This module contains the Entity class."""
 import pygame
 from direction import Direction
 from tile import Tile
@@ -8,8 +9,7 @@ from abc import (
 
 
 class Entity(Tile, ABC):
-
-    """Entity abstract class
+    """Entity abstract class.
 
     Base class for all entities including player, enemies, and damsels.
     ...
@@ -30,7 +30,7 @@ class Entity(Tile, ABC):
     """
 
     def __init__(self, groups):
-        """Initialize base class"""
+        """Initialize base class."""
         super().__init__(groups)
         self.frameIndex = 0
         self.animationSpeed = 0.15
@@ -39,12 +39,11 @@ class Entity(Tile, ABC):
         self.status = "right"
 
     def animate(self):
-        """Animation loop for the entity
+        """Animation loop for the entity.
 
         Loops through the images to show walking animation.
         Works for each cardinal direction.
         """
-
         animation = self.animations[self.status]
 
         self.frameIndex += self.animationSpeed
@@ -55,12 +54,11 @@ class Entity(Tile, ABC):
         self.image = animation[int(self.frameIndex)]
 
     def set_status_by_curr_rotation(self):
-        """Sets the correct status based on the current direction
+        """Set the correct status based on the current direction.
 
         This function inspects the current direction and determines
         what the status should be.
         """
-
         # -- xy | xy +-
         # -+ xy | xy ++
         if self.compass.x > 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
@@ -73,11 +71,10 @@ class Entity(Tile, ABC):
             self.status = "up"
 
     def get_angle_from_direction(self, axis):
-        """Gets the angle for sprite rotation based on the direction
+        """Get the angle for sprite rotation based on the direction.
 
         Angle returned will need to be inverted for 'down' and 'left'.
         """
-
         angle = 0
 
         if axis == "x":
@@ -88,13 +85,12 @@ class Entity(Tile, ABC):
         return -angle
 
     def set_image_rotation(self, image):
-        """Sets a new image to the correct rotation
+        """Set a new image to the correct rotation.
 
         Return the rotated image correlating to the correct rotation.
         Rotation is based on the status, so image rotations are defined by the
         current status.
         """
-
         angle = 0
 
         if self.status == "right":
@@ -110,7 +106,7 @@ class Entity(Tile, ABC):
 
     @abstractmethod
     def collision_handler(self):
-        """Handles the collision check for entities
+        """Handle the collision check for entities.
 
         This method should be implemented in any child classes that use it.
         The method should handle the following:
@@ -122,5 +118,4 @@ class Entity(Tile, ABC):
         direction : str
             the axis to check for a collision on
         """
-
         raise Exception("Not Implemented")

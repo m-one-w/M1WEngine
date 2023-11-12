@@ -1,3 +1,4 @@
+"""This module contains the Damsel class."""
 import pygame
 import random
 import time
@@ -10,10 +11,10 @@ SPRITE_HEIGHT = 20
 
 
 class Damsel(Entity):
-    """Damsel in distress that the player saves
-    Each damsel is initialized with their starting position,
-    which sprite groups it is part of, boundary sprites,
-    and enemy/interactable sprites.
+    """Damsel class to represent a good entity within the game.
+
+    Each damsel object that is spawned in will be hunted by enemy
+    sprites while the player character will try to save them.
     ...
 
     Methods
@@ -35,7 +36,7 @@ class Damsel(Entity):
     """
 
     def __init__(self, pos, groups, obstacle_sprites):
-        """Initialize a Damsel with level info
+        """Initialize a Damsel with level info.
 
         Each damsel is initialized with their starting position,
         which sprite groups it is part of, boundary sprites,
@@ -50,7 +51,6 @@ class Damsel(Entity):
             obstacle_sprites : list of sprite groups
                 which sprites in the level damsel cannot walk through
         """
-
         super().__init__(groups)
 
         damselMovementImagePath = "graphics/damsel/damselWalking.png"
@@ -67,8 +67,7 @@ class Damsel(Entity):
         self.import_damsel_assets()
 
     def import_damsel_assets(self):
-        """Initializes all animations from the image"""
-
+        """Initialize all animations from the image."""
         walkingUpRect = (0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT)
         walkingDownRect = (0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
         walkingLeftRect = (0, SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT)
@@ -83,20 +82,17 @@ class Damsel(Entity):
         }
 
     def collision_handler(self, direction):
-        """Method to handle interaction with environment
-
-        Parameter required for vertical and horizontal checking.
+        """Handle collision interactions with the environment.
 
         Parameters
         ----------
         direction : string
             used to determine horizontal/vertical check.
         """
-
         return
 
     def update(self, enemy_sprites, friendly_sprites):
-        """Updates damsel behavior based on entities on the map
+        """Update damsel behavior based on entities on the map.
 
         Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
 
@@ -105,7 +101,6 @@ class Damsel(Entity):
         enemy_sprites : pygame.sprite.Group()
             group of enemy entities used to for behavior
         """
-
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites
         self.animate()

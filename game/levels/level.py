@@ -1,3 +1,4 @@
+"""This module contains the Level class."""
 import pygame
 from entities.player import Player
 from filemanagement.support import import_cut_graphic
@@ -12,15 +13,13 @@ from levels.gameData import character_keys
 
 
 class Level:
-
-    """Level class
+    """Level class.
 
     The Level class will instantiate all objects required for a single level to run.
-
     """
 
     def __init__(self, surface):
-        """Constructor
+        """Construct the level class.
 
         This method will instantiate all required sprite groups for the current level
 
@@ -29,7 +28,6 @@ class Level:
         level_data: the game asset information for the current level
         surface: the surface to contain the game screen's full window
         """
-
         # display surface
         self.display_surface = surface
 
@@ -86,7 +84,6 @@ class Level:
         ----------
         layout: array of values each representing an individual entity
         """
-
         # default location of top left corner should never be used
         x = 0
         y = 0
@@ -121,7 +118,6 @@ class Level:
         type: indentifier to read in the correct graphics
 
         """
-
         sprite_group = pygame.sprite.Group()
         for row_index, row in enumerate(layout):
             for col_index, val in enumerate(row):
@@ -143,8 +139,7 @@ class Level:
         return sprite_group
 
     def run(self):
-        """Draw and update all sprite groups"""
-
+        """Draw and update all sprite groups."""
         self.player_group.update(self.enemy_sprites, self.friendly_sprites)
         self.enemy_sprites.update(self.enemy_sprites, self.friendly_sprites)
         self.friendly_sprites.update(self.enemy_sprites, self.friendly_sprites)
