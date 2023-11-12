@@ -67,24 +67,6 @@ class Player(Entity):
             "right": self.playerAnimations.load_strip(walkingRightRect, IMAGE_COUNT),
         }
 
-    def set_status_by_curr_rotation(self):
-        """Sets the correct status based on the current direction
-
-        This function inspects the current direction and determines
-        what the status should be.
-
-        """
-        # -- xy | xy +-
-        # -+ xy | xy ++
-        if self.compass.x > 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
-            self.status = "right"
-        if self.compass.x < 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
-            self.status = "left"
-        if self.compass.y > 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
-            self.status = "down"
-        if self.compass.y < 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
-            self.status = "up"
-
     def input(self):
         """Input function to handle keyboard input to the player class
 
@@ -97,42 +79,6 @@ class Player(Entity):
             self.compass.rotate_ip(-PLAYER_ROTATION_SPEED)
         elif keys[pygame.K_RIGHT]:
             self.compass.rotate_ip(PLAYER_ROTATION_SPEED)
-
-    def get_angle_from_direction(self, axis):
-        """Gets the angle for sprite rotation based on the direction
-
-        Angle returned will need to be inverted for 'down' and 'left'.
-
-        """
-        angle = 0
-
-        if axis == "x":
-            angle = self.compass.y * 45
-        if axis == "y":
-            angle = self.compass.x * 45
-
-        return -angle
-
-    def set_image_rotation(self, image):
-        """Sets a new image to the correct rotation
-
-        Return the rotated image correlating to the correct rotation.
-        Rotation is based on the status, so image rotations are defined by the
-        current status.
-
-        """
-        angle = 0
-
-        if self.status == "right":
-            angle = self.get_angle_from_direction("x")
-        if self.status == "left":
-            angle = -self.get_angle_from_direction("x")
-        if self.status == "up":
-            angle = self.get_angle_from_direction("y")
-        if self.status == "down":
-            angle = -self.get_angle_from_direction("y")
-
-        return pygame.transform.rotate(image, angle)
 
     # animation loop for the player
     def animate(self):
