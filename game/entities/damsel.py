@@ -139,7 +139,6 @@ class Damsel(Entity):
             self.frameIndex = 0
 
         self.image = self.set_image_direction(animation[int(self.frameIndex)])
-        self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def collision_handler(self, direction):
         """Method to handle interaction with environment

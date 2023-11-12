@@ -108,7 +108,6 @@ class Skeleton(Entity):
             self.frameIndex = 0
 
         self.image = animation[int(self.frameIndex)]
-        self.rect = self.image.get_rect(center=self.hitbox.center)
 
     def cooldowns(self):
         """Prevent entity from doing anything while it is attacking
