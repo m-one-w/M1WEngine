@@ -68,9 +68,6 @@ class Level:
         )
         self.mixer.music.play(LOOP_MUSIC)
 
-        # map size in number of 16 pixels = (20x, 20y size)
-        self.map_size = pygame.math.Vector2(80, 80)
-
         self.create_entities_from_layout(character_layout)
         self.visible_sprites.add(self.friendly_sprites)
         self.visible_sprites.add(self.enemy_sprites)
@@ -106,7 +103,6 @@ class Level:
                         position,
                         [self.visible_sprites],
                         self.obstacle_sprites,
-                        self.map_size,
                     )
                 # initialize damsels
                 elif val == character_keys["damsel"]:

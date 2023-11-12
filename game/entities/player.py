@@ -23,7 +23,7 @@ class Player(Entity):
 
     """
 
-    def __init__(self, pos, groups, obstacle_sprites, map_size):
+    def __init__(self, pos, groups, obstacle_sprites):
         super().__init__(groups)
 
         # grab self image
@@ -34,20 +34,13 @@ class Player(Entity):
         self.setColorKeyBlack()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, SPRITE_HITBOX_OFFSET)
-        self.mapSize = pygame.math.Vector2(map_size)
 
-        # movement
         # speed can be any integer
-        self.speed = 1
         self.attacking = False
         self.attackCooldown = 400
         self.attackTime = 0
 
         self.obstacleSprites = obstacle_sprites
-
-        # starting position is running north
-        self.compass.x = Direction.right.value
-        self.status = "right"
         self.import_player_asset()
 
     def import_player_asset(self):
