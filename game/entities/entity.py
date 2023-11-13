@@ -38,6 +38,11 @@ class Entity(Tile, ABC):
         self.compass.x = Direction.right.value
         self.status = "right"
 
+        # damsels
+        self.good_sprites = pygame.sprite.Group()
+        # skeletons
+        self.bad_sprites = pygame.sprite.Group()
+
     def animate(self):
         """Animation loop for the entity.
 
@@ -103,6 +108,14 @@ class Entity(Tile, ABC):
             angle = -self.get_angle_from_direction("y")
 
         return pygame.transform.rotate(image, angle)
+
+    def set_bad_sprites(self, bad_sprites: pygame.sprite.Group):
+        """Set bad_sprites."""
+        self.bad_sprites = bad_sprites
+
+    def set_good_sprites(self, good_sprites: pygame.sprite.Group):
+        """Set good_sprites."""
+        self.good_sprites = good_sprites
 
     @abstractmethod
     def collision_handler(self):

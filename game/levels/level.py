@@ -109,6 +109,13 @@ class Level:
                 elif val == character_keys["skeleton"]:
                     Skeleton(position, self.enemy_sprites, self.obstacle_sprites)
 
+        for entity in self.friendly_sprites:
+            entity.set_bad_sprites(self.enemy_sprites)
+
+        for entity in self.enemy_sprites:
+            entity.set_good_sprites(self.friendly_sprites)
+            entity.set_player(self.player)
+
     def create_tile_group(self, layout):
         """Create the :func:`Sprite group<pygame.sprite.Group>` for a layout.
 
