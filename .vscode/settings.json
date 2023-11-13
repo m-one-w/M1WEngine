@@ -1,0 +1,16 @@
+{
+    "workbench.colorTheme": "Default Dark+",
+    "[python]": {
+        "editor.formatOnType": true
+    },
+    "editor.renderWhitespace": "all",
+    "emeraldwalk.runonsave": {
+        
+        "commands": [
+            {
+                "match": ".py",
+                "cmd": "${workspaceFolder}/linter.sh"
+            }
+     ]
+    }
+}
