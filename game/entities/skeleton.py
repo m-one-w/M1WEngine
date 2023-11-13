@@ -1,9 +1,11 @@
 """This module contains the Skeleton class."""
+from enum import Enum
 import math
 import sys
 import pygame
 from filemanagement.spriteSheet import SpriteSheet
 from entities.entity import Entity
+from settings import TILESIZE
 
 IMAGE_WIDTH = 48
 IMAGE_HEIGHT = 64
@@ -26,6 +28,9 @@ class Skeleton(Entity):
         """Construct the skeleton class."""
         super().__init__(groups)
 
+        # init empty player
+        self.player = pygame.sprite.Sprite()
+
         # grab self image
         skeletonMovementsPath = "graphics/skeleton/skeleton.png"
         self.skeletonAnimations = SpriteSheet(skeletonMovementsPath)
@@ -39,9 +44,21 @@ class Skeleton(Entity):
         # modify model rect to be a slightly less tall hitbox.
         # this will be used for movement.
         self.hitbox = self.rect.inflate(0, SPRITE_HITBOX_OFFSET)
+        # TODO: find sweet spot inflation size for radar detection
+        inflation_size = 20
+        self.radar = self.rect.inflate(
+            TILESIZE * inflation_size, TILESIZE * inflation_size
+        )
 
         self.obstacleSprites = obstacle_sprites
         self.import_skeleton_assets()
+
+        # the skeleton is attacking
+        self.sprite_to_attack = pygame.sprite.Sprite()
+
+        # setting up state machine
+        self.states = Enum("skeleton_state", ["Patrol", "Attack", "Flee"])
+        self.current_state = self.states.Patrol
 
     def import_skeleton_assets(self):
         """Import and divide the animation image into it's smaller parts.
