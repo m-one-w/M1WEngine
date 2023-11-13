@@ -60,6 +60,10 @@ class Skeleton(Entity):
         self.states = Enum("skeleton_state", ["Patrol", "Attack", "Flee"])
         self.current_state = self.states.Patrol
 
+    def set_player(self, player):
+        """Set skeleton's player."""
+        self.player = player
+
     def import_skeleton_assets(self):
         """Import and divide the animation image into it's smaller parts.
 
