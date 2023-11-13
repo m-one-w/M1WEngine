@@ -275,4 +275,4 @@ class Skeleton(Entity):
         self.friendly_sprites = friendly_sprites
         self.animate()
         # will move half as fast as player at the same speed
-        self.move(self.speed)
+        self.automate_movement()
