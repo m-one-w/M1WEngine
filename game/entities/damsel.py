@@ -29,7 +29,7 @@ class Damsel(Entity):
         Updates the image sprite based on the current direction.
     animate(self)
         Controls animation loop.
-    collision_check(self, direction)
+    collision_handler(self)
         Handles interaction with environment.
     update(self)
         Update damsel with current game state information.
@@ -81,7 +81,7 @@ class Damsel(Entity):
             "right": self.damselAnimations.load_strip(walkingRightRect, 3),
         }
 
-    def collision_handler(self, direction):
+    def collision_handler(self):
         """Handle collision interactions with the environment.
 
         Parameters
