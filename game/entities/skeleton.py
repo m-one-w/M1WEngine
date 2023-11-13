@@ -261,7 +261,9 @@ class Skeleton(Entity):
         """Handle collision interactions with environment."""
         return
 
-    def update(self, enemy_sprites, friendly_sprites):
+    def update(
+        self, enemy_sprites: pygame.sprite.Group, friendly_sprites: pygame.sprite.Group
+    ):
         """Update skeleton behavior based on entities on the map.
 
         Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
