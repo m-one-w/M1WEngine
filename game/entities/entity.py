@@ -109,6 +109,34 @@ class Entity(Tile, ABC):
 
         return pygame.transform.rotate(image, angle)
 
+    def set_image_direction(self, image):
+        """Set a new image to the correct cardinal direction.
+
+        Return the image correlating to the correct cardinal direction.
+
+        Parameters
+        ----------
+        image : png file
+            image facing the current direction that will be displayed
+        """
+        if self.status == "right":
+            self.compass.x = 1
+            compass = "x"
+        if self.status == "left":
+            self.compass.x = -1
+            compass = "x"
+        if self.status == "up":
+            self.compass.y = -1
+            compass = "y"
+        if self.status == "down":
+            self.compass.y = 1
+            compass = "y"
+
+        if compass == "y":
+            return pygame.transform.rotate(image, self.compass.y)
+        if compass == "x":
+            return pygame.transform.rotate(image, self.compass.x)
+
     def set_bad_sprites(self, bad_sprites: pygame.sprite.Group):
         """Set bad_sprites."""
         self.bad_sprites = bad_sprites
