@@ -1,7 +1,12 @@
 """This module contains the Entity class."""
+from enum import Enum
+import math
+import sys
 import pygame
 from direction import Direction
+from filemanagement.spriteSheet import SpriteSheet
 from tile import Tile
+import settings
 from abc import (
     ABC,
     abstractmethod,
@@ -12,21 +17,38 @@ class Entity(Tile, ABC):
     """Entity abstract class.
 
     Base class for all entities including player, enemies, and damsels.
-    ...
 
     Attributes
     ----------
     frameIndex : int
-        the currently shown frame represented by an index
+        The currently shown frame represented by an index
     animationSpeed : int
-        the speed at which animations run
+        The speed at which animations run
     speed : int
-        the speed at which the sprite moves
+        The speed at which the sprite moves
 
     Methods
     -------
-    collision_check(self, direction)
-        Handles the collision check for entities
+    set_sprite_sheet(self, path: str)
+        Create sprite sheet from path
+    import_assets(self)
+        Import images into smaller images
+    animate(self)
+        Animation loop for entity
+    set_status_by_current_rotation(self)
+        Set status per current direction
+    get_angle_from_direction(self, axis: str)
+        Get the angle for sprite rotation per compass direction
+    set_bad_sprites(self, bad_sprites: pygame.sprite.Group)
+        Set the bad sprites group
+    set_good_sprites(self, good_sprites: pygame.sprite.Group)
+        Set the good sprites group
+    set_image_rotation(self, image: pygame.Surface) -> pygame.Surface
+        Rotate image per compass direction
+    set_player(self, player: pygame.Sprite)
+        Set the player
+    collision_handler(self)
+        Handle the collision check for entities
     """
 
     def __init__(self, groups):
@@ -43,20 +65,72 @@ class Entity(Tile, ABC):
         # skeletons
         self.bad_sprites = pygame.sprite.Group()
 
-    def animate(self):
+        # init empty player
+        self.player = pygame.sprite.Sprite()
+
+        # setting up state machine
+        self.states = Enum("skeleton_state", ["Patrol", "Attack", "Flee", "Follow"])
+        self.current_state = self.states.Patrol
+
+        # the skeleton is attacking
+        self.sprite_to_attack = pygame.sprite.Sprite()
+
+    def get_sprite_sheet(self, path: str):
+        """Create sprite sheet from path."""
+        return SpriteSheet(path)
+
+    def import_assets(self):
+        """Import and divide the animation image into it's smaller parts.
+
+        Called at end of :func:'init()', takes the image with all character animations
+        and divides it into its sub-images. Can be expanded with more images to fulfill
+        idle and attack animations.
+        """
+        walkingUpRect = (
+            0,
+            settings.ENTITY_HEIGHT * 3,
+            settings.ENTITY_WIDTH,
+            settings.ENTITY_HEIGHT,
+        )
+        walkingDownRect = (0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT)
+        walkingLeftRect = (
+            0,
+            settings.ENTITY_HEIGHT,
+            settings.ENTITY_WIDTH,
+            settings.ENTITY_HEIGHT,
+        )
+        walkingRightRect = (
+            0,
+            settings.ENTITY_HEIGHT * 2,
+            settings.ENTITY_WIDTH,
+            settings.ENTITY_HEIGHT,
+        )
+
+        # number of images for each directional animation
+        IMAGE_COUNT = 3
+
+        # animation states in dictionary
+        self.animations = {
+            "up": self.sprite_sheet.load_strip(walkingUpRect, IMAGE_COUNT),
+            "down": self.sprite_sheet.load_strip(walkingDownRect, IMAGE_COUNT),
+            "left": self.sprite_sheet.load_strip(walkingLeftRect, IMAGE_COUNT),
+            "right": self.sprite_sheet.load_strip(walkingRightRect, IMAGE_COUNT),
+        }
+
+    def animate(self) -> pygame.Surface:
         """Animation loop for the entity.
 
         Loops through the images to show walking animation.
         Works for each cardinal direction.
         """
-        animation = self.animations[self.status]
+        animationStrip = self.animations[self.status]
 
         self.frameIndex += self.animationSpeed
 
-        if self.frameIndex >= len(animation):
+        if self.frameIndex >= len(animationStrip):
             self.frameIndex = 0
 
-        self.image = animation[int(self.frameIndex)]
+        return animationStrip[int(self.frameIndex)]
 
     def set_status_by_curr_rotation(self):
         """Set the correct status based on the current direction.
@@ -89,6 +163,26 @@ class Entity(Tile, ABC):
 
         return -angle
 
+    def set_bad_sprites(self, bad_sprites: pygame.sprite.Group):
+        """Set bad_sprites."""
+        self.bad_sprites = bad_sprites
+
+    def set_good_sprites(self, good_sprites: pygame.sprite.Group):
+        """Set good_sprites."""
+        self.good_sprites = good_sprites
+
+    def get_distance(self, coords: tuple) -> float:
+        """Return the hypotenuse/distance away from another entity.
+
+        Parameters
+        ----------
+        coords: tuple
+            Coordinates of the entity we are testing
+        """
+        x = 0
+        y = 1
+        return math.hypot(coords[x] - self.rect[x], coords[y] - self.rect[y])
+
     def set_image_rotation(self, image):
         """Set a new image to the correct rotation.
 
@@ -109,41 +203,128 @@ class Entity(Tile, ABC):
 
         return pygame.transform.rotate(image, angle)
 
-    def set_image_direction(self, image):
-        """Set a new image to the correct cardinal direction.
+    def move_based_on_state(self):
+        """Logic to determine which _movement() method to call."""
+        if self.current_state == self.states.Attack:
+            self.attack_movement()
 
-        Return the image correlating to the correct cardinal direction.
+        elif self.current_state == self.states.Flee:
+            self.flee_movement()
+
+        elif self.current_state == self.states.Patrol:
+            self.patrol_movement()
+
+    def radar_detect_player_entity(self, set_active_state, set_passive_state):
+        """Check whether player is within our radar."""
+        # set state to 'Flee' if player detected
+        collision = self.radar.colliderect(self.player)
+        # if player on radar, set state
+        if collision:
+            if self.current_state != self.states.Flee:
+                # set state when player detected
+                set_active_state()
+        else:
+            if (
+                self.current_state != self.states.Attack
+                and self.current_state != self.states.Patrol
+            ):
+                # set state when no player detected
+                set_passive_state()
+
+    def radar_detect_good_entities(self, set_active_state, set_passive_state):
+        """Set state and selects which good_sprite to attack.
+
+        Depending on what we detect on the radar, set the state of the skeleton.
+        if good sprite is detected on radar, set state to "Attacking".
+        """
+        # good_sprites as a list of sprites, not a Group of sprites
+        goodSpriteGroupList = self.good_sprites.sprites()
+        # list of all damsel collisions
+        collisions = self.radar.collidelistall(goodSpriteGroupList)
+
+        # if there is an entity inside our radar
+        if collisions:
+            current_min_distance = float(sys.maxsize)
+            indexOfClosest = -1
+
+            # get list of rect tuple coordinates
+            for collisionIndex in collisions:
+                # get the coordinates of detected good_sprite
+                coord = goodSpriteGroupList[collisionIndex].rect.center
+                # distance between skeleton and entity on radar
+                distance = self.get_distance(coord)
+                # track if entity is closest to skeleton
+                old_min = current_min_distance
+                current_min_distance = min(distance, current_min_distance)
+                # if current entity on radar is new closest entity
+                if current_min_distance < old_min:
+                    indexOfClosest = collisionIndex
+
+            # set sprite_to_attack to closest sprite IF something detected
+            if indexOfClosest != -1:
+                self.sprite_to_attack = goodSpriteGroupList[indexOfClosest]
+                if self.current_state != self.states.Attack:
+                    # function for setting the active state
+                    set_active_state()
+
+        else:
+            # else we are not attacking
+            if self.current_state == self.states.Attack:
+                # function for setting passive state
+                set_passive_state()
+
+    def patrol_movement(self):
+        """Move in random direction."""
+        # TODO: finish movement logic
+        if self.current_state == self.states.Patrol:
+            # down direction
+            self.compass.x = 0
+            self.compass.y = -1
+
+            self.move(self.speed)
+
+    def flee_movement(self):
+        """Change direction based on where player is."""
+        if self.current_state == self.states.Flee:
+            self.compass = self.player.compass
+            self.move(self.speed)
+
+    def attack_movement(self):
+        """Change compass based on where good_sprite is."""
+        if self.current_state == self.states.Attack:
+            if self.rect.x < self.sprite_to_attack.rect.x:
+                self.move_right(self.speed)
+            elif self.rect.x > self.sprite_to_attack.rect.x:
+                self.move_left(self.speed)
+
+            if self.rect.y < self.sprite_to_attack.rect.y:
+                self.move_down(self.speed)
+            elif self.rect.y > self.sprite_to_attack.rect.y:
+                self.move_up(self.speed)
+
+            self.compass.x = self.sprite_to_attack.compass.x
+
+    def set_state_patrol(self):
+        """Set state machine to 'Patrol'."""
+        self.current_state = self.states.Patrol
+
+    def set_state_attack(self):
+        """Set state machine to 'Attack'."""
+        self.current_state = self.states.Attack
+
+    def set_state_flee(self):
+        """Set stae machine to 'Flee'."""
+        self.current_state = self.states.Flee
+
+    def set_player(self, player):
+        """Set the player for the entity to track.
 
         Parameters
         ----------
-        image : png file
-            image facing the current direction that will be displayed
+        player: pygame.sprite
+            Player sprite to track
         """
-        if self.status == "right":
-            self.compass.x = 1
-            compass = "x"
-        if self.status == "left":
-            self.compass.x = -1
-            compass = "x"
-        if self.status == "up":
-            self.compass.y = -1
-            compass = "y"
-        if self.status == "down":
-            self.compass.y = 1
-            compass = "y"
-
-        if compass == "y":
-            return pygame.transform.rotate(image, self.compass.y)
-        if compass == "x":
-            return pygame.transform.rotate(image, self.compass.x)
-
-    def set_bad_sprites(self, bad_sprites: pygame.sprite.Group):
-        """Set bad_sprites."""
-        self.bad_sprites = bad_sprites
-
-    def set_good_sprites(self, good_sprites: pygame.sprite.Group):
-        """Set good_sprites."""
-        self.good_sprites = good_sprites
+        self.player = player
 
     @abstractmethod
     def collision_handler(self):
@@ -153,10 +334,5 @@ class Entity(Tile, ABC):
         The method should handle the following:
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
-
-        Parameters
-        ----------
-        direction : str
-            the axis to check for a collision on
         """
         raise Exception("Not Implemented")

@@ -2,12 +2,8 @@
 import pygame
 import random
 import time
-from filemanagement.spriteSheet import SpriteSheet
 from entities.entity import Entity
-
-# consts for damsel
-SPRITE_WIDTH = 16
-SPRITE_HEIGHT = 20
+import settings
 
 
 class Damsel(Entity):
@@ -15,20 +11,9 @@ class Damsel(Entity):
 
     Each damsel object that is spawned in will be hunted by enemy
     sprites while the player character will try to save them.
-    ...
 
     Methods
     -------
-    import_damsel_assets(self)
-        Handles importing damsel assets.
-    move(self, speed)
-        Handles movement of the damsel
-    set_status_by_curr_direction(self)
-        Updates state based on movement logic.
-    set_image_direction(self, image)
-        Updates the image sprite based on the current direction.
-    animate(self)
-        Controls animation loop.
     collision_handler(self)
         Handles interaction with environment.
     update(self)
@@ -54,9 +39,11 @@ class Damsel(Entity):
         super().__init__(groups)
 
         damselMovementImagePath = "graphics/damsel/damselWalking.png"
-        self.damselAnimations = SpriteSheet(damselMovementImagePath)
-        damselSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        self.image = self.damselAnimations.image_at(damselSelfImageRect)
+        self.sprite_sheet = self.get_sprite_sheet(damselMovementImagePath)
+        damselSelfImageRect = pygame.Rect(
+            0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
+        )
+        self.image = self.sprite_sheet.image_at(damselSelfImageRect)
         self.setColorKeyWhite()
         self.rect = self.image.get_rect(topleft=pos)
         # modify model rect to be a slightly less tall hitbox.
@@ -64,22 +51,7 @@ class Damsel(Entity):
         random.seed(time.time())
         self.timer = 100
         self.obstacle_sprites = obstacle_sprites
-        self.import_damsel_assets()
-
-    def import_damsel_assets(self):
-        """Initialize all animations from the image."""
-        walkingUpRect = (0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT)
-        walkingDownRect = (0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        walkingLeftRect = (0, SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT)
-        walkingRightRect = (0, SPRITE_HEIGHT * 2, SPRITE_WIDTH, SPRITE_HEIGHT)
-
-        # animation states in dictionary
-        self.animations = {
-            "up": self.damselAnimations.load_strip(walkingUpRect, 3),
-            "down": self.damselAnimations.load_strip(walkingDownRect, 3),
-            "left": self.damselAnimations.load_strip(walkingLeftRect, 3),
-            "right": self.damselAnimations.load_strip(walkingRightRect, 3),
-        }
+        self.import_assets()
 
     def collision_handler(self):
         """Handle collision interactions with the environment.
@@ -103,6 +75,7 @@ class Damsel(Entity):
         """
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites
-        self.animate()
+        self.set_status_by_curr_rotation()
+        self.image = self.animate()
         # will move half as fast as player at the same speed
         self.move(self.speed)

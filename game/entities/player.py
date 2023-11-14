@@ -1,17 +1,11 @@
 """This module contains the Player class."""
 import pygame
 from entities.entity import Entity
-from filemanagement.spriteSheet import SpriteSheet
 from direction import Direction
+import settings
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5
-
-SPRITE_WIDTH = 16
-SPRITE_HEIGHT = 20
-
-# modify model rect to have slightly less tall hitbox. Used for movement
-SPRITE_HITBOX_OFFSET = -26
 
 
 class Player(Entity):
@@ -31,12 +25,14 @@ class Player(Entity):
 
         # grab self image
         playerMovementsPath = "graphics/player/playerWalking.png"
-        self.playerAnimations = SpriteSheet(playerMovementsPath)
-        playerSelfImageRect = pygame.Rect(0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        self.image = self.playerAnimations.image_at(playerSelfImageRect)
+        self.sprite_sheet = self.get_sprite_sheet(playerMovementsPath)
+        playerSelfImageRect = pygame.Rect(
+            0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
+        )
+        self.image = self.sprite_sheet.image_at(playerSelfImageRect)
         self.setColorKeyBlack()
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, SPRITE_HITBOX_OFFSET)
+        self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
 
         # speed can be any integer
         self.attacking = False
@@ -44,25 +40,7 @@ class Player(Entity):
         self.attackTime = 0
 
         self.obstacleSprites = obstacle_sprites
-        self.import_player_asset()
-
-    def import_player_asset(self):
-        """Set the player animation strips."""
-        walkingUpRect = (0, SPRITE_HEIGHT * 3, SPRITE_WIDTH, SPRITE_HEIGHT)
-        walkingDownRect = (0, 0, SPRITE_WIDTH, SPRITE_HEIGHT)
-        walkingLeftRect = (0, SPRITE_HEIGHT, SPRITE_WIDTH, SPRITE_HEIGHT)
-        walkingRightRect = (0, SPRITE_HEIGHT * 2, SPRITE_WIDTH, SPRITE_HEIGHT)
-
-        # number of images for each directional animation
-        IMAGE_COUNT = 3
-
-        # animation states in dictionary
-        self.animations = {
-            "up": self.playerAnimations.load_strip(walkingUpRect, IMAGE_COUNT),
-            "down": self.playerAnimations.load_strip(walkingDownRect, IMAGE_COUNT),
-            "left": self.playerAnimations.load_strip(walkingLeftRect, IMAGE_COUNT),
-            "right": self.playerAnimations.load_strip(walkingRightRect, IMAGE_COUNT),
-        }
+        self.import_assets()
 
     def input(self):
         """Input function to handle keyboard input to the player class.
@@ -77,29 +55,11 @@ class Player(Entity):
         elif keys[pygame.K_RIGHT]:
             self.compass.rotate_ip(PLAYER_ROTATION_SPEED)
 
-    # animation loop for the player
-    def animate(self):
-        """Animate the sprite."""
-        animation = self.animations[self.status]
-
-        # loop over the frame index
-        self.frameIndex += self.animationSpeed
-
-        if self.frameIndex >= len(animation):
-            self.frameIndex = 0
-
-        self.image = self.set_image_rotation(animation[int(self.frameIndex)])
-
     def collision_handler(self):
         """Collision handler for entity.
 
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
-
-        Parameters
-        ----------
-        direction: str
-            the axis to check for collisions on. It can be 'horizontal' or 'vertical'.
         """
         collision_count = {"left": 0, "right": 0, "up": 0, "down": 0}
 
@@ -161,7 +121,8 @@ class Player(Entity):
         self.friendly_sprites = friendly_sprites
         self.input()
         self.set_status_by_curr_rotation()
-        self.animate()
+        image = self.animate()
+        self.image = self.set_image_rotation(image)
         # a new direction may be set by the collision handler
         self.collision_handler()
         # will move twice as fast as any other entity at the same speed due to camera.
