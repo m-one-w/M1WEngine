@@ -44,12 +44,12 @@ class Damsel(Entity):
 
         Parameters
         ----------
-            pos : Tuple
-                starting x, y coordinates
-            groups : list of sprite groups
-                which groups in level it is a part of
-            obstacle_sprites : list of sprite groups
-                which sprites in the level damsel cannot walk through
+        pos : Tuple
+            starting x, y coordinates
+        groups : list of sprite groups
+            which groups in level it is a part of
+        obstacle_sprites : list of sprite groups
+            which sprites in the level damsel cannot walk through
         """
         super().__init__(groups)
 
