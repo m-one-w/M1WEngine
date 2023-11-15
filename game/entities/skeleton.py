@@ -85,7 +85,10 @@ class Skeleton(Entity):
 
     def collision_handler(self):
         """Handle collision interactions with environment."""
-        return
+        collisions = self.rect.colliderect(self.player.hitbox)
+
+        if collisions:
+            self.die()
 
     def update(
         self, enemy_sprites: pygame.sprite.Group, friendly_sprites: pygame.sprite.Group
@@ -105,5 +108,6 @@ class Skeleton(Entity):
         self.friendly_sprites = friendly_sprites
         self.set_status_by_curr_rotation()
         self.image = self.animate()
+        self.collision_handler()
         # will move half as fast as player at the same speed
         self.automate_movement()
