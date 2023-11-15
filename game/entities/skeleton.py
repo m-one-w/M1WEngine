@@ -54,7 +54,7 @@ class Skeleton(Entity):
         # this will be used for movement.
         self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
         # TODO: find sweet spot inflation size for radar detection
-        inflation_size = 20
+        inflation_size = 8
         self.radar = self.rect.inflate(
             settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
         )
