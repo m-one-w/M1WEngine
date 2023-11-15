@@ -70,6 +70,7 @@ class Skeleton(Entity):
         """
         # update radar with new pos
         self.radar.center = self.rect.center
+        # always patrol when no radar detections
         passive_state = self.set_state_patrol
 
         # change state if player is nearby

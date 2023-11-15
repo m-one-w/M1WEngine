@@ -286,7 +286,10 @@ class Entity(Tile, ABC):
     def flee_movement(self):
         """Change direction based on where player is."""
         if self.current_state == self.states.Flee:
-            self.compass = self.player.compass
+            if self.facing_towards_entity(self.player):
+                self.compass = self.player.compass
+
+            # move according to the compass direction
             self.move(self.speed)
 
     def attack_movement(self):
@@ -325,6 +328,42 @@ class Entity(Tile, ABC):
             Player sprite to track
         """
         self.player = player
+
+    def facing_towards_entity(self, other_sprite):
+        """Check if another sprite is looking at this sprite.
+
+        Parameters
+        ----------
+        other_sprite: pygame.sprite
+            the sprite to check against
+        """
+        is_same_direction = False
+
+        # find greater distance, x or y
+        delta_x = abs(self.rect.x - other_sprite.rect.x)
+        delta_y = abs(self.rect.y - other_sprite.rect.y)
+
+        # further left or right
+        if delta_x < delta_y:
+            # current sprite is to the left
+            if self.rect.x < other_sprite.rect.x:
+                if other_sprite.status == "left":
+                    is_same_direction = True
+            else:
+                if other_sprite.status == "right":
+                    is_same_direction = True
+
+        # further up or down
+        if delta_y > delta_x:
+            # current sprite is above
+            if self.rect.y < other_sprite.rect.y:
+                if other_sprite.status == "up":
+                    is_same_direction = True
+            else:
+                if other_sprite.status == "down":
+                    is_same_direction = True
+
+        return is_same_direction
 
     @abstractmethod
     def collision_handler(self):
