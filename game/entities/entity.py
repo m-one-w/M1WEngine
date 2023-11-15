@@ -2,6 +2,7 @@
 from enum import Enum
 import math
 import sys
+import time
 import pygame
 from direction import Direction
 from filemanagement.spriteSheet import SpriteSheet
@@ -74,6 +75,9 @@ class Entity(Tile, ABC):
 
         # the skeleton is attacking
         self.sprite_to_attack = pygame.sprite.Sprite()
+
+        # for automated movements, store a previous timestamp
+        self.last_time_stored = 0
 
     def get_sprite_sheet(self, path: str):
         """Create sprite sheet from path."""
@@ -274,12 +278,19 @@ class Entity(Tile, ABC):
                 set_passive_state()
 
     def patrol_movement(self):
-        """Move in random direction."""
-        # TODO: finish movement logic
+        """Move back and forth."""
         if self.current_state == self.states.Patrol:
-            # down direction
-            self.compass.x = 0
-            self.compass.y = -1
+            current_time_in_seconds = time.perf_counter()
+
+            seconds_per_direction = 3
+            if current_time_in_seconds - self.last_time_stored > seconds_per_direction:
+                # 10 seconds passed
+                if self.compass.x != 1 or self.compass.x != 1:
+                    self.compass.x = 1
+                else:
+                    self.compass.x *= -1
+                self.compass.y = 0
+                self.last_time_stored = current_time_in_seconds
 
             self.move(self.speed)
 
@@ -287,7 +298,8 @@ class Entity(Tile, ABC):
         """Change direction based on where player is."""
         if self.current_state == self.states.Flee:
             if self.facing_towards_entity(self.player):
-                self.compass = self.player.compass
+                # must set to copy or it gives the skeleton a shared compass
+                self.compass = self.player.compass.copy()
 
             # move according to the compass direction
             self.move(self.speed)
@@ -344,7 +356,7 @@ class Entity(Tile, ABC):
         delta_y = abs(self.rect.y - other_sprite.rect.y)
 
         # further left or right
-        if delta_x < delta_y:
+        if delta_x >= delta_y:
             # current sprite is to the left
             if self.rect.x < other_sprite.rect.x:
                 if other_sprite.status == "left":
