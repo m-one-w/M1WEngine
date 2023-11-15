@@ -305,7 +305,7 @@ class Entity(Tile, ABC):
             elif self.rect.y > self.sprite_to_attack.rect.y:
                 self.move_up(self.speed)
 
-            self.compass.x = self.sprite_to_attack.compass.x
+            self.compass = self.sprite_to_attack.compass.copy()
 
     def set_state_patrol(self):
         """Set state machine to 'Patrol'."""
