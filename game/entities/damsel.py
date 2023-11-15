@@ -51,6 +51,7 @@ class Damsel(Entity):
         random.seed(time.time())
         self.timer = 100
         self.obstacle_sprites = obstacle_sprites
+        self.enemy_sprites = pygame.sprite.Group()
         self.import_assets()
 
     def collision_handler(self):
@@ -61,7 +62,11 @@ class Damsel(Entity):
         direction : string
             used to determine horizontal/vertical check.
         """
-        return
+        enemy_sprites = self.enemy_sprites.sprites()
+        collisions = self.rect.collidelistall(enemy_sprites)
+
+        if collisions:
+            self.die()
 
     def update(self, enemy_sprites, friendly_sprites):
         """Update damsel behavior based on entities on the map.
@@ -77,5 +82,6 @@ class Damsel(Entity):
         self.friendly_sprites = friendly_sprites
         self.set_status_by_curr_rotation()
         self.image = self.animate()
+        self.collision_handler()
         # will move half as fast as player at the same speed
         self.move(self.speed)

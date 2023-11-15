@@ -169,3 +169,7 @@ class Tile(pygame.sprite.Sprite):
         self.image = surface
         self.rect = self.image.get_rect(topleft=(x, y))
         self.hitbox = self.rect
+
+    def die(self):
+        """Remove the sprite from all groups."""
+        self.kill()
