@@ -92,9 +92,6 @@ class Tile(pygame.sprite.Sprite):
             self.move_right(speed)
             self.movementTracker["horizontal"] += left
 
-        # align hitbox with the new position
-        self.hitbox.center = self.rect.center
-
     def move_left(self, speed):
         """Move to the left.
 
@@ -106,6 +103,7 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = -1 * speed
         move_pixels_y = 0
         self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
 
     def move_right(self, speed):
         """Move to the right.
@@ -118,6 +116,7 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = 1 * speed
         move_pixels_y = 0
         self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
 
     def move_up(self, speed):
         """Move up.
@@ -130,6 +129,7 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = 0
         move_pixels_y = -1 * speed
         self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
 
     def move_down(self, speed):
         """Move down.
@@ -142,6 +142,7 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = 0
         move_pixels_y = 1 * speed
         self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
 
     def update_movement_tracker(self):
         """Update movement tracker.
