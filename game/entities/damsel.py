@@ -20,7 +20,12 @@ class Damsel(Entity):
         Update damsel with current game state information.
     """
 
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(
+        self,
+        pos: tuple,
+        groups: pygame.sprite.Group,
+        obstacle_sprites: pygame.sprite.Group,
+    ):
         """Initialize a Damsel with level info.
 
         Each damsel is initialized with their starting position,
@@ -29,12 +34,12 @@ class Damsel(Entity):
 
         Parameters
         ----------
-        pos : Tuple
-            starting x, y coordinates
-        groups : list of sprite groups
-            which groups in level it is a part of
-        obstacle_sprites : list of sprite groups
-            which sprites in the level damsel cannot walk through
+        pos: tuple
+            Starting x, y coordinates
+        groups: list of sprite groups
+            Which groups in level it is a part of
+        obstacle_sprites: list of sprite groups
+            Which sprites in the level damsel cannot walk through
         """
         super().__init__(groups)
 
@@ -59,8 +64,8 @@ class Damsel(Entity):
 
         Parameters
         ----------
-        direction : string
-            used to determine horizontal/vertical check.
+        direction: string
+            Used to determine horizontal/vertical check.
         """
         enemy_sprites = self.enemy_sprites.sprites()
         collisions = self.rect.collidelistall(enemy_sprites)
@@ -68,15 +73,17 @@ class Damsel(Entity):
         if collisions:
             self.die()
 
-    def update(self, enemy_sprites, friendly_sprites):
+    def update(
+        self, enemy_sprites: pygame.sprite.Group, friendly_sprites: pygame.sprite.Group
+    ):
         """Update damsel behavior based on entities on the map.
 
         Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
 
         Parameters
         ----------
-        enemy_sprites : pygame.sprite.Group()
-            group of enemy entities used to for behavior
+        enemy_sprites: pygame.sprite.Group
+            Group of enemy entities used to for behavior
         """
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites

@@ -16,7 +16,12 @@ class Player(Entity):
     player object.
     """
 
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(
+        self,
+        pos: tuple,
+        groups: pygame.sprite.Group,
+        obstacle_sprites: pygame.sprite.Group,
+    ):
         """Construct the player object.
 
         Sets all required values to construct the player object.
@@ -90,13 +95,13 @@ class Player(Entity):
             most_collided_direction = max(collision_count, key=collision_count.get)
             self.collision_update_direction(most_collided_direction)
 
-    def collision_update_direction(self, collision_direction):
+    def collision_update_direction(self, collision_direction: str):
         """Change self.compass based off of the collision_direction.
 
         Parameters
         ----------
         collision_direction : str
-            a string representing which direction the collision issue is taking place.
+            A string representing which direction the collision issue is taking place.
         """
         # change self.direction value
         if collision_direction == "up":
@@ -112,7 +117,9 @@ class Player(Entity):
             self.compass.x = Direction.left.value
             self.status = "left"
 
-    def update(self, enemy_sprites, friendly_sprites):
+    def update(
+        self, enemy_sprites: pygame.sprite.Group, friendly_sprites: pygame.sprite.Group
+    ):
         """Update player behavior based on player input.
 
         Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501

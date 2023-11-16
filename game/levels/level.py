@@ -1,4 +1,5 @@
 """This module contains the Level class."""
+from typing import List
 import pygame
 from entities.player import Player
 from filemanagement.support import import_cut_graphic
@@ -18,15 +19,15 @@ class Level:
     The Level class will instantiate all objects required for a single level to run.
     """
 
-    def __init__(self, surface):
+    def __init__(self, surface: pygame.Surface):
         """Construct the level class.
 
         This method will instantiate all required sprite groups for the current level
 
         Parameters
         ----------
-        level_data: the game asset information for the current level
-        surface: the surface to contain the game screen's full window
+        surface: pygame.Surface
+            The surface that contains the game's full window
         """
         # display surface
         self.display_surface = surface
@@ -77,7 +78,7 @@ class Level:
         self.camera.add(self.friendly_sprites)
         self.camera.add(self.enemy_sprites)
 
-    def create_entities_from_layout(self, layout):
+    def create_entities_from_layout(self, layout: List[int]):
         """Initialize the entities on a layout.
 
         Parameters
@@ -116,21 +117,19 @@ class Level:
             entity.set_good_sprites(self.friendly_sprites)
             entity.set_player(self.player)
 
-    def create_tile_group(self, layout):
+    def create_tile_group(self, layout: List[int]) -> pygame.sprite.Group:
         """Create the :func:`Sprite group<pygame.sprite.Group>` for a layout.
 
         Parameters
         ----------
-        layout: array of values each representing an individual sprite
-        type: indentifier to read in the correct graphics
-
+        layout: List[int]
+            List of values each representing an individual sprite
         """
         sprite_group = pygame.sprite.Group()
         for row_index, row in enumerate(layout):
             for col_index, val in enumerate(row):
                 if val != "-1":
-                    x = col_index * TILESIZE
-                    y = row_index * TILESIZE
+                    coords = (col_index * TILESIZE, row_index * TILESIZE)
 
                     terrain_tile_list = import_cut_graphic(
                         "graphics/tilesets/tiny_atlas.png"
@@ -139,7 +138,7 @@ class Level:
 
                     tile_surface = terrain_tile_list[int(val)]
                     sprite = Tile(sprite_group)
-                    sprite.set_tile(x, y, tile_surface)
+                    sprite.set_tile(coords, tile_surface)
                     sprite.setColorKeyBlack()
                     sprite_group.add(sprite)
 

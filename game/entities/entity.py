@@ -3,6 +3,7 @@ from enum import Enum
 import math
 import sys
 import time
+from typing import Callable
 import pygame
 from direction import Direction
 from filemanagement.spriteSheet import SpriteSheet
@@ -21,11 +22,11 @@ class Entity(Tile, ABC):
 
     Attributes
     ----------
-    frameIndex : int
+    frameIndex: int
         The currently shown frame represented by an index
-    animationSpeed : int
+    animationSpeed: int
         The speed at which animations run
-    speed : int
+    speed: int
         The speed at which the sprite moves
 
     Methods
@@ -52,7 +53,7 @@ class Entity(Tile, ABC):
         Handle the collision check for entities
     """
 
-    def __init__(self, groups):
+    def __init__(self, groups: pygame.sprite.Group):
         """Initialize base class."""
         super().__init__(groups)
         self.frameIndex = 0
@@ -79,7 +80,7 @@ class Entity(Tile, ABC):
         # for automated movements, store a previous timestamp
         self.last_time_stored = 0
 
-    def get_sprite_sheet(self, path: str):
+    def get_sprite_sheet(self, path: str) -> SpriteSheet:
         """Create sprite sheet from path."""
         return SpriteSheet(path)
 
@@ -153,12 +154,12 @@ class Entity(Tile, ABC):
         if self.compass.y < 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
             self.status = "up"
 
-    def get_angle_from_direction(self, axis):
+    def get_angle_from_direction(self, axis: str) -> float:
         """Get the angle for sprite rotation based on the direction.
 
         Angle returned will need to be inverted for 'down' and 'left'.
         """
-        angle = 0
+        angle = 0.0
 
         if axis == "x":
             angle = self.compass.y * 45
@@ -187,12 +188,17 @@ class Entity(Tile, ABC):
         y = 1
         return math.hypot(coords[x] - self.rect[x], coords[y] - self.rect[y])
 
-    def set_image_rotation(self, image):
+    def set_image_rotation(self, image: pygame.Surface) -> pygame.Surface:
         """Set a new image to the correct rotation.
 
         Return the rotated image correlating to the correct rotation.
         Rotation is based on the status, so image rotations are defined by the
         current status.
+
+        Parameters
+        ----------
+        image: pygame.Surface
+            The animation image to rotate
         """
         angle = 0
 
@@ -221,7 +227,11 @@ class Entity(Tile, ABC):
         elif self.current_state == self.states.Follow:
             self.follow_movement()
 
-    def radar_detect_player_entity(self, set_active_state, set_passive_state):
+    def radar_detect_player_entity(
+        self,
+        set_active_state: type(Callable[[], None]),
+        set_passive_state: type(Callable[[], None]),
+    ):
         """Check whether player is within our radar."""
         # set state to 'Flee' if player detected
         collision = self.radar.colliderect(self.player)
@@ -238,7 +248,11 @@ class Entity(Tile, ABC):
                 # set state when no player detected
                 set_passive_state()
 
-    def radar_detect_good_entities(self, set_active_state, set_passive_state):
+    def radar_detect_good_entities(
+        self,
+        set_active_state: type(Callable[[], None]),
+        set_passive_state: type(Callable[[], None]),
+    ):
         """Set state and selects which good_sprite to attack.
 
         Depending on what we detect on the radar, set the state of the skeleton.
@@ -339,7 +353,7 @@ class Entity(Tile, ABC):
         """Set stae machine to 'Flee'."""
         self.current_state = self.states.Flee
 
-    def set_player(self, player):
+    def set_player(self, player: pygame.sprite):
         """Set the player for the entity to track.
 
         Parameters
@@ -349,13 +363,13 @@ class Entity(Tile, ABC):
         """
         self.player = player
 
-    def facing_towards_entity(self, other_sprite):
+    def facing_towards_entity(self, other_sprite: pygame.sprite) -> bool:
         """Check if another sprite is looking at this sprite.
 
         Parameters
         ----------
         other_sprite: pygame.sprite
-            the sprite to check against
+            The sprite to check against
         """
         is_same_direction = False
 

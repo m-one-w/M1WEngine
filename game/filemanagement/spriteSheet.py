@@ -1,5 +1,6 @@
 """This module contains the SpriteSheet class."""
 import pygame
+from typing import List, Tuple
 
 
 class SpriteSheet:
@@ -9,7 +10,7 @@ class SpriteSheet:
     (x, y, x + offset, y + offset)
     """
 
-    def __init__(self, filename):
+    def __init__(self, filename: str):
         """Load the sheet."""
         try:
             self.sheet = pygame.image.load(filename).convert()
@@ -17,7 +18,7 @@ class SpriteSheet:
             print(f"Unable to load spritesheet image: {filename}")
             raise SystemExit(e)
 
-    def image_at(self, rectangle):
+    def image_at(self, rectangle: tuple) -> pygame.Surface:
         """Load a specific image from a specific rectangle."""
         # Loads image from x, y, x+offset, y+offset.
         rect = pygame.Rect(rectangle)
@@ -25,11 +26,11 @@ class SpriteSheet:
         image.blit(self.sheet, (0, 0), rect)
         return image
 
-    def images_at(self, rects):
+    def images_at(self, rects: List[Tuple[int]]) -> List[pygame.Surface]:
         """Load multiple images and return them as a list."""
         return [self.image_at(rect) for rect in rects]
 
-    def load_strip(self, rect, image_count):
+    def load_strip(self, rect, image_count: int) -> List[pygame.Surface]:
         """Load a strip of images, and return them as a list."""
         tuples = [
             (rect[0] + rect[2] * x, rect[1], rect[2], rect[3])

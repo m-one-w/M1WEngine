@@ -12,17 +12,17 @@ class Skeleton(Entity):
 
     Attributes
     ----------
-    sprite_sheet : SpriteSheet
+    sprite_sheet: SpriteSheet
         Hold the art assets info
-    image : pygame.Surface
+    image: pygame.Surface
         Hold the current sprite image
-    rect : pygame.Rect
+    rect: pygame.Rect
         Hold the current sprite position
-    hitbox : pygame.Rect
+    hitbox: pygame.Rect
         Hold the hitbox rect
-    radar : pygame.Rect
+    radar: pygame.Rect
         Hold the radar rect
-    obstacleSprites : pygame.sprite.Group
+    obstacleSprites: pygame.sprite.Group
         Hold the sprites that block movement
 
     Methods
@@ -36,7 +36,12 @@ class Skeleton(Entity):
         Define what methods are called on each tick
     """
 
-    def __init__(self, pos, groups, obstacle_sprites):
+    def __init__(
+        self,
+        pos: tuple,
+        groups: pygame.sprite.Group,
+        obstacle_sprites: pygame.sprite.Group,
+    ):
         """Construct the skeleton class."""
         super().__init__(groups)
 
@@ -99,10 +104,10 @@ class Skeleton(Entity):
 
         Parameters
         ----------
-        enemy_sprites : pygame.sprite.Group()
-            group of entities hostile to the player
-        friendly_sprites : pygame.sprite.Group()
-            group of entities friendly to the player
+        enemy_sprites: pygame.sprite.Group()
+            Group of entities hostile to the player
+        friendly_sprites: pygame.sprite.Group()
+            Group of entities friendly to the player
         """
         self.enemy_sprites = enemy_sprites
         self.friendly_sprites = friendly_sprites

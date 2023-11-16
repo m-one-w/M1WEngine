@@ -42,7 +42,7 @@ class MainMenu:
     # destructor that returns the main menu user input
     def __del__(self):
         """Deconstructor for menu."""
-        # return self.men
+        # return self.menu
         pass
 
     def run(self):

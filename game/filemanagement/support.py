@@ -1,16 +1,18 @@
 """This module contains methods to load game assets."""
 from csv import reader
 from os import walk
+from typing import List
 import pygame
 from settings import TILESIZE
 
 
-def import_csv_layout(path):
+def import_csv_layout(path: str) -> List[int]:
     """Read in csv values into an array.
 
     Parameters
     ----------
-    path: the filepath to read from
+    path: str
+        The filepath to read from
     """
     terrain_map = []
     with open(path) as level_map:
@@ -20,12 +22,13 @@ def import_csv_layout(path):
         return terrain_map
 
 
-def import_folder(path):
+def import_folder(path: str):
     """Import all the surfaces in a directory.
 
     Parameters
     ----------
-    path: the filepath to import from
+    path: str
+        The filepath to import from
     """
     surface_list = []
     # import all images from a folder
@@ -36,12 +39,13 @@ def import_folder(path):
             surface_list.append(image_surface)
 
 
-def import_cut_graphic(path):
+def import_cut_graphic(path: str) -> List[pygame.Surface]:
     """Cut a tileset into correct sprites.
 
     Parameters
     ----------
-    path: the filepath to find the tileset
+    path: str
+        The filepath to find the tileset
     """
     surface = pygame.image.load(path).convert_alpha()
     tile_num_x = int(surface.get_size()[0] / TILESIZE)

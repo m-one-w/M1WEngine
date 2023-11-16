@@ -1,5 +1,6 @@
 """This module contains the CameraManager class."""
 import pygame
+from entities.player import Player
 
 
 class CameraManager(pygame.sprite.Group):
@@ -11,32 +12,33 @@ class CameraManager(pygame.sprite.Group):
 
     Attributes
     ----------
-    playerCharacter : Player
-        the currently shown frame represented by an index
-    displaySurface : Surface
-        the game surface in which to render all sprites
-    offset : vector2
-        the offset at which to render all sprites
-    halWidth : int
-        half the display surface width
-    halfHeight : int
-        half the display surface height
+    playerCharacter: Player
+        The currently shown frame represented by an index
+    displaySurface: Surface
+        The game surface in which to render all sprites
+    offset: vector2
+        The offset at which to render all sprites
+    halWidth: int
+        Half the display surface width
+    halfHeight: int
+        Half the display surface height
 
     Methods
     -------
-    camera_draw()
+    camera_update(self)
         Renders all sprites relative to the player character position
     """
 
     # initialize all groups and their current positions
-    def __init__(self, playerCharacter):
+    def __init__(self, playerCharacter: Player):
         """Construct a CameraManager object.
 
         This method will instantiate the camera controller.
         A single camera controller should be used to manage all rendered sprites.
         Parameters
         ----------
-        playerCharacter: the player character
+        playerCharacter: Player
+            The player character
         """
         super().__init__()
         surfaceX = 0
