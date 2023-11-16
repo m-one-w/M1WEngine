@@ -218,6 +218,9 @@ class Entity(Tile, ABC):
         elif self.current_state == self.states.Patrol:
             self.patrol_movement()
 
+        elif self.current_state == self.states.Follow:
+            self.follow_movement()
+
     def radar_detect_player_entity(self, set_active_state, set_passive_state):
         """Check whether player is within our radar."""
         # set state to 'Flee' if player detected
@@ -318,6 +321,11 @@ class Entity(Tile, ABC):
                 self.move_up(self.speed)
 
             self.compass = self.sprite_to_attack.compass.copy()
+
+    def follow_movement(self):
+        """Follow behind another entity."""
+        # TODO: implement
+        return
 
     def set_state_patrol(self):
         """Set state machine to 'Patrol'."""
