@@ -105,16 +105,16 @@ class Player(Entity):
         """
         # change self.direction value
         if collision_direction == "up":
-            self.compass.y = Direction.down.value
+            self.compass.y = Direction.down
             self.status = "down"
         elif collision_direction == "down":
-            self.compass.y = Direction.up.value
+            self.compass.y = Direction.up
             self.status = "up"
         elif collision_direction == "left":
-            self.compass.x = Direction.right.value
+            self.compass.x = Direction.right
             self.status = "right"
         elif collision_direction == "right":
-            self.compass.x = Direction.left.value
+            self.compass.x = Direction.left
             self.status = "left"
 
     def update(

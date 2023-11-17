@@ -74,10 +74,10 @@ class Tile(pygame.sprite.Sprite):
         # move each time a tracker is 1 or -1 and then reset the tracker
         self.update_movement_tracker()
 
-        up = Direction.up.value
-        down = Direction.down.value
-        left = Direction.left.value
-        right = Direction.right.value
+        up = Direction.up
+        down = Direction.down
+        left = Direction.left
+        right = Direction.right
 
         if self.movementTracker["vertical"] <= up:
             self.move_up(speed)
