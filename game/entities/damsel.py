@@ -72,7 +72,7 @@ class Damsel(Entity):
 
         # change state to flee if evil_entity nearby
         active_state = self.set_state_flee
-        self.radar_detect_entities(self.enemy_sprites, active_state, passive_state)
+        self.radar_detect_entities(self._bad_sprites, active_state, passive_state)
 
         self.move_based_on_state()
 
@@ -84,14 +84,14 @@ class Damsel(Entity):
         direction: string
             Used to determine horizontal/vertical check.
         """
-        enemy_sprites = self.enemy_sprites.sprites()
+        enemy_sprites = self._bad_sprites.sprites()
         collisions = self.rect.collidelistall(enemy_sprites)
 
         if collisions:
             self.die()
 
     def update(
-        self, enemy_sprites: pygame.sprite.Group, friendly_sprites: pygame.sprite.Group
+        self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
     ):
         """Update damsel behavior based on entities on the map.
 
@@ -99,11 +99,11 @@ class Damsel(Entity):
 
         Parameters
         ----------
-        enemy_sprites: pygame.sprite.Group
+        bad_sprites: pygame.sprite.Group
             Group of enemy entities used to for behavior
         """
-        self.enemy_sprites = enemy_sprites
-        self.friendly_sprites = friendly_sprites
+        self._bad_sprites = bad_sprites
+        self._good_sprites = good_sprites
         self.set_status_by_curr_rotation()
         self.image = self.animate()
         self.collision_handler()

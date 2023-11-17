@@ -31,8 +31,8 @@ class Skeleton(Entity):
         Define how sprite will move
     collision_handler(self)
         Define how to handle collisions
-    update(self,  enemy_sprites: pygame.sprite.Group,
-    friendly_sprites: pygame.sprite.Group)
+    update(self,  bad_sprites: pygame.sprite.Group,
+    good_sprites: pygame.sprite.Group)
         Define what methods are called on each tick
     """
 
@@ -80,7 +80,7 @@ class Skeleton(Entity):
 
         # change state to attack if there is good_entity nearby
         active_state = self.set_state_attack
-        self.radar_detect_entities(self.friendly_sprites, active_state, passive_state)
+        self.radar_detect_entities(self._good_sprites, active_state, passive_state)
 
         self.move_based_on_state()
 
@@ -92,7 +92,7 @@ class Skeleton(Entity):
             self.die()
 
     def update(
-        self, enemy_sprites: pygame.sprite.Group, friendly_sprites: pygame.sprite.Group
+        self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
     ):
         """Update skeleton behavior based on entities on the map.
 
@@ -100,13 +100,13 @@ class Skeleton(Entity):
 
         Parameters
         ----------
-        enemy_sprites: pygame.sprite.Group()
+        bad_sprites: pygame.sprite.Group()
             Group of entities hostile to the player
-        friendly_sprites: pygame.sprite.Group()
+        good_sprites: pygame.sprite.Group()
             Group of entities friendly to the player
         """
-        self.enemy_sprites = enemy_sprites
-        self.friendly_sprites = friendly_sprites
+        self._bad_sprites = bad_sprites
+        self._good_sprites = good_sprites
         self.set_status_by_curr_rotation()
         self.image = self.animate()
         self.collision_handler()

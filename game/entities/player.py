@@ -118,14 +118,14 @@ class Player(Entity):
             self.status = "left"
 
     def update(
-        self, enemy_sprites: pygame.sprite.Group, friendly_sprites: pygame.sprite.Group
+        self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
     ):
         """Update player behavior based on player input.
 
         Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
         """
-        self.enemy_sprites = enemy_sprites
-        self.friendly_sprites = friendly_sprites
+        self._bad_sprites = bad_sprites
+        self._good_sprites = good_sprites
         self.input()
         self.set_status_by_curr_rotation()
         image = self.animate()

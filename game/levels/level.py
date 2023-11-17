@@ -51,8 +51,8 @@ class Level:
 
         # sprite groups
         self.obstacle_sprites = pygame.sprite.Group()
-        self.enemy_sprites = pygame.sprite.Group()
-        self.friendly_sprites = pygame.sprite.Group()
+        self.bad_sprites = pygame.sprite.Group()
+        self.good_sprites = pygame.sprite.Group()
         self.attack_sprites = pygame.sprite.Group()
         self.player_group = pygame.sprite.GroupSingle()
 
@@ -75,8 +75,8 @@ class Level:
         self.camera.add(self.fence_sprites)
         self.camera.add(self.extra_sprites)
 
-        self.camera.add(self.friendly_sprites)
-        self.camera.add(self.enemy_sprites)
+        self.camera.add(self.good_sprites)
+        self.camera.add(self.bad_sprites)
 
     def create_entities_from_layout(self, layout: List[int]):
         """Initialize the entities on a layout.
@@ -105,17 +105,17 @@ class Level:
                     )
                 # initialize damsels
                 elif val == character_keys["damsel"]:
-                    Damsel(position, self.friendly_sprites, self.obstacle_sprites)
+                    Damsel(position, self.good_sprites, self.obstacle_sprites)
                 # initialize skeletons
                 elif val == character_keys["skeleton"]:
-                    Skeleton(position, self.enemy_sprites, self.obstacle_sprites)
+                    Skeleton(position, self.bad_sprites, self.obstacle_sprites)
 
         # add player awareness to friendly_sprites
-        for entity in self.friendly_sprites:
+        for entity in self.good_sprites:
             entity.set_player(self.player)
 
         # add player awareness to enemy_sprites
-        for entity in self.enemy_sprites:
+        for entity in self.bad_sprites:
             entity.set_player(self.player)
 
     def create_tile_group(self, layout: List[int]) -> pygame.sprite.Group:
@@ -147,9 +147,9 @@ class Level:
 
     def run(self):
         """Draw and update all sprite groups."""
-        self.player_group.update(self.enemy_sprites, self.friendly_sprites)
-        self.enemy_sprites.update(self.enemy_sprites, self.friendly_sprites)
-        self.friendly_sprites.update(self.enemy_sprites, self.friendly_sprites)
+        self.player_group.update(self.bad_sprites, self.good_sprites)
+        self.bad_sprites.update(self.bad_sprites, self.good_sprites)
+        self.good_sprites.update(self.bad_sprites, self.good_sprites)
 
         # draw the game behind the player character
         self.camera.camera_update()
