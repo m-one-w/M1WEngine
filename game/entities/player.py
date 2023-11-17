@@ -66,56 +66,60 @@ class Player(Entity):
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
         """
-        collision_count = {"left": 0, "right": 0, "up": 0, "down": 0}
+        collision_dictionary = self.collision_detection(self.obstacleSprites)
+        if collision_dictionary["collision_detected"]:
+            collided_coords = self.average_collision_coordinates(collision_dictionary)
+            self.collision_set_compass(collided_coords)
+            self.set_status_by_curr_rotation()
+            image = self.animate()
+            self.image = self.set_image_rotation(image)
 
-        # get list of sprites from obstacleSprites
-        obstacleSpritesList = self.obstacleSprites.sprites()
-
-        # list of all obstacleSprite indicies player has collisions with
-        collisions = self.rect.collidelistall(obstacleSpritesList)
-
-        # if collisions are detected
-        if collisions:
-            for collisionIndex in collisions:
-                collided_sprite = obstacleSpritesList[collisionIndex]
-                # check status then add to appropriate collision direction
-                if self.status == "up" or self.status == "down":
-                    if collided_sprite.hitbox.centery < self.hitbox.centery:
-                        collision_count["up"] += 1
-                    elif collided_sprite.hitbox.centery > self.hitbox.centery:
-                        collision_count["down"] += 1
-
-                if self.status == "left" or self.status == "right":
-                    if collided_sprite.hitbox.centerx < self.hitbox.centerx:
-                        collision_count["left"] += 1
-                    elif collided_sprite.hitbox.centerx > self.hitbox.centerx:
-                        collision_count["right"] += 1
-
-            # update self.direction based on direction with most collisions
-            most_collided_direction = max(collision_count, key=collision_count.get)
-            self.collision_update_direction(most_collided_direction)
-
-    def collision_update_direction(self, collision_direction: str):
-        """Change self.compass based off of the collision_direction.
+    def collision_set_compass(self, collided_coords: tuple):
+        """Set the compass away from the position of the collision.
 
         Parameters
         ----------
-        collision_direction : str
-            A string representing which direction the collision issue is taking place.
+        collided_coords: tuple
+            a tuple containing the x and y of the average collision point
         """
-        # change self.direction value
-        if collision_direction == "up":
-            self.compass.y = Direction.down
-            self.status = "down"
-        elif collision_direction == "down":
-            self.compass.y = Direction.up
-            self.status = "up"
-        elif collision_direction == "left":
-            self.compass.x = Direction.right
-            self.status = "right"
-        elif collision_direction == "right":
-            self.compass.x = Direction.left
-            self.status = "left"
+        # used to flip x and y by the given amounts in the below vectors
+        horizontal_reflect_vect = pygame.math.Vector2(Direction.right, 0)
+        vertical_reflect_vect = pygame.math.Vector2(0, Direction.down)
+
+        abs_distance_to_x = abs(self.rect.centerx - collided_coords[0])
+        abs_distance_to_y = abs(self.rect.centery - collided_coords[1])
+        distance_to_x = collided_coords[0] - self.rect.centerx
+        distance_to_y = collided_coords[1] - self.rect.centery
+
+        # if to the left or right
+        if abs_distance_to_x > abs_distance_to_y:
+            # if collided with sprite to the right of self
+            if distance_to_x > 0:
+                # if compass pointing right
+                if self.compass.x > 0:
+                    # bounce the compass off a horizontal vector
+                    self.compass = self.compass.reflect(horizontal_reflect_vect)
+            # if collided with sprite to the left of self
+            else:
+                # if compass pointing left
+                if self.compass.x < 0:
+                    # bounce the compass off a horizontal vector
+                    self.compass = self.compass.reflect(horizontal_reflect_vect)
+
+        # if up or down
+        else:
+            # if collided with sprite above self
+            if distance_to_y < 0:
+                # if compass pointing up
+                if self.compass.y < 0:
+                    # bounce the compass off a vertical vector
+                    self.compass = self.compass.reflect(vertical_reflect_vect)
+            # if collided with sprite below self
+            else:
+                # if compass pointing down
+                if self.compass.y > 0:
+                    # bounce the compass off a vertical vector
+                    self.compass = self.compass.reflect(vertical_reflect_vect)
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
