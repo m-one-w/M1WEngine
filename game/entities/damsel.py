@@ -1,7 +1,5 @@
 """This module contains the Damsel class."""
 import pygame
-import random
-import time
 from entities.entity import Entity
 import settings
 
@@ -53,11 +51,30 @@ class Damsel(Entity):
         self.rect = self.image.get_rect(topleft=pos)
         # modify model rect to be a slightly less tall hitbox.
         self.hitbox = self.rect.inflate(0, -10)
-        random.seed(time.time())
-        self.timer = 100
+        inflation_size = 8
+        self.radar = self.rect.inflate(
+            settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
+        )
+
         self.obstacle_sprites = obstacle_sprites
-        self.enemy_sprites = pygame.sprite.Group()
         self.import_assets()
+
+    def automate_movement(self):
+        """Movement logic method."""
+        # update radar with new pos
+        self.radar.center = self.rect.center
+        # always patrol when no radar detections
+        passive_state = self.set_state_patrol
+
+        # change state to follow if player is nearby
+        active_state = self.set_state_follow
+        self.radar_detect_player_entity(active_state, passive_state)
+
+        # change state to flee if evil_entity nearby
+        active_state = self.set_state_flee
+        self.radar_detect_entities(self.enemy_sprites, active_state, passive_state)
+
+        self.move_based_on_state()
 
     def collision_handler(self):
         """Handle collision interactions with the environment.
@@ -91,4 +108,4 @@ class Damsel(Entity):
         self.image = self.animate()
         self.collision_handler()
         # will move half as fast as player at the same speed
-        self.move(self.speed)
+        self.automate_movement()

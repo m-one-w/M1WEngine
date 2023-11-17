@@ -68,7 +68,7 @@ class Level:
         self.mixer.music.play(LOOP_MUSIC)
 
         self.create_entities_from_layout(character_layout)
-
+        # self.player initialized in create_entities_from_layout()
         self.camera = CameraManager(self.player)
         self.camera.add(self.terrain_sprites)
         self.camera.add(self.plant_sprites)
@@ -110,11 +110,12 @@ class Level:
                 elif val == character_keys["skeleton"]:
                     Skeleton(position, self.enemy_sprites, self.obstacle_sprites)
 
+        # add player awareness to friendly_sprites
         for entity in self.friendly_sprites:
-            entity.set_bad_sprites(self.enemy_sprites)
+            entity.set_player(self.player)
 
+        # add player awareness to enemy_sprites
         for entity in self.enemy_sprites:
-            entity.set_good_sprites(self.friendly_sprites)
             entity.set_player(self.player)
 
     def create_tile_group(self, layout: List[int]) -> pygame.sprite.Group:

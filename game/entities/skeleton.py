@@ -68,23 +68,19 @@ class Skeleton(Entity):
         self.import_assets()
 
     def automate_movement(self):
-        """Movement logic method.
-
-        Handles movement logic. Currently random movement.
-        See documentation for actual movement logic.
-        """
+        """Movement logic method."""
         # update radar with new pos
         self.radar.center = self.rect.center
         # always patrol when no radar detections
         passive_state = self.set_state_patrol
 
-        # change state if player is nearby
+        # change state to flee if player is nearby
         active_state = self.set_state_flee
         self.radar_detect_player_entity(active_state, passive_state)
 
-        # change state if there is good_entity nearby
+        # change state to attack if there is good_entity nearby
         active_state = self.set_state_attack
-        self.radar_detect_good_entities(active_state, passive_state)
+        self.radar_detect_entities(self.friendly_sprites, active_state, passive_state)
 
         self.move_based_on_state()
 

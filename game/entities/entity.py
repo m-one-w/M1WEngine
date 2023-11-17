@@ -62,20 +62,15 @@ class Entity(Tile, ABC):
         self.compass.x = Direction.right.value
         self.status = "right"
 
-        # damsels
-        self.good_sprites = pygame.sprite.Group()
-        # skeletons
-        self.bad_sprites = pygame.sprite.Group()
-
         # init empty player
         self.player = pygame.sprite.Sprite()
 
         # setting up state machine
-        self.states = Enum("skeleton_state", ["Patrol", "Attack", "Flee", "Follow"])
+        self.states = Enum("states", ["Patrol", "Attack", "Flee", "Follow"])
         self.current_state = self.states.Patrol
 
-        # the skeleton is attacking
-        self.sprite_to_attack = pygame.sprite.Sprite()
+        # the closest sprite on our radar
+        self.target_sprite = pygame.sprite.Sprite()
 
         # for automated movements, store a previous timestamp
         self.last_time_stored = 0
@@ -168,14 +163,6 @@ class Entity(Tile, ABC):
 
         return -angle
 
-    def set_bad_sprites(self, bad_sprites: pygame.sprite.Group):
-        """Set bad_sprites."""
-        self.bad_sprites = bad_sprites
-
-    def set_good_sprites(self, good_sprites: pygame.sprite.Group):
-        """Set good_sprites."""
-        self.good_sprites = good_sprites
-
     def get_distance(self, coords: tuple) -> float:
         """Return the hypotenuse/distance away from another entity.
 
@@ -248,8 +235,9 @@ class Entity(Tile, ABC):
                 # set state when no player detected
                 set_passive_state()
 
-    def radar_detect_good_entities(
+    def radar_detect_entities(
         self,
+        entities: pygame.sprite.Group,
         set_active_state: type(Callable[[], None]),
         set_passive_state: type(Callable[[], None]),
     ):
@@ -259,9 +247,9 @@ class Entity(Tile, ABC):
         if good sprite is detected on radar, set state to "Attacking".
         """
         # good_sprites as a list of sprites, not a Group of sprites
-        goodSpriteGroupList = self.good_sprites.sprites()
+        spriteGroupList = entities.sprites()
         # list of all damsel collisions
-        collisions = self.radar.collidelistall(goodSpriteGroupList)
+        collisions = self.radar.collidelistall(spriteGroupList)
 
         # if there is an entity inside our radar
         if collisions:
@@ -271,7 +259,7 @@ class Entity(Tile, ABC):
             # get list of rect tuple coordinates
             for collisionIndex in collisions:
                 # get the coordinates of detected good_sprite
-                coord = goodSpriteGroupList[collisionIndex].rect.center
+                coord = spriteGroupList[collisionIndex].rect.center
                 # distance between skeleton and entity on radar
                 distance = self.get_distance(coord)
                 # track if entity is closest to skeleton
@@ -283,7 +271,7 @@ class Entity(Tile, ABC):
 
             # set sprite_to_attack to closest sprite IF something detected
             if indexOfClosest != -1:
-                self.sprite_to_attack = goodSpriteGroupList[indexOfClosest]
+                self.target_sprite = spriteGroupList[indexOfClosest]
                 if self.current_state != self.states.Attack:
                     # function for setting the active state
                     set_active_state()
@@ -324,17 +312,17 @@ class Entity(Tile, ABC):
     def attack_movement(self):
         """Change compass based on where good_sprite is."""
         if self.current_state == self.states.Attack:
-            if self.rect.x < self.sprite_to_attack.rect.x:
+            if self.rect.x < self.target_sprite.rect.x:
                 self.move_right(self.speed)
-            elif self.rect.x > self.sprite_to_attack.rect.x:
+            elif self.rect.x > self.target_sprite.rect.x:
                 self.move_left(self.speed)
 
-            if self.rect.y < self.sprite_to_attack.rect.y:
+            if self.rect.y < self.target_sprite.rect.y:
                 self.move_down(self.speed)
-            elif self.rect.y > self.sprite_to_attack.rect.y:
+            elif self.rect.y > self.target_sprite.rect.y:
                 self.move_up(self.speed)
 
-            self.compass = self.sprite_to_attack.compass.copy()
+            self.compass = self.target_sprite.compass.copy()
 
     def follow_movement(self):
         """Follow behind another entity."""
@@ -350,8 +338,12 @@ class Entity(Tile, ABC):
         self.current_state = self.states.Attack
 
     def set_state_flee(self):
-        """Set stae machine to 'Flee'."""
+        """Set state machine to 'Flee'."""
         self.current_state = self.states.Flee
+
+    def set_state_follow(self):
+        """Set state machine to 'Follow'."""
+        self.current_state = self.states.Follow
 
     def set_player(self, player: pygame.sprite):
         """Set the player for the entity to track.
