@@ -46,7 +46,7 @@ class Tile(pygame.sprite.Sprite):
             The groups this sprite is a part of
         """
         super().__init__(groups)
-        self.compass = pygame.math.Vector2()
+        self.compass: pygame.math.Vector2 = pygame.math.Vector2()
         self.movementTracker = {"vertical": 0.0, "horizontal": 0.0}
 
         # r,g,b vals for key color
