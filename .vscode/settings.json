@@ -5,12 +5,12 @@
     },
     "editor.renderWhitespace": "all",
     "emeraldwalk.runonsave": {
-        
         "commands": [
             {
                 "match": ".py",
                 "cmd": "${workspaceFolder}/linter.sh"
             }
      ]
-    }
+    },
+    "git-blame.gitWebUrl": "https://github.com/Sean-Nishi/Reluctant-Hero/"
 }
