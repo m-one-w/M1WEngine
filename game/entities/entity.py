@@ -59,7 +59,7 @@ class Entity(Tile, ABC):
         self.frameIndex = 0
         self.animationSpeed = 0.15
         self.speed = 1
-        self.compass.x = Direction.right.value
+        self.compass.x = Direction.right
         self.status = "right"
 
         # init empty player
