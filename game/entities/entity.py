@@ -138,6 +138,17 @@ class Entity(Tile, ABC):
         This function inspects the current direction and determines
         what the status should be.
         """
+        # handle all edge cases first
+        if self.compass.y < 0:
+            self.status = "up"
+        else:
+            self.status = "down"
+
+        if self.compass.x < 0:
+            self.status = "left"
+        else:
+            self.status = "right"
+
         # -- xy | xy +-
         # -+ xy | xy ++
         if self.compass.x > 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
