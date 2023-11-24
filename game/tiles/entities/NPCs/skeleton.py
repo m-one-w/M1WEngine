@@ -1,10 +1,10 @@
 """This module contains the Skeleton class."""
 import pygame
-from tiles.entities.entity import Entity
+from tiles.entities.NPCs.NPC import NPC
 import settings
 
 
-class Skeleton(Entity):
+class Skeleton(NPC):
     """First enemy class. Called Skeleton.
 
     Inherits from Entity. Move method is overwritten using logic described

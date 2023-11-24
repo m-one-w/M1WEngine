@@ -1,10 +1,10 @@
 """This module contains the Damsel class."""
 import pygame
-from tiles.entities.entity import Entity
+from tiles.entities.NPCs.NPC import NPC
 import settings
 
 
-class Damsel(Entity):
+class Damsel(NPC):
     """Damsel class to represent a good entity within the game.
 
     Each damsel object that is spawned in will be hunted by enemy
