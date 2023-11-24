@@ -1,6 +1,6 @@
 """This module contains the Player class."""
 import pygame
-from entities.entity import Entity
+from tiles.entities.entity import Entity
 from direction import Direction
 import settings
 

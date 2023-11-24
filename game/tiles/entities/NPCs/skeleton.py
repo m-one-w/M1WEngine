@@ -1,6 +1,6 @@
 """This module contains the Skeleton class."""
 import pygame
-from entities.entity import Entity
+from tiles.entities.entity import Entity
 import settings
 
 

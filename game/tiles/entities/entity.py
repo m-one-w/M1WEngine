@@ -7,7 +7,7 @@ from typing import Callable
 import pygame
 from direction import Direction
 from filemanagement.spriteSheet import SpriteSheet
-from tile import Tile
+from tiles.tile import Tile
 import settings
 from abc import (
     ABC,

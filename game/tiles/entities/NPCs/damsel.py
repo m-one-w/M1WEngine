@@ -1,6 +1,6 @@
 """This module contains the Damsel class."""
 import pygame
-from entities.entity import Entity
+from tiles.entities.entity import Entity
 import settings
 
 

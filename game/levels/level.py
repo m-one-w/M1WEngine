@@ -1,11 +1,11 @@
 """This module contains the Level class."""
 from typing import List
 import pygame
-from entities.player import Player
+from tiles.entities.player import Player
 from filemanagement.support import import_cut_graphic
-from entities.damsel import Damsel
-from entities.skeleton import Skeleton
-from tile import Tile
+from tiles.entities.NPCs.damsel import Damsel
+from tiles.entities.NPCs.skeleton import Skeleton
+from tiles.tile import Tile
 from filemanagement.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
 from cameraControl.cameraManager import CameraManager
