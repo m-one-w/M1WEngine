@@ -11,7 +11,8 @@
     - [Recommended IDE](#recommended-ide)
     - [Running the Game](#running-the-game)
 - [Gameplay and Mechanics](#gameplay-and-mechanics)
--[Agile Guidelines](#agile-guidelines)
+- [System Design](#system-design)
+- [Agile Guidelines](#agile-guidelines)
 - [Further References](#further-references)
 
 ## Installation
@@ -73,6 +74,10 @@ The objective of Reluctant Hero is to maximize your score while traversing the m
 A detailed spec sheet of the mechanics can be found [here](./docs/specSheet.md)
 
 Alternatively, right click on the game.py file and click 'run python file in terminal'
+
+## System Design
+The system design document was created through the draw.io web UI.
+All system modules are created to reflect the design choices defined in the [system design specification](./docs/Reluctant_Hero_System_Design.png)
 
 ## Agile Guidelines
 The agile story point estimates are defined in the following [documentation](./docs/agileGuideLines.md)
