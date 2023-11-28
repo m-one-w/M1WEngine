@@ -1,8 +1,8 @@
 """This module contains the main game class."""
 import pygame
 import sys
-from settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
-from levels.level import Level
+from settings import WINDOW_HEIGHT, WINDOW_WIDTH
+from levels.levelManager import LevelManager
 
 
 class Game:
@@ -13,33 +13,28 @@ class Game:
         # general setup
         pygame.init()
         # display setup
-        self.screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.screen: pygame.surface = pygame.display.set_mode(
+            (WINDOW_WIDTH, WINDOW_HEIGHT)
+        )
         pygame.display.set_caption("Reluctant Hero")
         pygame.display.set_icon(self.screen)
-        self.clock = pygame.time.Clock()
 
-        # level csv's are saved in game data
-        self.level = Level(self.screen)
+        self.level = LevelManager(self.screen, "main_menu")
 
     def run(self):
         """Run the main game loop."""
         while True:
             # check game events
             for event in pygame.event.get():
-                # quit game
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
-            self.screen.fill("black")
             # run level
             self.level.run()
-            # event handler for menu selection
-            # if self.menu_selection == 1:
 
             # update display based on events
             pygame.display.update()
-            self.clock.tick(FPS)
 
 
 # Start of program

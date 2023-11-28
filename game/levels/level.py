@@ -2,7 +2,6 @@
 from typing import List
 import pygame
 from tiles.entities.player import Player
-from filemanagement.support import import_cut_graphic
 from tiles.entities.NPCs.damsel import Damsel
 from tiles.entities.NPCs.skeleton import Skeleton
 from tiles.tile import Tile
@@ -19,7 +18,12 @@ class Level:
     The Level class will instantiate all objects required for a single level to run.
     """
 
-    def __init__(self, surface: pygame.Surface):
+    def __init__(
+        self,
+        surface: pygame.Surface,
+        universal_assets: List,
+        music_handler: pygame.mixer,
+    ):
         """Construct the level class.
 
         This method will instantiate all required sprite groups for the current level
@@ -32,7 +36,8 @@ class Level:
         # display surface
         self.display_surface = surface
 
-        # TODO: move any level specific setup steps into a method
+        # TODO: move any level specific setup steps into gameData.py
+        self._universal_assets = universal_assets
 
         # setup map
         terrain_layout = import_csv_layout(level_data["ground"])
@@ -60,12 +65,12 @@ class Level:
         self.obstacle_sprites.add(self.fence_sprites)
 
         # background music
-        self.mixer = pygame.mixer
-        self.mixer.init()
-        self.mixer.music.load(
+        self._mixer = music_handler
+        self._mixer.music.load(
             "levels/level_data/inspiring-cinematic-ambient-116199.ogg", "ogg"
         )
-        self.mixer.music.play(LOOP_MUSIC)
+        self._mixer.music.play(LOOP_MUSIC)
+        # TODO: have destructor unload/fade out music to main menu music
 
         self.create_entities_from_layout(character_layout)
         # self.player initialized in create_entities_from_layout()
@@ -77,6 +82,9 @@ class Level:
 
         self.camera.add(self.good_sprites)
         self.camera.add(self.bad_sprites)
+
+        # pause flag used to display pause menu
+        self._paused = False
 
     def create_entities_from_layout(self, layout: List[int]):
         """Initialize the entities on a layout.
@@ -132,12 +140,7 @@ class Level:
                 if val != "-1":
                     coords = (col_index * TILESIZE, row_index * TILESIZE)
 
-                    terrain_tile_list = import_cut_graphic(
-                        "graphics/tilesets/tiny_atlas.png"
-                    )
-                    # val will be the terrain tile index
-
-                    tile_surface = terrain_tile_list[int(val)]
+                    tile_surface = self._universal_assets[int(val)]
                     sprite = Tile(sprite_group)
                     sprite.set_tile(coords, tile_surface)
                     sprite.setColorKeyBlack()
@@ -145,14 +148,30 @@ class Level:
 
         return sprite_group
 
+    def pauseMenu(self) -> None:
+        """Pauses the game and opens the pause menu."""
+        print("PAUSED!")
+        pass
+
     def run(self):
         """Draw and update all sprite groups."""
-        self.player_group.update(self.bad_sprites, self.good_sprites)
-        self.bad_sprites.update(self.bad_sprites, self.good_sprites)
-        self.good_sprites.update(self.bad_sprites, self.good_sprites)
+        # TODO: change run to return bool. if paused, return paused flag.
+        keys = pygame.key.get_pressed()
 
-        # draw the game behind the player character
-        self.camera.camera_update()
-        self.camera.draw(self.display_surface)
-        # draw the player chacter
-        self.player_group.draw(self.display_surface)
+        # pause check
+        if keys[pygame.K_ESCAPE]:
+            self._paused = not self._paused
+        # TODO: need a small wait to prevent multiple, fast inputs
+
+        if self._paused:
+            self.pauseMenu()
+        else:
+            self.player_group.update(self.bad_sprites, self.good_sprites)
+            self.bad_sprites.update(self.bad_sprites, self.good_sprites)
+            self.good_sprites.update(self.bad_sprites, self.good_sprites)
+
+            # draw the game behind the player character
+            self.camera.camera_update()
+            self.camera.draw(self.display_surface)
+            # draw the player chacter
+            self.player_group.draw(self.display_surface)
