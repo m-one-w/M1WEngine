@@ -5,7 +5,6 @@ import sys
 import time
 from typing import Callable
 import pygame
-from tiles.entities.player import Player
 from tiles.entities.entity import Entity
 
 
@@ -68,7 +67,7 @@ class NPC(Entity):
         """Initialize NPC class."""
         super().__init__(groups)
         # init empty player
-        self.player: Player = pygame.sprite.Sprite()
+        self.player: Entity = pygame.sprite.Sprite()
 
         # setting up state machine
         self.states = Enum("states", ["Patrol", "Attack", "Flee", "Follow"])
