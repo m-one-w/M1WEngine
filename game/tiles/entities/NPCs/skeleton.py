@@ -31,6 +31,8 @@ class Skeleton(NPC):
         Define how sprite will move
     collision_handler(self)
         Define how to handle collisions
+    skeleton_die(self)
+        Handle skeleton death actions
     update(self,  bad_sprites: pygame.sprite.Group,
     good_sprites: pygame.sprite.Group)
         Define what methods are called on each tick
@@ -89,7 +91,12 @@ class Skeleton(NPC):
         collisions = self.rect.colliderect(self.player.hitbox)
 
         if collisions:
-            self.die()
+            self.skeleton_die()
+
+    def skeleton_die(self):
+        """Handle actions on skeleton death."""
+        self.scoreController.bad_entity_destroyed_update_score(self.__class__.__name__)
+        self.die()
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group

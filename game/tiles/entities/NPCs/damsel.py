@@ -14,6 +14,8 @@ class Damsel(NPC):
     -------
     collision_handler(self)
         Handles interaction with environment.
+    damsel_die(self)
+        Handle damsel death actions
     update(self)
         Update damsel with current game state information.
     """
@@ -88,7 +90,12 @@ class Damsel(NPC):
         collisions = self.rect.collidelistall(enemy_sprites)
 
         if collisions:
-            self.die()
+            self.damsel_die()
+
+    def damsel_die(self):
+        """Handle actions on damsel death."""
+        self.scoreController.good_entity_destroyed_update_score(self.__class__.__name__)
+        self.die()
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group

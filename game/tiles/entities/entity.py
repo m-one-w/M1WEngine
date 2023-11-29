@@ -3,6 +3,7 @@ import math
 import pygame
 from direction import Direction
 from filemanagement.spriteSheet import SpriteSheet
+from scoreController import ScoreController
 from tiles.tile import Tile
 import settings
 from abc import (
@@ -65,6 +66,7 @@ class Entity(Tile, ABC):
         self.speed = 1
         self.compass.x = Direction.right
         self.status = "right"
+        self.scoreController = ScoreController()
 
     def get_sprite_sheet(self, path: str) -> SpriteSheet:
         """Create sprite sheet from path."""
