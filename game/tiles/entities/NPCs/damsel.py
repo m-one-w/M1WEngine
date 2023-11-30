@@ -61,13 +61,13 @@ class Damsel(NPC):
         # always patrol when no radar detections
         passive_state = self.set_state_patrol
 
-        # change state to follow if player is nearby
-        active_state = self.set_state_follow
-        self.radar_detect_player_entity(active_state, passive_state)
-
         # change state to flee if evil_entity nearby
         active_state = self.set_state_flee
-        self.radar_detect_entities(self._bad_sprites, active_state, passive_state)
+        self.radar_set_states(self._bad_sprites, active_state, passive_state)
+
+        # change state to follow if player is nearby
+        active_state = self.set_state_follow
+        self.radar_set_state(self.player, active_state)
 
         self.move_based_on_state()
 

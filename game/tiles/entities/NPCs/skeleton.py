@@ -68,11 +68,11 @@ class Skeleton(NPC):
 
         # change state to flee if player is nearby
         active_state = self.set_state_flee
-        self.radar_detect_player_entity(active_state, passive_state)
+        self.radar_set_states(self.player, active_state, passive_state)
 
         # change state to attack if there is good_entity nearby
         active_state = self.set_state_attack
-        self.radar_detect_entities(self._good_sprites, active_state, passive_state)
+        self.radar_set_state(self._good_sprites, active_state)
 
         self.move_based_on_state()
 

@@ -3,7 +3,7 @@
 from enum import Enum
 import sys
 import time
-from typing import Callable
+from typing import Callable, List
 import pygame
 from tiles.entities.entity import Entity
 import settings
@@ -29,19 +29,21 @@ class NPC(Entity):
 
     Methods
     -------
-    radar_detect_entities(
+    radar_set_states(
         self,
         entities: pygame.sprite.Group,
         set_active_state: type(Callable[[], None]),
         set_passive_state: type(Callable[[], None]),
     )
         Set the state on a radar detection of entities
-    radar_detect_player_entity(
+    radar_set_state(
         self,
+        entities: pygame.sprite.Group,
         set_active_state: type(Callable[[], None]),
-        set_passive_state: type(Callable[[], None]),
     )
-        Set a state on a radar detection of the player
+        Set the state on a radar detection of entities
+    set_target_sprite_from_list(self, spriteGroupList: List, collisions: List)
+        Choose a target sprite from a list of sprites
     move_based_on_state(self)
         Automatically move depending on the current state
     patrol_movement(self)
@@ -89,7 +91,7 @@ class NPC(Entity):
             settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
         )
 
-    def radar_detect_entities(
+    def radar_set_states(
         self,
         entities: pygame.sprite.Group,
         set_active_state: type(Callable[[], None]),
@@ -98,63 +100,103 @@ class NPC(Entity):
         """Set state and selects which sprite to apply an active state to.
 
         Depending on what we detect on the radar, set the state of the NPC.
+
+        Parameters
+        ----------
+        entities: pygame.sprite.Group
+            Either the player, or any sprite group
+        set_active_state: type(Callable[[], None])
+            The new active state to set
+        set_passive_state: type(Callable[[], None])
+            The new passive state to set
         """
-        # sprites as a list of sprites, not a Group of sprites
-        spriteGroupList = entities.sprites()
-        # list of all NPC collisions
-        collisions = self.radar.collidelistall(spriteGroupList)
+        collided = self.radar_set_state(entities, set_active_state)
+        if not collided:
+            # no radar hit and not in passive state
+            if self.current_state != set_passive_state:
+                set_passive_state()
+
+    def radar_set_state(
+        self,
+        entities: pygame.sprite.Group,
+        set_active_state: type(Callable[[], None]),
+    ) -> bool:
+        """Set state and selects which sprite to apply an active state to.
+
+        Depending on what we detect on the radar, set the state of the NPC.
+
+        Parameters
+        ----------
+        entities: pygame.sprite.Group
+            Either the player, or any sprite group
+        set_active_state: type(Callable[[], None])
+            The new active state to set
+        """
+        isPlayerCheck = entities.__class__.__name__ == "Player"
+
+        if isPlayerCheck:
+            collisions = self.radar.colliderect(entities)
+        else:
+            # sprites as a list of sprites, not a Group of sprites
+            spriteGroupList = entities.sprites()
+            hitbox_list = [sprite.hitbox for sprite in spriteGroupList]
+            # list of all NPC collisions
+            collisions = self.radar.collidelistall(hitbox_list)
 
         # if there is an entity inside our radar
         if collisions:
-            current_min_distance = float(sys.maxsize)
-            indexOfClosest = -1
+            if not isPlayerCheck:
+                self.set_target_sprite_from_list(spriteGroupList, collisions)
+            else:
+                self.target_sprite = self.player
 
-            # get list of rect tuple coordinates
-            for collisionIndex in collisions:
-                # get the coordinates of detected sprite
-                coord = spriteGroupList[collisionIndex].rect.center
-                # distance between self and the entity on radar
-                distance = self.get_distance(coord)
-                # track if entity is closest to self
-                old_min = current_min_distance
-                current_min_distance = min(distance, current_min_distance)
-                # if current entity on radar is new closest entity
-                if current_min_distance < old_min:
-                    indexOfClosest = collisionIndex
-
-            # set target sprite to closest sprite IF something detected
-            if indexOfClosest != -1:
-                self.target_sprite = spriteGroupList[indexOfClosest]
+            # try to attack
+            if set_active_state == self.set_state_attack:
                 if self.current_state != self.states.Attack:
-                    # function for setting the active state
                     set_active_state()
+            # try to flee
+            elif set_active_state == self.set_state_flee:
+                if self.current_state != self.states.Flee:
+                    set_active_state()
+            # try to follow
+            elif set_active_state == self.set_state_follow:
+                if self.current_state != self.states.Follow:
+                    set_active_state()
+            # cannot try to patrol as an active state
+            elif set_active_state == self.set_state_patrol:
+                raise Exception("Invalid active state of patrol has been found!")
 
-        else:
-            # else we are not attacking
-            if self.current_state == self.states.Attack:
-                # function for setting passive state
-                set_passive_state()
+        return collisions
 
-    def radar_detect_player_entity(
-        self,
-        set_active_state: type(Callable[[], None]),
-        set_passive_state: type(Callable[[], None]),
-    ):
-        """Check whether player is within our radar."""
-        # set state to 'Flee' if player detected
-        collision = self.radar.colliderect(self.player)
-        # if player on radar, set state
-        if collision:
-            if self.current_state != self.states.Flee:
-                # set state when player detected
-                set_active_state()
-        else:
-            if (
-                self.current_state != self.states.Attack
-                and self.current_state != self.states.Patrol
-            ):
-                # set state when no player detected
-                set_passive_state()
+    def set_target_sprite_from_list(self, spriteGroupList: List, collisions: List):
+        """Set the target sprite from a radar collision.
+
+        Parameters
+        ----------
+        sprite_group_list: List
+            List of all sprites that might have collided
+        collisions: List
+            List of indices for which sprites have collided
+        """
+        current_min_distance = float(sys.maxsize)
+        indexOfClosest = -1
+
+        for collisionIndex in collisions:
+            # get the coordinates of detected sprite
+            coord = spriteGroupList[collisionIndex].rect.center
+            # distance between self and the entity on radar
+            distance = self.get_distance(coord)
+            # track if entity is closest to self
+            old_min = current_min_distance
+            current_min_distance = min(distance, current_min_distance)
+            # if current entity on radar is new closest entity
+            if current_min_distance < old_min:
+                indexOfClosest = collisionIndex
+
+        # set target sprite to closest sprite IF something detected
+        if indexOfClosest != -1:
+            # some states will use a target sprite
+            self.target_sprite = spriteGroupList[indexOfClosest]
 
     def move_based_on_state(self):
         """Logic to determine which _movement() method to call."""
@@ -190,9 +232,9 @@ class NPC(Entity):
     def flee_movement(self):
         """Change direction based on where player is."""
         if self.current_state == self.states.Flee:
-            if self.facing_towards_entity(self.player):
+            if self.facing_towards_entity(self.target_sprite):
                 # must set to copy or it gives the entity a shared compass
-                self.compass = self.player.compass.copy()
+                self.compass = self.target_sprite.compass.copy()
 
             # move according to the compass direction
             self.move(self.speed)
