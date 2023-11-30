@@ -39,11 +39,6 @@ class Player(Entity):
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
 
-        # speed can be any integer
-        self.attacking = False
-        self.attackCooldown = 400
-        self.attackTime = 0
-
         self.obstacleSprites = obstacle_sprites
         self.import_assets()
 
