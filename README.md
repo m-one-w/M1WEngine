@@ -69,11 +69,12 @@ It is recommended to use Visual Studio Code IDE. Please install the following pl
 
 ### Running the Game
 To run the game from within Visual Studio Code, navigate to the game.py file and select the run python file button in the top right corner of the IDE.
+
+Alternatively, right click on the game.py file and click 'run python file in terminal'
+
 ## Gameplay and Mechanics
 The objective of Reluctant Hero is to maximize your score while traversing the map.
 A detailed spec sheet of the mechanics can be found [here](./docs/specSheet.md)
-
-Alternatively, right click on the game.py file and click 'run python file in terminal'
 
 ## System Design
 The system design document was created through the draw.io web UI.
