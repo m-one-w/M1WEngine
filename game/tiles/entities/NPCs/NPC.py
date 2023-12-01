@@ -69,6 +69,8 @@ class NPC(Entity):
     def __init__(self, groups: pygame.sprite.Group):
         """Initialize NPC class."""
         super().__init__(groups)
+        self.rect = pygame.Rect(0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT)
+
         # init empty player
         self.player: Entity = pygame.sprite.Sprite()
 
