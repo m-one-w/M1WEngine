@@ -51,13 +51,6 @@ class Damsel(NPC):
         self.image = self.sprite_sheet.image_at(damselSelfImageRect)
         self.setColorKeyWhite()
         self.rect = self.image.get_rect(topleft=pos)
-        # modify model rect to be a slightly less tall hitbox.
-        self.hitbox = self.rect.inflate(0, -10)
-        inflation_size = 8
-        self.radar = self.rect.inflate(
-            settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
-        )
-
         self.obstacle_sprites = obstacle_sprites
         self.import_assets()
 

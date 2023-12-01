@@ -56,16 +56,6 @@ class Skeleton(NPC):
         self.image = self.sprite_sheet.image_at(skeletonSelfImageRect).convert_alpha()
         self.setColorKeyBlack()
         self.rect = self.image.get_rect(topleft=pos)
-
-        # modify model rect to be a slightly less tall hitbox.
-        # this will be used for movement.
-        self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
-        # TODO: find sweet spot inflation size for radar detection
-        inflation_size = 8
-        self.radar = self.rect.inflate(
-            settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
-        )
-
         self.obstacleSprites = obstacle_sprites
         self.import_assets()
 

@@ -6,6 +6,7 @@ import time
 from typing import Callable
 import pygame
 from tiles.entities.entity import Entity
+import settings
 
 
 class NPC(Entity):
@@ -78,6 +79,15 @@ class NPC(Entity):
 
         # for automated movements, store a previous timestamp
         self.last_time_stored = 0
+
+        # modify model rect to be a slightly less tall hitbox.
+        # this will be used for movement.
+        self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
+        # TODO: find sweet spot inflation size for radar detection
+        inflation_size = 8
+        self.radar = self.rect.inflate(
+            settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
+        )
 
     def radar_detect_entities(
         self,
