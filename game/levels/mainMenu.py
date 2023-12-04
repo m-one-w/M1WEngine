@@ -16,7 +16,6 @@ class MainMenu:
 
         This method will instantiate all required sprite groups for the main menu level
         """
-        self.start_screen_path = "graphics/m1w-gaming.png"
         # load menu image
         self.menu_image = pygame.image.load(MAIN_MENU_BACKGROUND_PATH)
         # font
@@ -27,14 +26,14 @@ class MainMenu:
         self.display_surface = pygame.display.get_surface()
 
         # render menu text on screen
-        self.menu_text = [
+        self._menu_text = [
             self.font.render("New Game", True, 40),
             self.font.render("Options", True, 40),
             self.font.render("Credits", True, 40),
             self.font.render("Quit", True, 40),
         ]
 
-        self.text_increment = 50
+        self._text_increment = 50
         self.menu_text_size = [180, 40]
 
         self.text = self.font.render("quit", True, self.font_color)
@@ -56,57 +55,65 @@ class MainMenu:
         # get mouse position as tuple
         self.mouse = pygame.mouse.get_pos()
         # shade in button when mouse hovers over it
-        for text in self.menu_text:
+        for text in self._menu_text:
             if (
                 WINDOW_WIDTH / 2
                 <= self.mouse[0]
                 <= WINDOW_WIDTH / 2 + self.menu_text_size[0]
-                and self.text_increment
+                and self._text_increment
                 <= self.mouse[1]
-                <= self.text_increment + self.menu_text_size[1]
+                <= self._text_increment + self.menu_text_size[1]
             ):
                 pygame.draw.rect(
                     self.display_surface,
                     (170, 170, 170),
                     [
                         WINDOW_WIDTH / 2,
-                        self.text_increment,
+                        self._text_increment,
                         self.menu_text_size[0],
                         self.menu_text_size[1],
                     ],
                 )
-                self.display_surface.blit(text, (WINDOW_WIDTH / 2, self.text_increment))
+                self.display_surface.blit(
+                    text, (WINDOW_WIDTH / 2, self._text_increment)
+                )
             else:
                 pygame.draw.rect(
                     self.display_surface,
                     (100, 100, 100),
                     [
                         WINDOW_WIDTH / 2,
-                        self.text_increment,
+                        self._text_increment,
                         self.menu_text_size[0],
                         self.menu_text_size[1],
                     ],
                 )
-                self.display_surface.blit(text, (WINDOW_WIDTH / 2, self.text_increment))
-            self.text_increment += 50
-        self.text_increment = 50
+                self.display_surface.blit(
+                    text, (WINDOW_WIDTH / 2, self._text_increment)
+                )
+            self._text_increment += 50
+        self._text_increment = 50
 
     def menu_selection(self):
         """Manage menu button interactions."""
         # event to handle clicking on menu options
-        self.text_increment = 50
+        self._text_increment = 50
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 # menu_option = self.menu_text.count()
                 # hovering over menu option
-                for text in self.menu_text:
+                for text in self._menu_text:
                     if (
                         WINDOW_WIDTH / 2
                         <= self.mouse[0]
                         <= WINDOW_WIDTH / 2 + self.menu_text_size[0]
-                        and self.text_increment
+                        and self._text_increment
                         <= self.mouse[1]
-                        <= self.text_increment + self.menu_text_size[1]
+                        <= self._text_increment + self.menu_text_size[1]
                     ):
                         pygame.quit()
-                    self.text_increment += 50
+                    self._text_increment += 50
+
+        # TODO: when New Game button is clicked,
+        # __del__ mainMenu and return the menu or level that
+        # LevelManager should load next
