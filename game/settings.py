@@ -18,6 +18,7 @@ ENTITY_HITBOX_OFFSET = -4
 # image paths
 
 GAME_ICON_PATH = "graphics/game_icon.png"
+STUDIO_SPLASH_SCREEN_PATH = "graphics/studio_logo.png"
 MAIN_MENU_BACKGROUND_PATH = "graphics/floor_surface/ground.png"
 
 # Constant used to loop game music
