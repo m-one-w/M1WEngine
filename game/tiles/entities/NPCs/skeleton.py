@@ -56,7 +56,7 @@ class Skeleton(NPC):
         self.image = self.sprite_sheet.image_at(skeletonSelfImageRect).convert_alpha()
         self.setColorKeyBlack()
         self.rect = self.image.get_rect(topleft=pos)
-        self.obstacleSprites = obstacle_sprites
+        self.obstacle_sprites = obstacle_sprites
         self.import_assets()
 
     def automate_movement(self):
@@ -78,6 +78,7 @@ class Skeleton(NPC):
 
     def collision_handler(self):
         """Handle collision interactions with environment."""
+        super().collision_handler()
         collisions = self.rect.colliderect(self.player.hitbox)
 
         if collisions:
@@ -106,6 +107,6 @@ class Skeleton(NPC):
         self._good_sprites = good_sprites
         self.set_status_by_curr_rotation()
         self.image = self.animate()
-        self.collision_handler()
         # will move half as fast as player at the same speed
         self.automate_movement()
+        self.collision_handler()

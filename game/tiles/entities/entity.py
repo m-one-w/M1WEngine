@@ -6,13 +6,9 @@ from filemanagement.spriteSheet import SpriteSheet
 from scoreController import ScoreController
 from tiles.tile import Tile
 import settings
-from abc import (
-    ABC,
-    abstractmethod,
-)
 
 
-class Entity(Tile, ABC):
+class Entity(Tile):
     """Entity abstract class.
 
     Base class for all entities including player, enemies, and damsels.
@@ -56,6 +52,8 @@ class Entity(Tile, ABC):
         Get the average coordinates from a dictionary of coordinates
     collision_handler(self)
         Handle the collision check for entities
+    collision_set_compass(self, collided_coords: tuple)
+        Bounce a compass off the wall collided with
     """
 
     def __init__(self, groups: pygame.sprite.Group):
@@ -351,13 +349,60 @@ class Entity(Tile, ABC):
 
         return (collision_point_x, collision_point_y)
 
-    @abstractmethod
     def collision_handler(self):
-        """Handle the collision check for entities.
+        """Collision handler for entity.
 
-        This method should be implemented in any child classes that use it.
-        The method should handle the following:
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
         """
-        raise Exception("Not Implemented")
+        collision_dictionary = self.collision_detection(self.obstacle_sprites)
+        if collision_dictionary["collision_detected"]:
+            collided_coords = self.average_collision_coordinates(collision_dictionary)
+            self.collision_set_compass(collided_coords)
+
+    def collision_set_compass(self, collided_coords: tuple):
+        """Set the compass away from the position of the collision.
+
+        Parameters
+        ----------
+        collided_coords: tuple
+            A tuple containing the x and y of the average collision point
+        """
+        # used to flip x and y by the given amounts in the below vectors
+        horizontal_reflect_vect = pygame.math.Vector2(Direction.right, 0)
+        vertical_reflect_vect = pygame.math.Vector2(0, Direction.down)
+
+        abs_distance_to_x = abs(self.rect.centerx - collided_coords[0])
+        abs_distance_to_y = abs(self.rect.centery - collided_coords[1])
+        distance_to_x = collided_coords[0] - self.rect.centerx
+        distance_to_y = collided_coords[1] - self.rect.centery
+
+        # if to the left or right
+        if abs_distance_to_x > abs_distance_to_y:
+            # if collided with sprite to the right of self
+            if distance_to_x > 0:
+                # if compass pointing right
+                if self.compass.x > 0:
+                    # bounce the compass off a horizontal vector
+                    self.compass = self.compass.reflect(horizontal_reflect_vect)
+            # if collided with sprite to the left of self
+            else:
+                # if compass pointing left
+                if self.compass.x < 0:
+                    # bounce the compass off a horizontal vector
+                    self.compass = self.compass.reflect(horizontal_reflect_vect)
+
+        # if up or down
+        else:
+            # if collided with sprite above self
+            if distance_to_y < 0:
+                # if compass pointing up
+                if self.compass.y < 0:
+                    # bounce the compass off a vertical vector
+                    self.compass = self.compass.reflect(vertical_reflect_vect)
+            # if collided with sprite below self
+            else:
+                # if compass pointing down
+                if self.compass.y > 0:
+                    # bounce the compass off a vertical vector
+                    self.compass = self.compass.reflect(vertical_reflect_vect)

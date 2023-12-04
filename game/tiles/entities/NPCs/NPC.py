@@ -332,3 +332,15 @@ class NPC(Entity):
                     is_same_direction = True
 
         return is_same_direction
+
+    def collision_set_compass(self, collided_coords: tuple):
+        """Set the compass away from the position of the collision.
+
+        Parameters
+        ----------
+        collided_coords: tuple
+            A tuple containing the x and y of the average collision point
+        """
+        super().collision_set_compass(collided_coords)
+        # TODO: time should be retrieved from levelManager
+        self.last_time_stored = time.perf_counter()

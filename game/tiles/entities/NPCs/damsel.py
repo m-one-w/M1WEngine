@@ -79,6 +79,7 @@ class Damsel(NPC):
         direction: string
             Used to determine horizontal/vertical check.
         """
+        super().collision_handler()
         enemy_sprites = self._bad_sprites.sprites()
         collisions = self.rect.collidelistall(enemy_sprites)
 
@@ -106,6 +107,6 @@ class Damsel(NPC):
         self._good_sprites = good_sprites
         self.set_status_by_curr_rotation()
         self.image = self.animate()
-        self.collision_handler()
         # will move half as fast as player at the same speed
         self.automate_movement()
+        self.collision_handler()
