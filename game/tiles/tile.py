@@ -26,7 +26,7 @@ class Tile(pygame.sprite.Sprite):
         Moves left
     move_right(self, speed: int)
         Moves right
-    move_up(self, spee: int)
+    move_up(self, speed: int)
         Moves up
     move_down(self, speed: int)
         Moves down
@@ -34,6 +34,14 @@ class Tile(pygame.sprite.Sprite):
         Tracks where to move
     set_tile(self, x: int, y: int, surface: pygame.surface)
         sets all info for a background tile
+    _move_left(self, speed: int)
+        Internal move left
+    _move_right(self, speed: int)
+        Internal move right
+    _move_up(self, speed: int)
+        Internal move up
+    _move_down(self, speed: int)
+        Internal move down
     """
 
     # other init options: sprite_type, surface = pygame.Surface((TILESIZE, TILESIZE))
@@ -80,70 +88,74 @@ class Tile(pygame.sprite.Sprite):
         right = Direction.right
 
         if self.movementTracker["vertical"] <= up:
-            self.move_up(speed)
+            self._move_up(speed)
             self.movementTracker["vertical"] += down
         elif self.movementTracker["vertical"] >= down:
-            self.move_down(speed)
+            self._move_down(speed)
             self.movementTracker["vertical"] += up
 
         if self.movementTracker["horizontal"] <= left:
-            self.move_left(speed)
+            self._move_left(speed)
             self.movementTracker["horizontal"] += right
         elif self.movementTracker["horizontal"] >= right:
-            self.move_right(speed)
+            self._move_right(speed)
             self.movementTracker["horizontal"] += left
-
-    def move_left(self, speed: int):
-        """Move to the left.
-
-        Parameters
-        ----------
-        speed: int
-            Multiplier for changing the sprite position
-        """
-        move_pixels_x = -1 * speed
-        move_pixels_y = 0
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
 
     def move_right(self, speed: int):
         """Move to the right.
 
+        Update the compass and move to the right.
+
         Parameters
         ----------
         speed: int
             Multiplier for changing the sprite position
         """
-        move_pixels_x = 1 * speed
-        move_pixels_y = 0
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
+        self.compass.x = Direction.right
+        self.compass.y = 0
+        self._move_right(speed)
+
+    def move_left(self, speed: int):
+        """Move to the left.
+
+        Update the compass and move to the left.
+
+        Parameters
+        ----------
+        speed: int
+            Multiplier for changing the sprite position
+        """
+        self.compass.x = Direction.right
+        self.compass.y = 0
+        self._move_left(speed)
 
     def move_up(self, speed: int):
         """Move up.
 
+        Update the compass and move up.
+
         Parameters
         ----------
         speed: int
             Multiplier for changing the sprite position
         """
-        move_pixels_x = 0
-        move_pixels_y = -1 * speed
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
+        self.compass.x = 0
+        self.compass.y = Direction.up
+        self._move_up(speed)
 
     def move_down(self, speed: int):
         """Move down.
 
+        Update the compass and move down.
+
         Parameters
         ----------
         speed: int
             Multiplier for changing the sprite position
         """
-        move_pixels_x = 0
-        move_pixels_y = 1 * speed
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
+        self.compass.x = 0
+        self.compass.y = Direction.down
+        self._move_down(speed)
 
     def update_movement_tracker(self):
         """Update movement tracker.
@@ -173,3 +185,55 @@ class Tile(pygame.sprite.Sprite):
     def die(self):
         """Remove the sprite from all groups."""
         self.kill()
+
+    def _move_left(self, speed: int):
+        """Move to the left.
+
+        Parameters
+        ----------
+        speed: int
+            Multiplier for changing the sprite position
+        """
+        move_pixels_x = -1 * speed
+        move_pixels_y = 0
+        self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
+
+    def _move_right(self, speed: int):
+        """Move to the right.
+
+        Parameters
+        ----------
+        speed: int
+            Multiplier for changing the sprite position
+        """
+        move_pixels_x = speed
+        move_pixels_y = 0
+        self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
+
+    def _move_up(self, speed: int):
+        """Move up.
+
+        Parameters
+        ----------
+        speed: int
+            Multiplier for changing the sprite position
+        """
+        move_pixels_x = 0
+        move_pixels_y = -1 * speed
+        self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
+
+    def _move_down(self, speed: int):
+        """Move down.
+
+        Parameters
+        ----------
+        speed: int
+            Multiplier for changing the sprite position
+        """
+        move_pixels_x = 0
+        move_pixels_y = speed
+        self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.hitbox.center = self.rect.center
