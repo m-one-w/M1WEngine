@@ -46,16 +46,16 @@ class ScoreController(object):
         self,
     ):
         """Construct the first singleton instance."""
-        self._high_score: int = 0
+        self._current_score: int = 0
         self._boredom_meter: int = 0
 
     @property
-    def high_score(self) -> int:
+    def current_score(self) -> int:
         """Get the highscore of the player."""
-        return self._high_score
+        return self._current_score
 
-    @high_score.setter
-    def high_score(self, new_value):
+    @current_score.setter
+    def current_score(self, new_value):
         """Set the new high score.
 
         Parameters
@@ -64,7 +64,7 @@ class ScoreController(object):
             New incoming value to set
         """
         if new_value >= 0:
-            self._high_score = new_value
+            self._current_score = new_value
         else:
             raise ValueError("High score cannot be a negative value.")
 
@@ -99,7 +99,7 @@ class ScoreController(object):
         """
         check = entity_name
         if check == "Skeleton":
-            self.high_score += SCORE_INCREASE_SKELETON_DEATH
+            self.current_score += SCORE_INCREASE_SKELETON_DEATH
             self.boredom_meter += BOREDOM_INCREASE_SKELETON_DEATH
 
     def good_entity_destroyed_update_score(self, entity_name: str):
@@ -113,10 +113,10 @@ class ScoreController(object):
             The name of the entity
         """
         if entity_name == "Damsel":
-            if self.high_score - SCORE_REDUCE_DAMSEL_DEATH < 0:
-                self.high_score = 0
+            if self.current_score - SCORE_REDUCE_DAMSEL_DEATH < 0:
+                self.current_score = 0
             else:
-                self.high_score -= SCORE_REDUCE_DAMSEL_DEATH
+                self.current_score -= SCORE_REDUCE_DAMSEL_DEATH
 
             if self.boredom_meter - BOREDOM_REDUCE_DAMSEL_DEATH < 0:
                 self.boredom_meter = 0
