@@ -30,7 +30,7 @@ class CameraManager(pygame.sprite.Group):
     """
 
     # initialize all groups and their current positions
-    def __init__(self, playerCharacter: Player):
+    def __init__(self, playerCharacter: Player) -> None:
         """Construct a CameraManager object.
 
         This method will instantiate the camera controller.
@@ -43,18 +43,18 @@ class CameraManager(pygame.sprite.Group):
         super().__init__()
         surfaceX = 0
         surfaceY = 1
-        self.displaySurface = pygame.display.get_surface()
-        self.halfWidth = (
-            self.displaySurface.get_size()[surfaceX] // 2
+        self._display_surface = pygame.display.get_surface()
+        self._halfWidth = (
+            self._display_surface.get_size()[surfaceX] // 2
         )  # floor division, returns int
-        self.halfHeight = (
-            self.displaySurface.get_size()[surfaceY] // 2
+        self._halfHeight = (
+            self._display_surface.get_size()[surfaceY] // 2
         )  # floor division, returns int
 
-        self.offset = pygame.math.Vector2()
-        self.playerCharacter = playerCharacter
+        self._offset = pygame.math.Vector2()
+        self._player_character = playerCharacter
 
-    def camera_update(self):
+    def camera_update(self) -> None:
         """Update the camera sprites.
 
         This method will set the direction of camera sprites to be the
@@ -66,6 +66,6 @@ class CameraManager(pygame.sprite.Group):
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             # offset = sprite.rect.topleft - self.offset
             prevDirection = sprite.compass.copy()
-            sprite.compass = self.playerCharacter.compass.copy() * -1
-            sprite.move(self.playerCharacter.speed)
+            sprite.compass = self._player_character.compass.copy() * -1
+            sprite.move(self._player_character.speed)
             sprite.compass = pygame.math.Vector2(prevDirection.x, prevDirection.y)
