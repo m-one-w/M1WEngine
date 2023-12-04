@@ -54,6 +54,8 @@ class NPC(Entity):
         Define the attack movement
     follow_movement(self)
         Define the follow movement
+    move_towards_target_sprite(self)
+        Move to the target sprite
     set_state_patrol(self)
         Set state to patrol
     set_state_attack(self)
@@ -244,22 +246,28 @@ class NPC(Entity):
     def attack_movement(self):
         """Change compass based on where good_sprite is."""
         if self.current_state == self.states.Attack:
-            if self.rect.x < self.target_sprite.rect.x:
-                self.move_right(self.speed)
-            elif self.rect.x > self.target_sprite.rect.x:
-                self.move_left(self.speed)
-
-            if self.rect.y < self.target_sprite.rect.y:
-                self.move_down(self.speed)
-            elif self.rect.y > self.target_sprite.rect.y:
-                self.move_up(self.speed)
-
-            self.compass = self.target_sprite.compass.copy()
+            self.move_towards_target_sprite()
 
     def follow_movement(self):
         """Follow behind another entity."""
-        # TODO: implement
+        # TODO: only follow at a set distance
+        if self.current_state == self.states.Follow:
+            self.move_towards_target_sprite()
         return
+
+    def move_towards_target_sprite(self):
+        """Move towards the target sprite."""
+        if self.rect.x < self.target_sprite.rect.x:
+            self.move_right(self.speed)
+        elif self.rect.x > self.target_sprite.rect.x:
+            self.move_left(self.speed)
+
+        if self.rect.y < self.target_sprite.rect.y:
+            self.move_down(self.speed)
+        elif self.rect.y > self.target_sprite.rect.y:
+            self.move_up(self.speed)
+
+        self.compass = self.target_sprite.compass.copy()
 
     def set_state_patrol(self):
         """Set state machine to 'Patrol'."""
