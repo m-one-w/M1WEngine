@@ -3,6 +3,7 @@
 
 
 ## Table of contents
+- [Documentation](#documentation)
 - [Installation](#installation)
 - [Development Environment](#development-environment)
     - [Libraries and Dependencies](#libraries-and-dependencies)
@@ -14,6 +15,9 @@
 - [System Design](#system-design)
 - [Agile Guidelines](#agile-guidelines)
 - [Further References](#further-references)
+
+## Documentation
+All documentation for the project can be found [here](./docs/).
 
 ## Installation
 Installation instructions assume windows 10 is in use.
