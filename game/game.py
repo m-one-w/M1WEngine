@@ -1,7 +1,7 @@
 """This module contains the main game class."""
 import pygame
 import sys
-from settings import FPS, WINDOW_HEIGHT, WINDOW_WIDTH
+from settings import STUDIO_SPLASH_SCREEN_PATH, WINDOW_HEIGHT, WINDOW_WIDTH
 from levels.levelManager import LevelManager
 
 
@@ -18,6 +18,18 @@ class Game:
         )
         pygame.display.set_caption("Reluctant Hero")
         pygame.display.set_icon(self._screen)
+        self.clock = pygame.time.Clock()
+
+        # display studio splash screen while loading game stuff
+        self._studio_splash_screen = pygame.image.load(STUDIO_SPLASH_SCREEN_PATH)
+        self._screen.blit(
+            self._studio_splash_screen,
+            (
+                (WINDOW_WIDTH - self._studio_splash_screen.get_width()) / 2,
+                (WINDOW_HEIGHT - self._studio_splash_screen.get_height()) / 2,
+            ),
+        )
+        pygame.display.update()
 
         self.level = LevelManager(self._screen)
 
@@ -35,7 +47,6 @@ class Game:
 
             # update display based on events
             pygame.display.update()
-            self.clock.tick(FPS)
 
 
 # Start of program

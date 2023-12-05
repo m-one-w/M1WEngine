@@ -1,6 +1,7 @@
 """This module contains the LevelManager class."""
 
 import pygame
+from settings import FPS
 from levels.AssetManager import AssetManager
 from levels.level import Level
 
@@ -28,8 +29,14 @@ class LevelManager:
         # TODO: AssetManager requires path to MainMenu music. In gameData.py
         self._asset_manager: AssetManager = AssetManager("ook")
         self._screen = surface
+        self.clock = pygame.time.Clock()
+
         # TODO: boot to MainMenu instead of Level
-        self._level = Level(surface)
+        self._level: Level = Level(
+            self._screen,
+            self._asset_manager._univeral_sprites,
+            self._asset_manager._music_manager,
+        )
 
         # pause flag used to display pause menu
         self._paused: bool = False
@@ -38,3 +45,4 @@ class LevelManager:
         """Refresh the screen and run the level."""
         self._screen.fill("black")
         self._level.run()
+        self.clock.tick(FPS)
