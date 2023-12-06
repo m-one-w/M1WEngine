@@ -13,6 +13,28 @@ class Player(Entity):
     The player class will handle movement logic and sprite changing logic for the player
     object. The player class will also handle any collision logic that influences the
     player object.
+
+    Attributes
+    ----------
+    sprite_sheet: SpriteSheet
+        Hold all the player animations
+    image: pygame.Surface
+        Hold the current player image
+    rect: pygame.Rect
+        Hold the player position and size
+    hitbox: pygame.Rect
+        Hold the player hitbox
+    obstacle_sprites: pygame.sprite.Group
+        Contain which sprites are considered opbstacles
+
+    Methods
+    -------
+    input(self)
+        Handle keyboard input for the player
+    update(
+        self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
+    )
+        Update all player data
     """
 
     def __init__(
