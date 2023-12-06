@@ -8,21 +8,18 @@ from tiles.tile import Tile
 from filemanagement.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
 from cameraControl.cameraManager import CameraManager
-from levels.gameData import level_1 as level_data
+from levels.gameData import level_data
 from levels.gameData import character_keys
 
 
-class Level:
+class Level(object):
     """Level class.
 
     The Level class will instantiate all objects required for a single level to run.
     """
 
     def __init__(
-        self,
-        surface: pygame.Surface,
-        universal_assets: List,
-        music_handler: pygame.mixer,
+        self, universal_assets: List, music_handler: pygame.mixer, level_key: str
     ):
         """Construct the level class.
 
@@ -34,37 +31,19 @@ class Level:
             The surface that contains the game's full window
         """
         # display surface
-        self.display_surface = surface
+        self.display_surface = pygame.display.get_surface()
 
         # TODO: move any level specific setup steps into gameData.py
         self._universal_assets = universal_assets
 
-        # setup map
-        terrain_layout = import_csv_layout(level_data["ground"])
-        rocks_layout = import_csv_layout(level_data["rocks"])
-        raised_ground_layout = import_csv_layout(level_data["raised_ground"])
-        plants_layout = import_csv_layout(level_data["plants"])
-        fence_layout = import_csv_layout(level_data["fence"])
-        extra_layout = import_csv_layout(level_data["extra"])
-        character_layout = import_csv_layout(level_data["characters"])
-        self.terrain_sprites = self.create_tile_group(terrain_layout)
-        self.terrain_sprites.add(self.create_tile_group(rocks_layout))
-        self.terrain_sprites.add(self.create_tile_group(raised_ground_layout))
-        self.plant_sprites = self.create_tile_group(plants_layout)
-        self.fence_sprites = self.create_tile_group(fence_layout)
-        self.extra_sprites = self.create_tile_group(extra_layout)
-
+        # extract data from level_data dictionary in gameData.py
+        self.create_map(level_key)
         # sprite groups
-        self.obstacle_sprites = pygame.sprite.Group()
-        self.bad_sprites = pygame.sprite.Group()
-        self.good_sprites = pygame.sprite.Group()
-        self.attack_sprites = pygame.sprite.Group()
-        self.player_group = pygame.sprite.GroupSingle()
-
+        self.create_sprite_groups()
         # add fence_sprites to obstacle_sprites
-        self.obstacle_sprites.add(self.fence_sprites)
+        self.add_obstacles()
 
-        # background music
+        # load and play level's music
         self._mixer = music_handler
         self._mixer.music.load(
             "levels/level_data/inspiring-cinematic-ambient-116199.ogg", "ogg"
@@ -72,19 +51,40 @@ class Level:
         self._mixer.music.play(LOOP_MUSIC)
         # TODO: have destructor unload/fade out music to main menu music
 
-        self.create_entities_from_layout(character_layout)
+        self.create_entities_from_layout(self._character_layout)
         # self.player initialized in create_entities_from_layout()
         self.camera = CameraManager(self.player)
-        self.camera.add(self.terrain_sprites)
-        self.camera.add(self.plant_sprites)
-        self.camera.add(self.fence_sprites)
-        self.camera.add(self.extra_sprites)
-
-        self.camera.add(self.good_sprites)
-        self.camera.add(self.bad_sprites)
+        # add sprites to camera
+        self.add_sprites_to_camera()
 
         # pause flag used to display pause menu
         self._paused = False
+
+    def create_map(self, level_key: str) -> None:
+        """Read level data from gameData.py and stage it for rendering."""
+        # setup map
+        terrain_layout = import_csv_layout(level_data[level_key]["ground"])
+        rocks_layout = import_csv_layout(level_data[level_key]["rocks"])
+        raised_ground_layout = import_csv_layout(level_data[level_key]["raised_ground"])
+        plants_layout = import_csv_layout(level_data[level_key]["plants"])
+        fence_layout = import_csv_layout(level_data[level_key]["fence"])
+        extra_layout = import_csv_layout(level_data[level_key]["extra"])
+        self._character_layout = import_csv_layout(level_data[level_key]["characters"])
+
+        self._terrain_sprites = self.create_tile_group(terrain_layout)
+        self._terrain_sprites.add(self.create_tile_group(rocks_layout))
+        self._terrain_sprites.add(self.create_tile_group(raised_ground_layout))
+        self._plant_sprites = self.create_tile_group(plants_layout)
+        self._fence_sprites = self.create_tile_group(fence_layout)
+        self._extra_sprites = self.create_tile_group(extra_layout)
+
+    def create_sprite_groups(self) -> None:
+        """Create and initialize all sprite groups for the level."""
+        self._obstacle_sprites = pygame.sprite.Group()
+        self._bad_sprites = pygame.sprite.Group()
+        self._good_sprites = pygame.sprite.Group()
+        self._attack_sprites = pygame.sprite.Group()
+        self._player_group = pygame.sprite.GroupSingle()
 
     def create_entities_from_layout(self, layout: List[int]):
         """Initialize the entities on a layout.
@@ -108,22 +108,22 @@ class Level:
                 if val == character_keys["player"]:
                     self.player = Player(
                         position,
-                        [self.player_group],
-                        self.obstacle_sprites,
+                        [self._player_group],
+                        self._obstacle_sprites,
                     )
                 # initialize damsels
                 elif val == character_keys["damsel"]:
-                    Damsel(position, self.good_sprites, self.obstacle_sprites)
+                    Damsel(position, self._good_sprites, self._obstacle_sprites)
                 # initialize skeletons
                 elif val == character_keys["skeleton"]:
-                    Skeleton(position, self.bad_sprites, self.obstacle_sprites)
+                    Skeleton(position, self._bad_sprites, self._obstacle_sprites)
 
         # add player awareness to friendly_sprites
-        for entity in self.good_sprites:
+        for entity in self._good_sprites:
             entity.set_player(self.player)
 
         # add player awareness to enemy_sprites
-        for entity in self.bad_sprites:
+        for entity in self._bad_sprites:
             entity.set_player(self.player)
 
     def create_tile_group(self, layout: List[int]) -> pygame.sprite.Group:
@@ -148,6 +148,20 @@ class Level:
 
         return sprite_group
 
+    def add_obstacles(self) -> None:
+        """Add all obstacle sprites for the level to self._obstacle_sprites."""
+        self._obstacle_sprites.add(self._fence_sprites)
+
+    def add_sprites_to_camera(self) -> None:
+        """Add all visible sprites to the CameraManager."""
+        self.camera.add(self._terrain_sprites)
+        self.camera.add(self._plant_sprites)
+        self.camera.add(self._fence_sprites)
+        self.camera.add(self._extra_sprites)
+
+        self.camera.add(self._good_sprites)
+        self.camera.add(self._bad_sprites)
+
     def pauseMenu(self) -> None:
         """Pauses the game and opens the pause menu."""
         print("PAUSED!")
@@ -156,22 +170,23 @@ class Level:
     def run(self):
         """Draw and update all sprite groups."""
         # TODO: change run to return bool. if paused, return paused flag.
-        keys = pygame.key.get_pressed()
+        self.display_surface.fill("black")
 
         # pause check
-        if keys[pygame.K_ESCAPE]:
-            self._paused = not self._paused
-        # TODO: need a small wait to prevent multiple, fast inputs
+        for event in pygame.event.get():
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_ESCAPE:
+                    self._paused is not self._paused
 
         if self._paused:
             self.pauseMenu()
         else:
-            self.player_group.update(self.bad_sprites, self.good_sprites)
-            self.bad_sprites.update(self.bad_sprites, self.good_sprites)
-            self.good_sprites.update(self.bad_sprites, self.good_sprites)
+            self._player_group.update(self._bad_sprites, self._good_sprites)
+            self._bad_sprites.update(self._bad_sprites, self._good_sprites)
+            self._good_sprites.update(self._bad_sprites, self._good_sprites)
 
             # draw the game behind the player character
             self.camera.camera_update()
             self.camera.draw(self.display_surface)
             # draw the player chacter
-            self.player_group.draw(self.display_surface)
+            self._player_group.draw(self.display_surface)

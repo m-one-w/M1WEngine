@@ -31,22 +31,21 @@ class Game:
         )
         pygame.display.update()
 
-        self.level = LevelManager(self._screen)
+        self._quit_game: bool = False
+        self._level_manager = LevelManager()
 
     def run(self):
         """Run the main game loop."""
-        while True:
+        while not self._quit_game:
             # check game events
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
-            # run level
-            self.level.run()
-
-            # update display based on events
+            self._quit_game = self._level_manager.run()
             pygame.display.update()
+        pygame.quit()
+        sys.exit()
 
 
 # Start of program
