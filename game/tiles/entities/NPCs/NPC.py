@@ -255,7 +255,6 @@ class NPC(Entity):
         # TODO: only follow at a set distance
         if self.current_state == self.states.Follow:
             self.move_towards_target_sprite()
-        return
 
     def move_towards_target_sprite(self):
         """Move towards the target sprite."""
