@@ -69,7 +69,7 @@ class Tile(pygame.sprite.Sprite):
         """Set the sprite alpha channel to ignore white backgrounds."""
         self.image.set_colorkey(self.colorKeyWhite, pygame.RLEACCEL)
 
-    def move(self, speed: int):
+    def move(self, speed: int = 1):
         """Handle movement of the tile.
 
         Updates position of the tile using current heading and speed.
@@ -101,7 +101,7 @@ class Tile(pygame.sprite.Sprite):
             self._move_right(speed)
             self.movementTracker["horizontal"] += left
 
-    def move_right(self, speed: int):
+    def move_right(self, speed: int = 1):
         """Move to the right.
 
         Update the compass and move to the right.
@@ -115,7 +115,7 @@ class Tile(pygame.sprite.Sprite):
         self.compass.y = 0
         self._move_right(speed)
 
-    def move_left(self, speed: int):
+    def move_left(self, speed: int = 1):
         """Move to the left.
 
         Update the compass and move to the left.
@@ -129,7 +129,7 @@ class Tile(pygame.sprite.Sprite):
         self.compass.y = 0
         self._move_left(speed)
 
-    def move_up(self, speed: int):
+    def move_up(self, speed: int = 1):
         """Move up.
 
         Update the compass and move up.
@@ -143,7 +143,7 @@ class Tile(pygame.sprite.Sprite):
         self.compass.y = Direction.up
         self._move_up(speed)
 
-    def move_down(self, speed: int):
+    def move_down(self, speed: int = 1):
         """Move down.
 
         Update the compass and move down.
