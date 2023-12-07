@@ -58,6 +58,7 @@ class Skeleton(NPC):
         self.rect = self.image.get_rect(topleft=pos)
         self.obstacle_sprites = obstacle_sprites
         self.import_assets()
+        self.hitbox = self.rect.inflate(-4, 0)
 
     def automate_movement(self):
         """Movement logic method."""
@@ -82,12 +83,15 @@ class Skeleton(NPC):
         collisions = self.rect.colliderect(self.player.hitbox)
 
         if collisions:
-            self.skeleton_die()
+            try:
+                self.collided_with_player()
+            except ValueError:
+                print("Unable to resolve player collisions from skeleton.")
 
-    def skeleton_die(self):
+    def die(self):
         """Handle actions on skeleton death."""
+        super().die()
         self.scoreController.bad_entity_destroyed_update_score(self.__class__.__name__)
-        self.die()
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
@@ -109,4 +113,7 @@ class Skeleton(NPC):
         self.image = self.animate()
         # will move half as fast as player at the same speed
         self.automate_movement()
-        self.collision_handler()
+
+        if self.current_state != self.states.Thrown:
+            # Flee collision handler must be handled within auto movement
+            self.collision_handler()

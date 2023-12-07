@@ -6,6 +6,7 @@ import time
 from typing import Callable, List
 import pygame
 from enums.actions import Actions
+from enums.eatenPowers import EatenPowers
 from tiles.entities.entity import Entity
 import settings
 
@@ -55,6 +56,8 @@ class NPC(Entity):
         Define the attack movement
     follow_movement(self)
         Define the follow movement
+    thrown_movement(self)
+        Throw self from current position
     move_towards_target_sprite(self)
         Move to the target sprite
     set_state_patrol(self)
@@ -65,8 +68,12 @@ class NPC(Entity):
         Set state to flee
     set_state_follow(self)
         Set state to follow
+    set_state_thrown(self)
+        Set the state to thrown
     set_player(self, player: pygame.sprite)
         Set player for NPC to track
+    collided_with_player(self)
+        NPC actions on collision with player
     facing_towards_entity(self, other_sprite: pygame.sprite)
         Determine if a sprite is facing towards another sprite
     teleport_out_of_sprite(self, collision_rect: pygame.Rect)
@@ -82,7 +89,7 @@ class NPC(Entity):
         self.player: Entity = pygame.sprite.Sprite()
 
         # setting up state machine
-        self.states = Enum("states", ["Patrol", "Attack", "Flee", "Follow"])
+        self.states = Enum("states", ["Patrol", "Attack", "Flee", "Follow", "Thrown"])
         self.current_state = self.states.Patrol
 
         # the closest sprite on our radar
@@ -153,7 +160,7 @@ class NPC(Entity):
             collisions = self.radar.collidelistall(hitbox_list)
 
         # if there is an entity inside our radar
-        if collisions:
+        if collisions and self.current_state != self.states.Thrown:
             if not isPlayerCheck:
                 self.set_target_sprite_from_list(spriteGroupList, collisions)
             else:
@@ -221,6 +228,9 @@ class NPC(Entity):
         elif self.current_state == self.states.Follow:
             self.follow_movement()
 
+        elif self.current_state == self.states.Thrown:
+            self.thrown_movement()
+
     def patrol_movement(self):
         """Move back and forth."""
         if self.current_state == self.states.Patrol:
@@ -261,6 +271,22 @@ class NPC(Entity):
         if self.current_state == self.states.Follow:
             self.move_towards_target_sprite()
 
+    def thrown_movement(self):
+        """Get thrown from current position."""
+        # TODO: move to game counter
+        current_time_in_seconds = time.perf_counter()
+
+        seconds_per_throw = 1
+        if current_time_in_seconds - self.last_time_stored > seconds_per_throw:
+            self.current_state = self.states.Patrol
+        else:
+            collision_dictionary = self.collision_detection(self.obstacle_sprites)
+            if collision_dictionary["collision_detected"]:
+                self.die()
+            else:
+                speed = 5
+                self.move(speed)
+
     def move_towards_target_sprite(self):
         """Move towards the target sprite."""
         if self.rect.x < self.target_sprite.rect.x:
@@ -277,11 +303,13 @@ class NPC(Entity):
 
     def set_state_patrol(self):
         """Set state machine to 'Patrol'."""
-        self.current_state = self.states.Patrol
+        if self.current_state != self.states.Thrown:
+            self.current_state = self.states.Patrol
 
     def set_state_attack(self):
         """Set state machine to 'Attack'."""
-        self.current_state = self.states.Attack
+        if self.current_state != self.states.Thrown:
+            self.current_state = self.states.Attack
 
     def set_state_flee(self):
         """Set state machine to 'Flee'."""
@@ -289,7 +317,15 @@ class NPC(Entity):
 
     def set_state_follow(self):
         """Set state machine to 'Follow'."""
-        self.current_state = self.states.Follow
+        if self.current_state != self.states.Thrown:
+            self.current_state = self.states.Follow
+
+    def set_state_thrown(self):
+        """Set state machine to 'Thrown'."""
+        self.current_state = self.states.Thrown
+        # TODO: switch to game clock
+        self.last_time_stored = time.perf_counter()
+        self.compass = self.player.compass.copy()
 
     def set_player(self, player: pygame.sprite):
         """Set the player for the entity to track.
@@ -388,3 +424,25 @@ class NPC(Entity):
                 # teleport below the top of the sprite
                 if collision_rect.bottom - (self.hitbox.top - 1) > 0:
                     self.move_down()
+
+    def collided_with_player(self):
+        """Go through action when colliding with a player."""
+        if self.current_state != self.states.Thrown:
+            current_player_action = self.player.pop_next_player_action()
+            if current_player_action == Actions.destroy:
+                self.die()
+            elif current_player_action == Actions.consume:
+                self.die()
+                # TODO: make consume logic
+                # set player consumption attribute with setter
+                child_class = self.__class__.__name__
+                if child_class == "Skeleton":
+                    self.player.eaten_power = EatenPowers.basic_skeleton
+                elif child_class == "Damsel":
+                    self.player.eaten_power = EatenPowers.damsel
+                else:
+                    raise ValueError(
+                        "Unknown caller, cannot set player consume attribute."
+                    )
+            elif current_player_action == Actions.throw:
+                self.set_state_thrown()

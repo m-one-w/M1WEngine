@@ -37,6 +37,10 @@ class Player(Entity):
 
     Methods
     -------
+    eaten_power(self)
+        Get the current eaten power
+    eaten_power(self, new_value)
+        Set the current eaten power
     input(self)
         Handle keyboard input for the player
     ensure_full_action_queue(self)
@@ -45,6 +49,8 @@ class Player(Entity):
         Get the current player action
     pop_next_player_action(self)
         Get and remove the next player action
+    move(self, speed)
+        Player specific move
     update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
     )
@@ -71,11 +77,32 @@ class Player(Entity):
         )
         self.image: pygame.surface = self.sprite_sheet.image_at(playerSelfImageRect)
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
+        # ensure hitbox is large enough to cover player rotations
+        self.hitbox = self.rect.inflate(2, 0)
 
         self.obstacle_sprites = obstacle_sprites
         self.import_assets()
         self._action_queue: list = []
+        self.eaten_power = EatenPowers.empty_stomach
+
+    @property
+    def eaten_power(self) -> EatenPowers:
+        """Get the current eaten power of the player."""
+        return self._eaten_power
+
+    @eaten_power.setter
+    def eaten_power(self, new_value):
+        """Set the new eaten power.
+
+        Parameters
+        ----------
+        new_value: int
+            Incoming value to set which must be a EatenPowers type
+        """
+        if isinstance(new_value, EatenPowers):
+            self._eaten_power = new_value
+        else:
+            raise ValueError("Player can only consume eaten_power values.")
 
     def input(self):
         """Input function to handle keyboard input to the player class.
@@ -109,6 +136,12 @@ class Player(Entity):
         if len(self._action_queue) > 0:
             current_action = self._action_queue.pop()
         return current_action
+
+    def move(self, speed):
+        """Player specific move function."""
+        super().move(speed)
+        # adjust the hitbox for optimal sprite coverage
+        self.hitbox.centerx = self.rect.centerx + 1
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group

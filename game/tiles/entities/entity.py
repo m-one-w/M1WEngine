@@ -304,7 +304,6 @@ class Entity(Tile):
 
             if y_dist_out_hitbox != 0:
                 self.rect.move_ip(0, y_dist_out_hitbox)
-        return
 
     def further_axis(self, coord: tuple) -> str:
         """Find the further axis.
