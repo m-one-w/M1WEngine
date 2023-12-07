@@ -68,6 +68,8 @@ class NPC(Entity):
         Set player for NPC to track
     facing_towards_entity(self, other_sprite: pygame.sprite)
         Determine if a sprite is facing towards another sprite
+    teleport_out_of_sprite(self, collision_rect: pygame.Rect)
+        Teleport out of a collided wall - NPC specific
     """
 
     def __init__(self, groups: pygame.sprite.Group):
@@ -233,6 +235,7 @@ class NPC(Entity):
                 self.compass.y = 0
                 self.last_time_stored = current_time_in_seconds
 
+            self.collision_handler()
             self.move(self.speed)
 
     def flee_movement(self):
@@ -241,6 +244,7 @@ class NPC(Entity):
             if self.facing_towards_entity(self.target_sprite):
                 # must set to copy or it gives the entity a shared compass
                 self.compass = self.target_sprite.compass.copy()
+                self.collision_handler()
 
             # move according to the compass direction
             self.move(self.speed)
@@ -343,3 +347,43 @@ class NPC(Entity):
         super().collision_set_compass(collided_coords)
         # TODO: time should be retrieved from levelManager
         self.last_time_stored = time.perf_counter()
+
+    def teleport_out_of_sprite(self, collision_rect: pygame.Rect):
+        """Remove self from the collided sprite's collision bounds.
+
+        The NPC version of this method must adjust the compass when moving out
+        of walls in order for the automated movement to work as expected.
+
+        Parameters
+        ----------
+        collision_rect: pygame.Rect
+            The hitbox of the sprite that was collided with
+        """
+        # check if still within bounds,
+        # might not be from prev calls
+
+        axis = self.further_axis((collision_rect.centerx, collision_rect.centery))
+
+        if axis == "horizontal":
+            # collided sprite is on the right
+            if self.hitbox.centerx < collision_rect.centerx:
+                # teleport to the left
+                if collision_rect.left - (self.hitbox.right + 1) < 0:
+                    self.move_left()
+            # collided sprite is on the left
+            else:
+                # teleport to the right of the sprite
+                if collision_rect.right - (self.hitbox.left - 1) > 0:
+                    self.move_right()
+
+        else:
+            # collided sprite is below
+            if self.hitbox.centery < collision_rect.centery:
+                # teleport above the bottom of the sprite
+                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
+                    self.move_up()
+            # collided sprite is above
+            else:
+                # teleport below the top of the sprite
+                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
+                    self.move_down()

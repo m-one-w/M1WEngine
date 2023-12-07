@@ -278,28 +278,35 @@ class Entity(Tile):
         axis = self.further_axis((collision_rect.centerx, collision_rect.centery))
 
         if axis == "horizontal":
+            x_dist_out_hitbox = 0
             # collided sprite is on the right
             if self.hitbox.centerx < collision_rect.centerx:
                 # teleport to the left
-                x_dist_out_hitbox = collision_rect.left - (self.hitbox.right + 1)
-                self.rect.move_ip(x_dist_out_hitbox, 0)
+                if collision_rect.left - (self.hitbox.right + 1) < 0:
+                    x_dist_out_hitbox = -1
             # collided sprite is on the left
             else:
                 # teleport to the right of the sprite
-                x_dist_out_hitbox = collision_rect.right - (self.hitbox.left - 1)
+                if collision_rect.right - (self.hitbox.left - 1) > 0:
+                    x_dist_out_hitbox = 1
+
+            if x_dist_out_hitbox != 0:
                 self.rect.move_ip(x_dist_out_hitbox, 0)
         else:
+            y_dist_out_hitbox = 0
             # collided sprite is below
             if self.hitbox.centery < collision_rect.centery:
-                # teleport below the bottom of the sprite
-                y_dist_out_hitbox = collision_rect.top - (self.hitbox.bottom + 1)
-                self.rect.move_ip(0, y_dist_out_hitbox)
+                # teleport above the bottom of the sprite
+                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
+                    y_dist_out_hitbox = -1
             # collided sprite is above
             else:
-                # teleport above the top of the sprite
-                y_dist_out_hitbox = collision_rect.bottom - (self.hitbox.top - 1)
-                self.rect.move_ip(0, y_dist_out_hitbox)
+                # teleport below the top of the sprite
+                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
+                    y_dist_out_hitbox = 1
 
+            if y_dist_out_hitbox != 0:
+                self.rect.move_ip(0, y_dist_out_hitbox)
         return
 
     def further_axis(self, coord: tuple) -> str:
