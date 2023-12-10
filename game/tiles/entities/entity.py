@@ -1,7 +1,7 @@
 """This module contains the Entity class."""
 import math
 import pygame
-from direction import Direction
+from enums.direction import Direction
 from filemanagement.spriteSheet import SpriteSheet
 from scoreController import ScoreController
 from tiles.tile import Tile

@@ -5,6 +5,7 @@ import sys
 import time
 from typing import Callable, List
 import pygame
+from enums.actions import Actions
 from tiles.entities.entity import Entity
 import settings
 

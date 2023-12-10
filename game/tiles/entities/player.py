@@ -2,7 +2,8 @@
 import random
 import pygame
 from filemanagement.spriteSheet import SpriteSheet
-from tiles.entities.actions import Actions
+from enums.actions import Actions
+from enums.eatenPowers import EatenPowers
 from tiles.entities.entity import Entity
 import settings
 
