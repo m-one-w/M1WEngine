@@ -61,14 +61,6 @@ class Tile(pygame.sprite.Sprite):
         self.colorKeyWhite = (255, 255, 255)
         self.colorKeyBlack = (0, 0, 0)
 
-    def setColorKeyBlack(self):
-        """Set the sprite alpha channel to ignore black backgrounds."""
-        self.image.set_colorkey(self.colorKeyBlack, pygame.RLEACCEL)
-
-    def setColorKeyWhite(self):
-        """Set the sprite alpha channel to ignore white backgrounds."""
-        self.image.set_colorkey(self.colorKeyWhite, pygame.RLEACCEL)
-
     def move(self, speed: int = 1):
         """Handle movement of the tile.
 

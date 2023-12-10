@@ -65,10 +65,7 @@ class Entity(Tile):
         self.compass.x = Direction.right
         self.status = "right"
         self.scoreController = ScoreController()
-
-    def get_sprite_sheet(self, path: str) -> SpriteSheet:
-        """Create sprite sheet from path."""
-        return SpriteSheet(path)
+        self.sprite_sheet = SpriteSheet()
 
     def import_assets(self):
         """Import and divide the animation image into it's smaller parts.

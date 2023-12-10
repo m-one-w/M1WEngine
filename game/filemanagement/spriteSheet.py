@@ -10,20 +10,26 @@ class SpriteSheet:
     (x, y, x + offset, y + offset)
     """
 
-    def __init__(self, filename: str):
+    def __init__(self, filename: str = None, colorKey: pygame.Color | Tuple = None):
         """Load the sheet."""
-        try:
-            self.sheet = pygame.image.load(filename).convert()
-        except pygame.error as e:
-            print(f"Unable to load spritesheet image: {filename}")
-            raise SystemExit(e)
+        if isinstance(colorKey, pygame.Color):
+            self.colorKey = (colorKey.r, colorKey.g, colorKey.b)
+        else:
+            self.colorKey = colorKey
+        if filename:
+            try:
+                self.sheet = pygame.image.load(filename).convert()
+            except pygame.error as e:
+                print(f"Unable to load spritesheet image: {filename}")
+                raise SystemExit(e)
 
     def image_at(self, rectangle: tuple) -> pygame.Surface:
         """Load a specific image from a specific rectangle."""
         # Loads image from x, y, x+offset, y+offset.
         rect = pygame.Rect(rectangle)
-        image = pygame.Surface(rect.size, pygame.SRCALPHA).convert_alpha()
+        image = pygame.Surface(rect.size)
         image.blit(self.sheet, (0, 0), rect)
+        image.set_colorkey(self.colorKey)
         return image
 
     def images_at(self, rects: List[Tuple[int]]) -> List[pygame.Surface]:

@@ -143,7 +143,7 @@ class Level:
                     tile_surface = self._universal_assets[int(val)]
                     sprite = Tile(sprite_group)
                     sprite.set_tile(coords, tile_surface)
-                    sprite.setColorKeyBlack()
+                    sprite.image.set_colorkey(pygame.Color("black"), pygame.RLEACCEL)
                     sprite_group.add(sprite)
 
         return sprite_group

@@ -1,6 +1,7 @@
 """This module contains the Player class."""
 import random
 import pygame
+from filemanagement.spriteSheet import SpriteSheet
 from tiles.entities.actions import Actions
 from tiles.entities.entity import Entity
 import settings
@@ -63,12 +64,11 @@ class Player(Entity):
 
         # grab self image
         playerMovementsPath = "graphics/player/playerWalking.png"
-        self.sprite_sheet = self.get_sprite_sheet(playerMovementsPath)
+        self.sprite_sheet = SpriteSheet(playerMovementsPath, pygame.Color("black"))
         playerSelfImageRect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
         self.image: pygame.surface = self.sprite_sheet.image_at(playerSelfImageRect)
-        self.setColorKeyBlack()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
 
