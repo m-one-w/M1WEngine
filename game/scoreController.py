@@ -12,8 +12,8 @@ class ScoreController(object):
 
     Attributes
     ----------
-    _high_score: int
-        The current high score for the game
+    _current_score: int
+        The current score for the game
     _boredom_meter: int
         The current boredom meter for the game
 
@@ -23,10 +23,10 @@ class ScoreController(object):
         Create the class as a singleton object
     __init__(self)
         Initialize the singleton object's starting instance
-    high_score(self)
-        Get the high score
-    high_score(self, new_value)
-        Set the high score
+    current_score(self)
+        Get the current score
+    current_score(self, new_value)
+        Set the current score
     boredom_meter(self)
         Get the boredom meter
     boredom_meter(self, new_value)
@@ -51,12 +51,12 @@ class ScoreController(object):
 
     @property
     def current_score(self) -> int:
-        """Get the highscore of the player."""
+        """Get the current score of the player."""
         return self._current_score
 
     @current_score.setter
     def current_score(self, new_value):
-        """Set the new high score.
+        """Set the new current score.
 
         Parameters
         ----------
@@ -66,7 +66,7 @@ class ScoreController(object):
         if new_value >= 0:
             self._current_score = new_value
         else:
-            raise ValueError("High score cannot be a negative value.")
+            raise ValueError("Current score cannot be a negative value.")
 
     @property
     def boredom_meter(self) -> int:
