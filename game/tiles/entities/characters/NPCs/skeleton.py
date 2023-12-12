@@ -1,6 +1,5 @@
 """This module contains the Skeleton class."""
 import pygame
-from file_managers.sprite_sheet import SpriteSheet
 from tiles.entities.characters.NPCs.NPC import NPC
 import settings
 
@@ -41,35 +40,30 @@ class Skeleton(NPC):
     def __init__(
         self,
         pos: tuple,
-        groups: pygame.sprite.Group,
+        group: pygame.sprite.Group,
         obstacle_sprites: pygame.sprite.Group,
-    ) -> None:
+    ):
         """Construct the skeleton class.
 
         Parameters
         ----------
         pos: tuple
             The spawning position in the map as (x,y) coordinates
-        groups: pygame.sprite.Group
+        group: pygame.sprite.Group
             The sprite groups this skeleton is a part of
         obstacle_sprites: pygame.sprite.Group
             The sprites the skeleton cannot move through
         """
-        super().__init__(groups)
-
-        # grab self image
-        skeleton_sprite_path = (
-            "game_assets/graphics/tiles/entities/characters/NPCs/skeleton/skeleton.png"
+        skeleton_movements_path: str = (
+            settings.CHARACTER_IMAGES + "NPCs/skeleton/skeleton.png"
         )
-        self._sprite_sheet = SpriteSheet(skeleton_sprite_path, pygame.Color("black"))
-        size_of_single_sprite = pygame.Rect(
+        skeleton_image_rect: pygame.Rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        self.image = self._sprite_sheet.image_at(size_of_single_sprite)
-        self.rect = self.image.get_rect(topleft=pos)
-        self._obstacle_sprites = obstacle_sprites
-        self.import_assets()
-        self._hitbox = self.rect.inflate(-4, 0)
+        super().__init__(group, pos, skeleton_movements_path, skeleton_image_rect)
+
+        self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
+        self._hitbox: pygame.Rect = self.rect.inflate(-4, 0)
 
     def automate_movement(self) -> None:
         """Movement logic method."""

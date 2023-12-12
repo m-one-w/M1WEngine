@@ -88,18 +88,21 @@ class NPC(Character):
         Teleport out of a collided wall - NPC specific
     """
 
-    def __init__(self, groups: pygame.sprite.Group) -> None:
+    def __init__(
+        self,
+        group: pygame.sprite.Group,
+        pos: tuple,
+        sprite_sheet_path: str,
+        image_rect: pygame.Rect,
+    ):
         """Initialize NPC class.
 
         Parameters
         ----------
-        groups: pygame.sprite.Group
-            The sprite groups this NPC is part of
+        group: pygame.sprite.Group
+            The sprite group this NPC is part of
         """
-        super().__init__(groups)
-        self.rect: pygame.Rect = pygame.Rect(
-            0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
-        )
+        super().__init__(group, pos, sprite_sheet_path, image_rect)
 
         # init empty player
         self._player: Character = pygame.sprite.Sprite()
@@ -116,9 +119,8 @@ class NPC(Character):
         # for automated movements, store a previous timestamp
         self._last_time_stored: int = 0
 
-        self._hitbox: pygame.Rect = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
         # TODO: find sweet spot inflation size for radar detection
-        inflation_size = 8
+        inflation_size: int = 8
         self._radar: pygame.Rect = self.rect.inflate(
             settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
         )

@@ -3,6 +3,7 @@ import math
 import pygame
 from enums.direction import Direction
 from file_managers.sprite_sheet import SpriteSheet
+from dict_structures.animation_dict import AnimationDict
 from tiles.entities.entity import Entity
 from score_controller import ScoreController
 from tiles.tile import Tile
@@ -64,23 +65,32 @@ class Character(Entity):
         Bounce a compass off the wall collided with
     """
 
-    def __init__(self, group: pygame.sprite.Group) -> None:
+    def __init__(
+        self,
+        group: pygame.sprite.Group,
+        pos: tuple,
+        sprite_sheet_path: str,
+        image_rect: pygame.Rect,
+    ):
         """Initialize character class.
 
         Parameters
         ----------
         group: pygame.sprite.Group
             The sprite group this character is a part of
+        pos: tuple
+            The (x, y) position the character spawns at
+        sprite_sheet_path: str
+            The filepath where the sprite sheet is stored
+        image_rect: pygame.Rect
+            The rectangle representing the character
         """
-        super().__init__(group)
-        self._frame_index: int = 0
-        self._animation_speed: float = 0.15
+        super().__init__(group, pos, sprite_sheet_path, image_rect)
         self._speed: int = 1
         self._compass.x: Direction = Direction.right
         self._status: str = "right"
         self._score_controller: ScoreController = ScoreController()
-        self._sprite_sheet: SpriteSheet = object()
-        self._animations: dict = {}
+        self._sprite_sheet: SpriteSheet = SpriteSheet()
 
     def import_assets(self) -> None:
         """Import and divide the animation image into it's smaller parts.
@@ -89,64 +99,50 @@ class Character(Entity):
         and divides it into its sub-images. Can be expanded with more images to fulfill
         idle and attack animations.
         """
-        walking_up_rect: pygame.Rect = (
-            0,
-            settings.ENTITY_HEIGHT * 3,
-            settings.ENTITY_WIDTH,
-            settings.ENTITY_HEIGHT,
-        )
-        walking_down_rect: pygame.Rect = (
-            0,
-            0,
-            settings.ENTITY_WIDTH,
-            settings.ENTITY_HEIGHT,
-        )
-        walking_left_rect: pygame.Rect = (
-            0,
-            settings.ENTITY_HEIGHT,
-            settings.ENTITY_WIDTH,
-            settings.ENTITY_HEIGHT,
-        )
-        walking_right_rect: pygame.Rect = (
-            0,
-            settings.ENTITY_HEIGHT * 2,
-            settings.ENTITY_WIDTH,
-            settings.ENTITY_HEIGHT,
-        )
-
-        # put animation states in dictionary
-        self._animations: dict[str, list[pygame.Surface]] = {
-            "up": self._sprite_sheet.load_strip(walking_up_rect, WALKING_IMAGE_COUNT),
-            "down": self._sprite_sheet.load_strip(
-                walking_down_rect, WALKING_IMAGE_COUNT
+        animation_up: AnimationDict = {
+            "name": "up",
+            "image_rect": (
+                0,
+                settings.ENTITY_HEIGHT * 3,
+                settings.ENTITY_WIDTH,
+                settings.ENTITY_HEIGHT,
             ),
-            "left": self._sprite_sheet.load_strip(
-                walking_left_rect, WALKING_IMAGE_COUNT
+            "image_count": 3,
+        }
+        animation_down: AnimationDict = {
+            "name": "down",
+            "image_rect": (0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT),
+            "image_count": 3,
+        }
+        animation_left: AnimationDict = {
+            "name": "left",
+            "image_rect": (
+                0,
+                settings.ENTITY_HEIGHT,
+                settings.ENTITY_WIDTH,
+                settings.ENTITY_HEIGHT,
             ),
-            "right": self._sprite_sheet.load_strip(
-                walking_right_rect, WALKING_IMAGE_COUNT
+            "image_count": 3,
+        }
+        animation_right: AnimationDict = {
+            "name": "right",
+            "image_rect": (
+                0,
+                settings.ENTITY_HEIGHT * 2,
+                settings.ENTITY_WIDTH,
+                settings.ENTITY_HEIGHT,
             ),
+            "image_count": 3,
         }
 
-    def animate(self) -> pygame.Surface:
-        """Animation loop for the character.
+        animation_dicts = [
+            animation_up,
+            animation_down,
+            animation_left,
+            animation_right,
+        ]
 
-        Loops through the images to show walking animation.
-        Works for each cardinal direction.
-
-        Returns
-        -------
-        animation_strip: pygame.Surface
-            The current directional image to display
-        """
-        animation_strip: list[pygame.Surface] = self._animations[self._status]
-
-        self._frame_index += self._animation_speed
-
-        if self._frame_index >= len(animation_strip):
-            self._frame_index = 0
-
-        return animation_strip[int(self._frame_index)]
+        super().import_assets(animation_dicts)
 
     def set_status_by_curr_rotation(self) -> None:
         """Set the correct status based on the current compass direction.

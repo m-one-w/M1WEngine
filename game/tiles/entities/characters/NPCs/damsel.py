@@ -1,6 +1,5 @@
 """This module contains the Damsel class."""
 import pygame
-from file_managers.sprite_sheet import SpriteSheet
 from tiles.entities.characters.NPCs.NPC import NPC
 import settings
 
@@ -37,7 +36,7 @@ class Damsel(NPC):
     def __init__(
         self,
         pos: tuple,
-        groups: pygame.sprite.Group,
+        group: pygame.sprite.Group,
         obstacle_sprites: pygame.sprite.Group,
     ) -> None:
         """Initialize a Damsel with level info.
@@ -50,26 +49,18 @@ class Damsel(NPC):
         ----------
         pos: tuple
             Starting (x, y) coordinates
-        groups: list of sprite groups
+        group: list of sprite groups
             Which groups in level it is a part of
         obstacle_sprites: list of sprite groups
             Which sprites in the level damsel cannot walk through
         """
-        super().__init__(groups)
-
-        damsel_image_path: str = (
-            "game_assets/graphics/tiles/entities/characters/NPCs/damsel/damsel.png"
-        )
-        self._sprite_sheet: SpriteSheet = SpriteSheet(
-            damsel_image_path, pygame.Color("black")
-        )
+        damsel_image_path: str = settings.CHARACTER_IMAGES + "NPCs/damsel/damsel.png"
         damsel_image_rect: pygame.Rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        self.image: pygame.Surface = self._sprite_sheet.image_at(damsel_image_rect)
-        self.rect: pygame.Rect = self.image.get_rect(topleft=pos)
+        super().__init__(group, pos, damsel_image_path, damsel_image_rect)
+
         self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
-        self.import_assets()
 
     def automate_movement(self) -> None:
         """Movement logic method."""
