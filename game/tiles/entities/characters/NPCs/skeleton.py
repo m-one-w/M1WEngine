@@ -1,7 +1,7 @@
 """This module contains the Skeleton class."""
 import pygame
 from filemanagement.spriteSheet import SpriteSheet
-from tiles.entities.NPCs.NPC import NPC
+from tiles.entities.characters.NPCs.NPC import NPC
 import settings
 
 

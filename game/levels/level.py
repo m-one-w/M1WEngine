@@ -1,9 +1,9 @@
 """This module contains the Level class."""
 from typing import List
 import pygame
-from tiles.entities.player import Player
-from tiles.entities.NPCs.damsel import Damsel
-from tiles.entities.NPCs.skeleton import Skeleton
+from tiles.entities.characters.player import Player
+from tiles.entities.characters.NPCs.damsel import Damsel
+from tiles.entities.characters.NPCs.skeleton import Skeleton
 from tiles.tile import Tile
 from filemanagement.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC

@@ -7,11 +7,11 @@ from typing import Callable, List
 import pygame
 from enums.actions import Actions
 from enums.eatenPowers import EatenPowers
-from tiles.entities.entity import Entity
+from tiles.entities.characters.character import Character
 import settings
 
 
-class NPC(Entity):
+class NPC(Character):
     """Entity abstract class.
 
     Base class for all NPC entities including skeletons, damsels, and more.
@@ -86,7 +86,7 @@ class NPC(Entity):
         self.rect = pygame.Rect(0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT)
 
         # init empty player
-        self.player: Entity = pygame.sprite.Sprite()
+        self.player: Character = pygame.sprite.Sprite()
 
         # setting up state machine
         self.states = Enum("states", ["Patrol", "Attack", "Flee", "Follow", "Thrown"])

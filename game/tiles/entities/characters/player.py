@@ -4,7 +4,7 @@ import pygame
 from filemanagement.spriteSheet import SpriteSheet
 from enums.actions import Actions
 from enums.eatenPowers import EatenPowers
-from tiles.entities.entity import Entity
+from tiles.entities.characters.character import Character
 import settings
 
 # Defines how fast the player object can rotate while running
@@ -13,7 +13,7 @@ PLAYER_ROTATION_SPEED = 5
 MAX_ACTION_QUEUE_LENGTH = 3
 
 
-class Player(Entity):
+class Player(Character):
     """Player class which contains the object players will directly control.
 
     The player class will handle movement logic and sprite changing logic for the player

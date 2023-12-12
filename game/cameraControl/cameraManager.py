@@ -1,6 +1,6 @@
 """This module contains the CameraManager class."""
 import pygame
-from tiles.entities.player import Player
+from tiles.entities.characters.player import Player
 
 
 class CameraManager(pygame.sprite.Group):

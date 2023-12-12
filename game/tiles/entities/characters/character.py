@@ -1,17 +1,18 @@
-"""This module contains the Entity class."""
+"""This module contains the Character class."""
 import math
 import pygame
 from enums.direction import Direction
 from filemanagement.spriteSheet import SpriteSheet
+from tiles.entities.entity import Entity
 from scoreController import ScoreController
 from tiles.tile import Tile
 import settings
 
 
-class Entity(Tile):
-    """Entity abstract class.
+class Character(Entity):
+    """Character class.
 
-    Base class for all entities including player, enemies, and damsels.
+    Base class for all characters including player, enemies, and damsels.
 
     Attributes
     ----------
@@ -29,7 +30,7 @@ class Entity(Tile):
     import_assets(self)
         Import images into smaller images
     animate(self)
-        Animation loop for entity
+        Animation loop for character
     set_status_by_current_rotation(self)
         Set status per current direction
     get_angle_from_direction(self, axis: str)
@@ -106,7 +107,7 @@ class Entity(Tile):
         }
 
     def animate(self) -> pygame.Surface:
-        """Animation loop for the entity.
+        """Animation loop for the character.
 
         Loops through the images to show walking animation.
         Works for each cardinal direction.
@@ -163,12 +164,12 @@ class Entity(Tile):
         return -angle
 
     def get_distance(self, coords: tuple) -> float:
-        """Return the hypotenuse/distance away from another entity.
+        """Return the hypotenuse/distance away from another character.
 
         Parameters
         ----------
         coords: tuple
-            Coordinates of the entity we are testing
+            Coordinates of the character we are testing
         """
         x = 0
         y = 1
