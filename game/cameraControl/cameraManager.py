@@ -12,15 +12,15 @@ class CameraManager(pygame.sprite.Group):
 
     Attributes
     ----------
-    playerCharacter: Player
+    _player_character: Player
         The currently shown frame represented by an index
-    displaySurface: Surface
+    _display_surface: pygame.Surface
         The game surface in which to render all sprites
-    offset: vector2
+    _offset: vector2
         The offset at which to render all sprites
-    halWidth: int
+    _half_width: int
         Half the display surface width
-    halfHeight: int
+    _half_height: int
         Half the display surface height
 
     Methods
@@ -44,10 +44,10 @@ class CameraManager(pygame.sprite.Group):
         surfaceX = 0
         surfaceY = 1
         self._display_surface = pygame.display.get_surface()
-        self._halfWidth = (
+        self._half_width = (
             self._display_surface.get_size()[surfaceX] // 2
         )  # floor division, returns int
-        self._halfHeight = (
+        self._half_height = (
             self._display_surface.get_size()[surfaceY] // 2
         )  # floor division, returns int
 
