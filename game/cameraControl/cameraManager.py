@@ -22,6 +22,10 @@ class CameraManager(pygame.sprite.Group):
         Half the display surface width
     _half_height: int
         Half the display surface height
+    _offset: vector2
+        The offset at which to render all sprites
+    _player_character: Player
+        The currently shown frame represented by an index
 
     Methods
     -------
@@ -30,15 +34,16 @@ class CameraManager(pygame.sprite.Group):
     """
 
     # initialize all groups and their current positions
-    def __init__(self, playerCharacter: Player) -> None:
+    def __init__(self, player_character: Player) -> None:
         """Construct a CameraManager object.
 
         This method will instantiate the camera controller.
         A single camera controller should be used to manage all rendered sprites.
+
         Parameters
         ----------
-        playerCharacter: Player
-            The player character
+        player_character: Player
+            The player character that entities move around
         """
         super().__init__()
         surfaceX = 0
@@ -52,7 +57,7 @@ class CameraManager(pygame.sprite.Group):
         )  # floor division, returns int
 
         self._offset = pygame.math.Vector2()
-        self._player_character = playerCharacter
+        self._player_character = player_character
 
     def camera_update(self) -> None:
         """Update the camera sprites.

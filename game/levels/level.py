@@ -16,6 +16,38 @@ class Level(object):
     """Level class.
 
     The Level class will instantiate all objects required for a single level to run.
+
+    Attributes
+    ----------
+    _display_surface: pygame.Surface
+        The surface which to display the level
+    _universal_assets: List[pygame.sprites]
+        The list of all art assets from LevelManager
+    _mixer: pygame.mixer
+        LevelManager's music mixer for level specific music
+    _camera: CameraManager
+        CameraManager handles sprite movement across the screen relative to the player
+    _paused: bool
+        Flag to pause the game when key is pressed
+
+    Methods
+    -------
+    create_map(self, level_key: str)
+        Parses gameData.py's level_data using level_key to get this level's sprites
+    create_sprite_groups(self)
+        Create all sprites groups used in the level
+    create_entities_from_layout(self, layout: List[int])
+        Parse the level map's layout for entities and initialize them
+    create_tile_group(self, layout: List[int]) -> pygame.sprite.Group
+        Create tiles for the map using the layout and universal assets
+    add_obstacles(self)
+        Add level specific obstacles to _obstacle_sprites
+    add_sprites_to_camera(self)
+        Add all visible sprites to the CameraManager
+    pauseMenu(self)
+        Handle a paused game
+    run(self)
+        Draw and update all sprite groups
     """
 
     def __init__(
@@ -27,14 +59,17 @@ class Level(object):
 
         Parameters
         ----------
-        surface: pygame.Surface
-            The surface that contains the game's full window
+        universal_assets: List[pygame.sprite]
+            The list containing all game assets which the level will select from
+        music_handler: pygame.mixer
+            LevelManager's music mixer to play this level's music
+        level_key: str
+            The key to the specific level data when parsing gameData.py
         """
-        # display surface
-        self.display_surface = pygame.display.get_surface()
+        self._display_surface: pygame.Surface = pygame.display.get_surface()
 
         # TODO: move any level specific setup steps into gameData.py
-        self._universal_assets = universal_assets
+        self._universal_assets: List = universal_assets
 
         # extract data from level_data dictionary in gameData.py
         self.create_map(level_key)
@@ -44,7 +79,7 @@ class Level(object):
         self.add_obstacles()
 
         # load and play level's music
-        self._mixer = music_handler
+        self._mixer: pygame.mixer = music_handler
         self._mixer.music.load(
             "levels/level_data/inspiring-cinematic-ambient-116199.ogg", "ogg"
         )
@@ -53,7 +88,7 @@ class Level(object):
 
         self.create_entities_from_layout(self._character_layout)
         # self.player initialized in create_entities_from_layout()
-        self.camera = CameraManager(self.player)
+        self._camera = CameraManager(self.player)
         # add sprites to camera
         self.add_sprites_to_camera()
 
@@ -79,14 +114,14 @@ class Level(object):
         self._extra_sprites = self.create_tile_group(extra_layout)
 
     def create_sprite_groups(self) -> None:
-        """Create and initialize all sprite groups for the level."""
+        """Create all sprite groups for the level."""
         self._obstacle_sprites = pygame.sprite.Group()
         self._bad_sprites = pygame.sprite.Group()
         self._good_sprites = pygame.sprite.Group()
         self._attack_sprites = pygame.sprite.Group()
         self._player_group = pygame.sprite.GroupSingle()
 
-    def create_entities_from_layout(self, layout: List[int]):
+    def create_entities_from_layout(self, layout: List[int]) -> None:
         """Initialize the entities on a layout.
 
         Parameters
@@ -154,13 +189,13 @@ class Level(object):
 
     def add_sprites_to_camera(self) -> None:
         """Add all visible sprites to the CameraManager."""
-        self.camera.add(self._terrain_sprites)
-        self.camera.add(self._plant_sprites)
-        self.camera.add(self._fence_sprites)
-        self.camera.add(self._extra_sprites)
+        self._camera.add(self._terrain_sprites)
+        self._camera.add(self._plant_sprites)
+        self._camera.add(self._fence_sprites)
+        self._camera.add(self._extra_sprites)
 
-        self.camera.add(self._good_sprites)
-        self.camera.add(self._bad_sprites)
+        self._camera.add(self._good_sprites)
+        self._camera.add(self._bad_sprites)
 
     def pauseMenu(self) -> None:
         """Pauses the game and opens the pause menu."""
@@ -170,7 +205,7 @@ class Level(object):
     def run(self):
         """Draw and update all sprite groups."""
         # TODO: change run to return bool. if paused, return paused flag.
-        self.display_surface.fill("black")
+        self._display_surface.fill("black")
 
         # pause check
         for event in pygame.event.get():
@@ -186,7 +221,7 @@ class Level(object):
             self._good_sprites.update(self._bad_sprites, self._good_sprites)
 
             # draw the game behind the player character
-            self.camera.camera_update()
-            self.camera.draw(self.display_surface)
+            self._camera.camera_update()
+            self._camera.draw(self._display_surface)
             # draw the player chacter
-            self._player_group.draw(self.display_surface)
+            self._player_group.draw(self._display_surface)

@@ -10,8 +10,29 @@ from levels.AssetManager import AssetManager
 class LevelManager:
     """LevelManager class.
 
-    Created by Game. Loads levels and manages its assets.
-    Default level is MainMenu.
+    Created by Game. Loads levels and menus. Default opens to MainMenu.
+
+    Attributes
+    ----------
+    _surface: pygame.Surface
+        The screen to display levels and menu to
+    _clock: pygame.time.Clock
+        Clock to track time in levels
+    _asset_manager: AssetManager
+        AssetManager to handle game assets such as music and all renderable sprites
+    _menu: MainMenu
+        MainMenu is the default menu to display from levelManager
+    _level: object
+        The level the user is playing. Initialized when MainMenu returns with "Level"
+    _user_input: str
+        User input used to load levels and menus
+    _quit_game: bool
+        Quit flag when returning to game
+
+    Methods
+    -------
+    run(self) -> bool
+        Run the currently loaded menu or level and return user menu selection
     """
 
     def __init__(self) -> None:
@@ -19,23 +40,16 @@ class LevelManager:
 
         This LevelManager will instantiate a level's contents
         onto the pygame display surface.
-
-        Parameters
-        ----------
-        surface: pygame.Surface
-            The surface to draw a level's assets
-        gameData: str
-            Path to gameData.py. Parse file for specific level info. MainManu is default
         """
         self._screen = pygame.display.get_surface()
         # TODO: move clock to setter/getter style
-        self.clock = pygame.time.Clock()
+        self._clock = pygame.time.Clock()
         # TODO: AssetManager requires path to MainMenu music. In gameData.py
         self._asset_manager: AssetManager = AssetManager("ook")
         # main menu is the first thing that is loaded
         self._menu: MainMenu = MainMenu()
         self._level = object()
-        self._user_input = "None"
+        self._user_input: str = "None"
 
         # quit flag returned to game
         self._quit_game: bool = False
@@ -58,10 +72,9 @@ class LevelManager:
                         self._asset_manager._music_manager,
                         "level_1",
                     )
-                # run the level
                 self._level.run()
         elif self._user_input == "Quit":
             self._quit_game is not self._quit_game
 
-        self.clock.tick(FPS)
+        self._clock.tick(FPS)
         return self._quit_game
