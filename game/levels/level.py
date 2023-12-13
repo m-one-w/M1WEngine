@@ -68,29 +68,20 @@ class Level(object):
         """
         self._display_surface: pygame.Surface = pygame.display.get_surface()
 
-        # TODO: move any level specific setup steps into gameData.py
         self._universal_assets: List = universal_assets
 
         # extract data from level_data dictionary in gameData.py
         self.create_map(level_key)
-        # sprite groups
         self.create_sprite_groups()
-        # add fence_sprites to obstacle_sprites
         self.add_obstacles()
-
-        # load and play level's music
-        self._mixer: pygame.mixer = music_handler
-        self._mixer.music.load(
-            "levels/level_data/inspiring-cinematic-ambient-116199.ogg", "ogg"
-        )
-        self._mixer.music.play(LOOP_MUSIC)
-        # TODO: have destructor unload/fade out music to main menu music
-
         self.create_entities_from_layout(self._character_layout)
-        # self.player initialized in create_entities_from_layout()
+
         self._camera = CameraManager(self.player)
-        # add sprites to camera
         self.add_sprites_to_camera()
+
+        self._mixer: pygame.mixer = music_handler
+        self.load_music(level_key)
+        # TODO: have destructor unload/fade out music to main menu music
 
         # pause flag used to display pause menu
         self._paused = False
@@ -197,14 +188,19 @@ class Level(object):
         self._camera.add(self._good_sprites)
         self._camera.add(self._bad_sprites)
 
+    def load_music(self, level_key: str) -> None:
+        """Load music into the music mixer."""
+        path: str = level_data[level_key]["music"]
+        self._mixer.music.load(path)
+        self._mixer.music.play(LOOP_MUSIC)
+
     def pauseMenu(self) -> None:
         """Pauses the game and opens the pause menu."""
         print("PAUSED!")
         pass
 
-    def run(self):
+    def run(self) -> None:
         """Draw and update all sprite groups."""
-        # TODO: change run to return bool. if paused, return paused flag.
         self._display_surface.fill("black")
 
         # pause check

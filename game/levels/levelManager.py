@@ -2,6 +2,7 @@
 
 import pygame
 from levels.level import Level
+from levels.testLevel import TestLevel
 from levels.mainMenu import MainMenu
 from settings import FPS
 from levels.AssetManager import AssetManager
@@ -67,10 +68,10 @@ class LevelManager:
                 # if the level is not loaded yet, then initialize it
                 if not isinstance(self._level, Level):
                     # TODO: safely access and give asset_manager's stuff to level
-                    self._level = Level(
+                    self._level = TestLevel(
                         self._asset_manager._univeral_sprites,
                         self._asset_manager._music_manager,
-                        "level_1",
+                        "test_level",
                     )
                 self._level.run()
         elif self._user_input == "Quit":
