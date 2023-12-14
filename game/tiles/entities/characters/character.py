@@ -8,6 +8,9 @@ from scoreController import ScoreController
 from tiles.tile import Tile
 import settings
 
+# number of images for each directional animation
+WALKING_IMAGE_COUNT = 3
+
 
 class Character(Entity):
     """Character class.
@@ -16,33 +19,37 @@ class Character(Entity):
 
     Attributes
     ----------
-    frameIndex: int
+    _frame_index: int
         The currently shown frame represented by an index
-    animationSpeed: int
+    _animation_speed: int
         The speed at which animations run
-    speed: int
+    _speed: int
         The speed at which the sprite moves
+    _compass: Direction
+        Enum value of current direction
+    _status: str
+        The direction a character is facing stored as a string
+    _score_controller: ScoreController
+        The score controller to track the score
+    _sprite_sheet: SpriteSheet
+        The animation images
 
     Methods
     -------
     set_sprite_sheet(self, path: str)
         Create sprite sheet from path
     import_assets(self)
-        Import images into smaller images
-    animate(self)
+        Import animation strip and divide into smaller images
+    animate(self) -> pygame.Surface
         Animation loop for character
     set_status_by_current_rotation(self)
         Set status per current direction
-    get_angle_from_direction(self, axis: str)
-        Get the angle for sprite rotation per compass direction
-    set_bad_sprites(self, bad_sprites: pygame.sprite.Group)
-        Set the bad sprites group
-    set_good_sprites(self, good_sprites: pygame.sprite.Group)
-        Set the good sprites group
+    get_angle_from_direction(self, axis: str) -> float
+        Get the angle for sprite rotation based on compass direction
+    get_distance(self, coords: tuple) -> float
+        The hypotenuse of how far away the other character is from this character
     set_image_rotation(self, image: pygame.Surface) -> pygame.Surface
         Rotate image per compass direction
-    set_player(self, player: pygame.Sprite)
-        Set the player
     collision_detection(self, sprite_group: pygame.sprite.Group) -> dict
         Get a dictionary of collided sprites.
     teleport_out_of_sprite(self, collision_rect: pygame.Rect)
@@ -50,60 +57,75 @@ class Character(Entity):
     further_axis(self, coord: tuple) -> str
         Find if the given coordinate is further horizontally or vertically
     average_collision_coordinates(self, collision_coordinates: dict) -> tuple
-        Get the average coordinates from a dictionary of coordinates
+        Get the average coordinates of all collisions from a dictionary of coordinates
     collision_handler(self)
         Handle the collision check for entities
     collision_set_compass(self, collided_coords: tuple)
         Bounce a compass off the wall collided with
     """
 
-    def __init__(self, groups: pygame.sprite.Group):
-        """Initialize base class."""
-        super().__init__(groups)
-        self.frameIndex = 0
-        self.animationSpeed = 0.15
-        self.speed = 1
-        self.compass.x = Direction.right
-        self.status = "right"
-        self.scoreController = ScoreController()
-        self.sprite_sheet = SpriteSheet()
+    def __init__(self, group: pygame.sprite.Group) -> None:
+        """Initialize character class.
 
-    def import_assets(self):
+        Parameters
+        ----------
+        group: pygame.sprite.Group
+            The sprite group this character is a part of
+        """
+        super().__init__(group)
+        self._frame_index: int = 0
+        self._animation_speed: float = 0.15
+        self._speed: int = 1
+        self._compass.x: Direction = Direction.right
+        self._status: str = "right"
+        self._score_controller: ScoreController = ScoreController()
+        self._sprite_sheet: SpriteSheet = SpriteSheet()
+        self._animations: dict = {}
+
+    def import_assets(self) -> None:
         """Import and divide the animation image into it's smaller parts.
 
         Called at end of :func:'init()', takes the image with all character animations
         and divides it into its sub-images. Can be expanded with more images to fulfill
         idle and attack animations.
         """
-        walkingUpRect = (
+        walking_up_rect: pygame.Rect = (
             0,
             settings.ENTITY_HEIGHT * 3,
             settings.ENTITY_WIDTH,
             settings.ENTITY_HEIGHT,
         )
-        walkingDownRect = (0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT)
-        walkingLeftRect = (
+        walking_down_rect: pygame.Rect = (
+            0,
+            0,
+            settings.ENTITY_WIDTH,
+            settings.ENTITY_HEIGHT,
+        )
+        walking_left_rect: pygame.Rect = (
             0,
             settings.ENTITY_HEIGHT,
             settings.ENTITY_WIDTH,
             settings.ENTITY_HEIGHT,
         )
-        walkingRightRect = (
+        walking_right_rect: pygame.Rect = (
             0,
             settings.ENTITY_HEIGHT * 2,
             settings.ENTITY_WIDTH,
             settings.ENTITY_HEIGHT,
         )
 
-        # number of images for each directional animation
-        IMAGE_COUNT = 3
-
-        # animation states in dictionary
-        self.animations = {
-            "up": self.sprite_sheet.load_strip(walkingUpRect, IMAGE_COUNT),
-            "down": self.sprite_sheet.load_strip(walkingDownRect, IMAGE_COUNT),
-            "left": self.sprite_sheet.load_strip(walkingLeftRect, IMAGE_COUNT),
-            "right": self.sprite_sheet.load_strip(walkingRightRect, IMAGE_COUNT),
+        # put animation states in dictionary
+        self._animations: dict[str, list[pygame.Surface]] = {
+            "up": self._sprite_sheet.load_strip(walking_up_rect, WALKING_IMAGE_COUNT),
+            "down": self._sprite_sheet.load_strip(
+                walking_down_rect, WALKING_IMAGE_COUNT
+            ),
+            "left": self._sprite_sheet.load_strip(
+                walking_left_rect, WALKING_IMAGE_COUNT
+            ),
+            "right": self._sprite_sheet.load_strip(
+                walking_right_rect, WALKING_IMAGE_COUNT
+            ),
         }
 
     def animate(self) -> pygame.Surface:
@@ -111,55 +133,70 @@ class Character(Entity):
 
         Loops through the images to show walking animation.
         Works for each cardinal direction.
+
+        Returns
+        -------
+        animation_strip: pygame.Surface
+            The current directional image to display
         """
-        animationStrip = self.animations[self.status]
+        animation_strip: list[pygame.Surface] = self._animations[self._status]
 
-        self.frameIndex += self.animationSpeed
+        self._frame_index += self._animation_speed
 
-        if self.frameIndex >= len(animationStrip):
-            self.frameIndex = 0
+        if self._frame_index >= len(animation_strip):
+            self._frame_index = 0
 
-        return animationStrip[int(self.frameIndex)]
+        return animation_strip[int(self._frame_index)]
 
-    def set_status_by_curr_rotation(self):
-        """Set the correct status based on the current direction.
+    def set_status_by_curr_rotation(self) -> None:
+        """Set the correct status based on the current compass direction.
 
-        This function inspects the current direction and determines
+        This function inspects the current compass direction and determines
         what the status should be.
         """
         # handle all edge cases first
-        if self.compass.y < 0:
-            self.status = "up"
+        if self._compass.y < 0:
+            self._status = "up"
         else:
-            self.status = "down"
+            self._status = "down"
 
-        if self.compass.x < 0:
-            self.status = "left"
+        if self._compass.x < 0:
+            self._status = "left"
         else:
-            self.status = "right"
+            self._status = "right"
 
         # -- xy | xy +-
         # -+ xy | xy ++
-        if self.compass.x > 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
-            self.status = "right"
-        if self.compass.x < 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
-            self.status = "left"
-        if self.compass.y > 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
-            self.status = "down"
-        if self.compass.y < 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
-            self.status = "up"
+        if self._compass.x > 0 and self._compass.y < 0.25 and self._compass.y > -0.25:
+            self._status = "right"
+        if self._compass.x < 0 and self._compass.y < 0.25 and self._compass.y > -0.25:
+            self._status = "left"
+        if self._compass.y > 0 and self._compass.x < 0.25 and self._compass.x > -0.25:
+            self._status = "down"
+        if self._compass.y < 0 and self._compass.x < 0.25 and self._compass.x > -0.25:
+            self._status = "up"
 
     def get_angle_from_direction(self, axis: str) -> float:
         """Get the angle for sprite rotation based on the direction.
 
         Angle returned will need to be inverted for 'down' and 'left'.
+
+        Parameters
+        ----------
+        axis: str
+            The axis to inspect
+
+        Returns
+        -------
+        angle: float
+            The inverted angle from the compass
         """
-        angle = 0.0
+        angle: float = 0.0
 
         if axis == "x":
-            angle = self.compass.y * 45
+            angle = self._compass.y * 45
         if axis == "y":
-            angle = self.compass.x * 45
+            angle = self._compass.x * 45
 
         return -angle
 
@@ -169,14 +206,22 @@ class Character(Entity):
         Parameters
         ----------
         coords: tuple
-            Coordinates of the character we are testing
+            The coordinates to compare our position with
+
+        Returns
+        -------
+        hypotenuse: float
+            The distance the coordinates are from this character
         """
-        x = 0
-        y = 1
-        return math.hypot(coords[x] - self.rect[x], coords[y] - self.rect[y])
+        x: int = 0
+        y: int = 1
+        hypotenuse: float = math.hypot(
+            coords[x] - self.rect[x], coords[y] - self.rect[y]
+        )
+        return hypotenuse
 
     def set_image_rotation(self, image: pygame.Surface) -> pygame.Surface:
-        """Set a new image to the correct rotation.
+        """Set an image to the correct orietation.
 
         Return the rotated image correlating to the correct rotation.
         Rotation is based on the status, so image rotations are defined by the
@@ -186,19 +231,25 @@ class Character(Entity):
         ----------
         image: pygame.Surface
             The animation image to rotate
-        """
-        angle = 0
 
-        if self.status == "right":
+        Returns
+        -------
+        rotated_image: pygame.Surface
+            The rotated image passed into this method
+        """
+        angle: float = 0.0
+
+        if self._status == "right":
             angle = self.get_angle_from_direction("x")
-        if self.status == "left":
+        if self._status == "left":
             angle = -self.get_angle_from_direction("x")
-        if self.status == "up":
+        if self._status == "up":
             angle = self.get_angle_from_direction("y")
-        if self.status == "down":
+        if self._status == "down":
             angle = -self.get_angle_from_direction("y")
 
-        return pygame.transform.rotate(image, angle)
+        rotated_image: pygame.Surface = pygame.transform.rotate(image, angle)
+        return rotated_image
 
     def collision_detection(self, sprite_group: pygame.sprite.Group) -> dict:
         """Get a dictionary of collision coordinates.
@@ -209,22 +260,24 @@ class Character(Entity):
         Parameters
         ----------
         sprite_group: pygame.sprite.Group
-            the group of sprites to check for collisions against
+            The group of sprites to check for collisions against
 
-        Returns a dictionary containing all the collision coordinates between
-        a sprite and a group.
+        Returns
+        -------
+        sorted_collisions: dict[str, any]
+            All the collision information between this sprite and a group.
         """
         # get list of sprites from the passed in sprite group
-        obstacleSpritesList = sprite_group.sprites()
+        obstacle_sprites: list[pygame.sprite.Group] = sprite_group.sprites()
 
-        # list of all obstacleSprite indicies player has collisions with
-        collisions = self.rect.collidelistall(obstacleSpritesList)
+        # list of all obstacle sprite indicies player has collisions with
+        collision_indicies: list[int] = self.rect.collidelistall(obstacle_sprites)
 
-        left_coords = []
-        right_coords = []
-        up_coords = []
-        down_coords = []
-        coords = {
+        left_coords: list = []
+        right_coords: list = []
+        up_coords: list = []
+        down_coords: list = []
+        sorted_collisions: dict = {
             "collision_detected": False,
             "collision_x_avg": 0,
             "collision_y_avg": 0,
@@ -235,34 +288,34 @@ class Character(Entity):
         }
 
         # if collisions are detected
-        if collisions:
-            coords["collision_detected"] = True
-            for collisionIndex in collisions:
-                collided_sprite: Tile = obstacleSpritesList[collisionIndex]
-                collided_coord = (
-                    collided_sprite.hitbox.centerx,
-                    collided_sprite.hitbox.centery,
+        if collision_indicies:
+            sorted_collisions["collision_detected"] = True
+            for collision_index in collision_indicies:
+                collided_sprite: Tile = obstacle_sprites[collision_index]
+                collided_coord: tuple[int, int] = (
+                    collided_sprite._hitbox.centerx,
+                    collided_sprite._hitbox.centery,
                 )
                 # check status then add to appropriate collision direction
                 if self.further_axis(collided_coord) == "vertical":
-                    if collided_sprite.hitbox.centery < self.hitbox.centery:
-                        coords["up"].append(collided_coord)
-                    elif collided_sprite.hitbox.centery > self.hitbox.centery:
-                        coords["down"].append(collided_coord)
+                    if collided_sprite._hitbox.centery < self._hitbox.centery:
+                        sorted_collisions["up"].append(collided_coord)
+                    elif collided_sprite._hitbox.centery > self._hitbox.centery:
+                        sorted_collisions["down"].append(collided_coord)
 
                 # if self.status == "left" or self.status == "right":
                 if self.further_axis(collided_coord) == "horizontal":
-                    if collided_sprite.hitbox.centerx < self.hitbox.centerx:
-                        coords["left"].append(collided_coord)
-                    elif collided_sprite.hitbox.centerx > self.hitbox.centerx:
-                        coords["right"].append(collided_coord)
+                    if collided_sprite._hitbox.centerx < self._hitbox.centerx:
+                        sorted_collisions["left"].append(collided_coord)
+                    elif collided_sprite._hitbox.centerx > self._hitbox.centerx:
+                        sorted_collisions["right"].append(collided_coord)
 
                 # call method to teleport outside of collision sprite
-                self.teleport_out_of_sprite(collided_sprite.hitbox)
+                self.teleport_out_of_sprite(collided_sprite._hitbox)
 
-        return coords
+        return sorted_collisions
 
-    def teleport_out_of_sprite(self, collision_rect: pygame.Rect):
+    def teleport_out_of_sprite(self, collision_rect: pygame.Rect) -> None:
         """Remove self from the collided sprite's collision bounds.
 
         Parameters
@@ -270,37 +323,34 @@ class Character(Entity):
         collision_rect: pygame.Rect
             The hitbox of the sprite that was collided with
         """
-        # check if still within bounds,
-        # might not be from prev calls
-
-        axis = self.further_axis((collision_rect.centerx, collision_rect.centery))
+        axis: str = self.further_axis((collision_rect.centerx, collision_rect.centery))
 
         if axis == "horizontal":
-            x_dist_out_hitbox = 0
+            x_dist_out_hitbox: int = 0
             # collided sprite is on the right
-            if self.hitbox.centerx < collision_rect.centerx:
+            if self._hitbox.centerx < collision_rect.centerx:
                 # teleport to the left
-                if collision_rect.left - (self.hitbox.right + 1) < 0:
+                if collision_rect.left - (self._hitbox.right + 1) < 0:
                     x_dist_out_hitbox = -1
             # collided sprite is on the left
             else:
                 # teleport to the right of the sprite
-                if collision_rect.right - (self.hitbox.left - 1) > 0:
+                if collision_rect.right - (self._hitbox.left - 1) > 0:
                     x_dist_out_hitbox = 1
 
             if x_dist_out_hitbox != 0:
                 self.rect.move_ip(x_dist_out_hitbox, 0)
         else:
-            y_dist_out_hitbox = 0
+            y_dist_out_hitbox: int = 0
             # collided sprite is below
-            if self.hitbox.centery < collision_rect.centery:
+            if self._hitbox.centery < collision_rect.centery:
                 # teleport above the bottom of the sprite
-                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
+                if collision_rect.top - (self._hitbox.bottom + 1) < 0:
                     y_dist_out_hitbox = -1
             # collided sprite is above
             else:
                 # teleport below the top of the sprite
-                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
+                if collision_rect.bottom - (self._hitbox.top - 1) > 0:
                     y_dist_out_hitbox = 1
 
             if y_dist_out_hitbox != 0:
@@ -312,11 +362,16 @@ class Character(Entity):
         Parameters
         ----------
         coord: tuple
-            A tuple with an X and Y coordinate stored.
+            A tuple with an X and Y coordinates to compare distances
+
+        Returns
+        -------
+        further: str
+            The string of the further axis away from our coords
         """
-        distance_to_x = abs(self.rect.centerx - coord[0])
-        distance_to_y = abs(self.rect.centery - coord[1])
-        further = "vertical"
+        distance_to_x: float = abs(self.rect.centerx - coord[0])
+        distance_to_y: float = abs(self.rect.centery - coord[1])
+        further: str = "vertical"
         if distance_to_x > distance_to_y:
             further = "horizontal"
         return further
@@ -326,15 +381,17 @@ class Character(Entity):
 
         Parameters
         ----------
-        collision_coordinates: pygame.sprite.Group
-            a dictionary containing all the collision coordinates between
-            a sprite and a group.
+        collision_coordinates: dict[str, any]
+            All the collision coordinates information
 
-        Returns the same dictionary with updated average collision coordinates.
+        Returns
+        -------
+        average_collided_point: tuple
+            The average collision point for all detected collisions
         """
-        collision_point_x = 0
-        collision_point_y = 0
-        count = 0
+        collision_point_x: int = 0
+        collision_point_y: int = 0
+        count: int = 0
         for key in collision_coordinates:
             # meta data starts with 'collision', ignore this
             if "collision" not in key:
@@ -348,23 +405,26 @@ class Character(Entity):
 
         # divide by number of collisions
         if count != 0:
-            collision_point_x = collision_point_x / count
-            collision_point_y = collision_point_y / count
+            collision_point_x: int = collision_point_x / count
+            collision_point_y: int = collision_point_y / count
 
-        return (collision_point_x, collision_point_y)
+        average_collided_point: tuple = (collision_point_x, collision_point_y)
+        return average_collided_point
 
-    def collision_handler(self):
+    def collision_handler(self) -> None:
         """Collision handler for entity.
 
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
         """
-        collision_dictionary = self.collision_detection(self.obstacle_sprites)
+        collision_dictionary: dict = self.collision_detection(self._obstacle_sprites)
         if collision_dictionary["collision_detected"]:
-            collided_coords = self.average_collision_coordinates(collision_dictionary)
+            collided_coords: tuple = self.average_collision_coordinates(
+                collision_dictionary
+            )
             self.collision_set_compass(collided_coords)
 
-    def collision_set_compass(self, collided_coords: tuple):
+    def collision_set_compass(self, collided_coords: tuple) -> None:
         """Set the compass away from the position of the collision.
 
         Parameters
@@ -373,40 +433,44 @@ class Character(Entity):
             A tuple containing the x and y of the average collision point
         """
         # used to flip x and y by the given amounts in the below vectors
-        horizontal_reflect_vect = pygame.math.Vector2(Direction.right, 0)
-        vertical_reflect_vect = pygame.math.Vector2(0, Direction.down)
+        horizontal_reflect_vect: pygame.math.Vector2 = pygame.math.Vector2(
+            Direction.right, 0
+        )
+        vertical_reflect_vect: pygame.math.Vector2 = pygame.math.Vector2(
+            0, Direction.down
+        )
 
-        abs_distance_to_x = abs(self.rect.centerx - collided_coords[0])
-        abs_distance_to_y = abs(self.rect.centery - collided_coords[1])
-        distance_to_x = collided_coords[0] - self.rect.centerx
-        distance_to_y = collided_coords[1] - self.rect.centery
+        abs_distance_to_x: int = abs(self.rect.centerx - collided_coords[0])
+        abs_distance_to_y: int = abs(self.rect.centery - collided_coords[1])
+        distance_to_x: int = collided_coords[0] - self.rect.centerx
+        distance_to_y: int = collided_coords[1] - self.rect.centery
 
         # if to the left or right
         if abs_distance_to_x > abs_distance_to_y:
             # if collided with sprite to the right of self
             if distance_to_x > 0:
                 # if compass pointing right
-                if self.compass.x > 0:
+                if self._compass.x > 0:
                     # bounce the compass off a horizontal vector
-                    self.compass = self.compass.reflect(horizontal_reflect_vect)
+                    self._compass = self._compass.reflect(horizontal_reflect_vect)
             # if collided with sprite to the left of self
             else:
                 # if compass pointing left
-                if self.compass.x < 0:
+                if self._compass.x < 0:
                     # bounce the compass off a horizontal vector
-                    self.compass = self.compass.reflect(horizontal_reflect_vect)
+                    self._compass = self._compass.reflect(horizontal_reflect_vect)
 
         # if up or down
         else:
             # if collided with sprite above self
             if distance_to_y < 0:
                 # if compass pointing up
-                if self.compass.y < 0:
+                if self._compass.y < 0:
                     # bounce the compass off a vertical vector
-                    self.compass = self.compass.reflect(vertical_reflect_vect)
+                    self._compass = self._compass.reflect(vertical_reflect_vect)
             # if collided with sprite below self
             else:
                 # if compass pointing down
-                if self.compass.y > 0:
+                if self._compass.y > 0:
                     # bounce the compass off a vertical vector
-                    self.compass = self.compass.reflect(vertical_reflect_vect)
+                    self._compass = self._compass.reflect(vertical_reflect_vect)

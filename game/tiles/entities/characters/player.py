@@ -84,9 +84,9 @@ class Player(Character):
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
         self._image: pygame.surface = self._sprite_sheet.image_at(player_image_rect)
-        self._rect = self._image.get_rect(topleft=pos)
+        self.rect = self._image.get_rect(topleft=pos)
         # ensure hitbox is large enough to cover player rotations
-        self._hitbox = self._rect.inflate(2, 0)
+        self._hitbox = self.rect.inflate(2, 0)
 
         self._obstacle_sprites = obstacle_sprites
         self.import_assets()
@@ -167,7 +167,7 @@ class Player(Character):
         """Player specific move function."""
         super().move(speed)
         # adjust the hitbox for optimal sprite coverage
-        self._hitbox.centerx = self._rect.centerx + 1
+        self._hitbox.centerx = self.rect.centerx + 1
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group

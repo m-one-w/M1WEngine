@@ -172,7 +172,7 @@ class Tile(pygame.sprite.Sprite):
         """
         self.image = surface
         self.rect = self.image.get_rect(topleft=coords)
-        self.hitbox = self.rect
+        self._hitbox = self.rect
 
     def die(self):
         """Remove the sprite from all groups."""
@@ -189,7 +189,7 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = -1 * speed
         move_pixels_y = 0
         self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
+        self._hitbox.center = self.rect.center
 
     def _move_right(self, speed: int):
         """Move to the right.
@@ -202,7 +202,7 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = speed
         move_pixels_y = 0
         self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
+        self._hitbox.center = self.rect.center
 
     def _move_up(self, speed: int):
         """Move up.
@@ -215,7 +215,7 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = 0
         move_pixels_y = -1 * speed
         self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
+        self._hitbox.center = self.rect.center
 
     def _move_down(self, speed: int):
         """Move down.
@@ -228,4 +228,4 @@ class Tile(pygame.sprite.Sprite):
         move_pixels_x = 0
         move_pixels_y = speed
         self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self.hitbox.center = self.rect.center
+        self._hitbox.center = self.rect.center
