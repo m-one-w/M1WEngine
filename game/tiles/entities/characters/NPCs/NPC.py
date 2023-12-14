@@ -12,22 +12,28 @@ import settings
 
 
 class NPC(Character):
-    """Entity abstract class.
+    """NPC class.
 
     Base class for all NPC entities including skeletons, damsels, and more.
 
     Attributes
     ----------
-    player: Entity
-        The player character, tracked by each NPC
-    states: Enum
+    _rect: pygame.Rect
+        The size of the NPC
+    _player: Character
+        The player's character, tracked by each NPC
+    _states: Enum
         The state machine for automated movement
-    current_state: states
+    _current_state: states
         The current NPC state
     target_sprite: Entity
         The currently tracked sprite detected in radar
-    last_time_stored: int
+    _last_time_stored: int
         The last time an automated state used a timer
+    _hitbox: pygame.Rect
+        A modified NPC rectangle used for collisions
+    _radar: pygame.Rect
+        The inflated rectangle used to detect other nearby Characters
 
     Methods
     -------
@@ -37,12 +43,12 @@ class NPC(Character):
         set_active_state: type(Callable[[], None]),
         set_passive_state: type(Callable[[], None]),
     )
-        Set the state on a radar detection of entities
+        Set the active and passive states based on stuff detected on radar
     radar_set_state(
         self,
         entities: pygame.sprite.Group,
         set_active_state: type(Callable[[], None]),
-    )
+    ) -> bool
         Set the state on a radar detection of entities
     set_target_sprite_from_list(self, spriteGroupList: List, collisions: List)
         Choose a target sprite from a list of sprites
@@ -74,36 +80,46 @@ class NPC(Character):
         Set player for NPC to track
     collided_with_player(self)
         NPC actions on collision with player
-    facing_towards_entity(self, other_sprite: pygame.sprite)
-        Determine if a sprite is facing towards another sprite
+    facing_towards_entity(self, other_sprite: pygame.sprite) -> bool
+        Determine if another sprite is facing towards this sprite
+    collision_set_compass(self, collided_coords: tuple)
+        Set the compass away from the direction of the collision
     teleport_out_of_sprite(self, collision_rect: pygame.Rect)
         Teleport out of a collided wall - NPC specific
     """
 
-    def __init__(self, groups: pygame.sprite.Group):
-        """Initialize NPC class."""
+    def __init__(self, groups: pygame.sprite.Group) -> None:
+        """Initialize NPC class.
+
+        Parameters
+        ----------
+        groups: pygame.sprite.Group
+            The sprite groups this NPC is part of
+        """
         super().__init__(groups)
-        self.rect = pygame.Rect(0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT)
+        self.rect: pygame.Rect = pygame.Rect(
+            0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
+        )
 
         # init empty player
-        self.player: Character = pygame.sprite.Sprite()
+        self._player: Character = pygame.sprite.Sprite()
 
         # setting up state machine
-        self.states = Enum("states", ["Patrol", "Attack", "Flee", "Follow", "Thrown"])
-        self.current_state = self.states.Patrol
+        self._states: Enum = Enum(
+            "states", ["Patrol", "Attack", "Flee", "Follow", "Thrown"]
+        )
+        self._current_state: Enum = self._states.Patrol
 
         # the closest sprite on our radar
-        self.target_sprite = pygame.sprite.Sprite()
+        self._target_sprite: pygame.sprite.Sprite = pygame.sprite.Sprite()
 
         # for automated movements, store a previous timestamp
-        self.last_time_stored = 0
+        self._last_time_stored: int = 0
 
-        # modify model rect to be a slightly less tall hitbox.
-        # this will be used for movement.
-        self.hitbox = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
+        self._hitbox: pygame.Rect = self.rect.inflate(0, settings.ENTITY_HITBOX_OFFSET)
         # TODO: find sweet spot inflation size for radar detection
         inflation_size = 8
-        self.radar = self.rect.inflate(
+        self._radar: pygame.Rect = self.rect.inflate(
             settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
         )
 
@@ -112,7 +128,7 @@ class NPC(Character):
         entities: pygame.sprite.Group,
         set_active_state: type(Callable[[], None]),
         set_passive_state: type(Callable[[], None]),
-    ):
+    ) -> None:
         """Set state and selects which sprite to apply an active state to.
 
         Depending on what we detect on the radar, set the state of the NPC.
@@ -126,10 +142,10 @@ class NPC(Character):
         set_passive_state: type(Callable[[], None])
             The new passive state to set
         """
-        collided = self.radar_set_state(entities, set_active_state)
+        collided: bool = self.radar_set_state(entities, set_active_state)
         if not collided:
             # no radar hit and not in passive state
-            if self.current_state != set_passive_state:
+            if self._current_state != set_passive_state:
                 set_passive_state()
 
     def radar_set_state(
@@ -147,36 +163,46 @@ class NPC(Character):
             Either the player, or any sprite group
         set_active_state: type(Callable[[], None])
             The new active state to set
-        """
-        isPlayerCheck = entities.__class__.__name__ == "Player"
 
-        if isPlayerCheck:
-            collisions = self.radar.colliderect(entities)
+        Returns
+        -------
+        collisions: bool
+            The flag for whether a collision was detected
+
+        Raises
+        ------
+        Exception:
+            Invalid active state
+        """
+        is_player: bool = entities.__class__.__name__ == "Player"
+
+        if is_player:
+            collisions = self._radar.colliderect(entities)
         else:
             # sprites as a list of sprites, not a Group of sprites
-            spriteGroupList = entities.sprites()
-            hitbox_list = [sprite.hitbox for sprite in spriteGroupList]
+            sprite_group_list: list[pygame.sprite.Sprite] = entities.sprites()
+            hitbox_list: list[int] = [sprite.hitbox for sprite in sprite_group_list]
             # list of all NPC collisions
-            collisions = self.radar.collidelistall(hitbox_list)
+            collisions = self._radar.collidelistall(hitbox_list)
 
         # if there is an entity inside our radar
-        if collisions and self.current_state != self.states.Thrown:
-            if not isPlayerCheck:
-                self.set_target_sprite_from_list(spriteGroupList, collisions)
+        if collisions and self._current_state != self._states.Thrown:
+            if not is_player:
+                self.set_target_sprite_from_list(sprite_group_list, collisions)
             else:
-                self.target_sprite = self.player
+                self._target_sprite = self._player
 
             # try to attack
             if set_active_state == self.set_state_attack:
-                if self.current_state != self.states.Attack:
+                if self._current_state != self._states.Attack:
                     set_active_state()
             # try to flee
             elif set_active_state == self.set_state_flee:
-                if self.current_state != self.states.Flee:
+                if self._current_state != self._states.Flee:
                     set_active_state()
             # try to follow
             elif set_active_state == self.set_state_follow:
-                if self.current_state != self.states.Follow:
+                if self._current_state != self._states.Follow:
                     set_active_state()
             # cannot try to patrol as an active state
             elif set_active_state == self.set_state_patrol:
@@ -184,150 +210,154 @@ class NPC(Character):
 
         return collisions
 
-    def set_target_sprite_from_list(self, spriteGroupList: List, collisions: List):
+    def set_target_sprite_from_list(
+        self, sprite_group_list: List, collisions: list[int]
+    ) -> None:
         """Set the target sprite from a radar collision.
 
         Parameters
         ----------
         sprite_group_list: List
             List of all sprites that might have collided
-        collisions: List
+        collisions: List[int]
             List of indices for which sprites have collided
         """
-        current_min_distance = float(sys.maxsize)
-        indexOfClosest = -1
+        current_min_distance: float = float(sys.maxsize)
+        index_of_closest: int = -1
 
-        for collisionIndex in collisions:
+        for collision_index in collisions:
             # get the coordinates of detected sprite
-            coord = spriteGroupList[collisionIndex].rect.center
+            coord: tuple = sprite_group_list[collision_index].rect.center
             # distance between self and the entity on radar
-            distance = self.get_distance(coord)
+            distance: float = self.get_distance(coord)
             # track if entity is closest to self
-            old_min = current_min_distance
+            old_min: float = current_min_distance
             current_min_distance = min(distance, current_min_distance)
             # if current entity on radar is new closest entity
             if current_min_distance < old_min:
-                indexOfClosest = collisionIndex
+                index_of_closest = collision_index
 
         # set target sprite to closest sprite IF something detected
-        if indexOfClosest != -1:
+        if index_of_closest != -1:
             # some states will use a target sprite
-            self.target_sprite = spriteGroupList[indexOfClosest]
+            self._target_sprite = sprite_group_list[index_of_closest]
 
-    def move_based_on_state(self):
+    def move_based_on_state(self) -> None:
         """Logic to determine which _movement() method to call."""
-        if self.current_state == self.states.Attack:
+        if self._current_state == self._states.Attack:
             self.attack_movement()
 
-        elif self.current_state == self.states.Flee:
+        elif self._current_state == self._states.Flee:
             self.flee_movement()
 
-        elif self.current_state == self.states.Patrol:
+        elif self._current_state == self._states.Patrol:
             self.patrol_movement()
 
-        elif self.current_state == self.states.Follow:
+        elif self._current_state == self._states.Follow:
             self.follow_movement()
 
-        elif self.current_state == self.states.Thrown:
+        elif self._current_state == self._states.Thrown:
             self.thrown_movement()
 
-    def patrol_movement(self):
+    def patrol_movement(self) -> None:
         """Move back and forth."""
-        if self.current_state == self.states.Patrol:
+        if self._current_state == self._states.Patrol:
             current_time_in_seconds = time.perf_counter()
 
-            seconds_per_direction = 3
-            if current_time_in_seconds - self.last_time_stored > seconds_per_direction:
+            seconds_per_direction: int = 3
+            if current_time_in_seconds - self._last_time_stored > seconds_per_direction:
                 # 10 seconds passed
-                if self.compass.x != 1 or self.compass.x != 1:
-                    self.compass.x = 1
+                if self._compass.x != 1 or self._compass.x != 1:
+                    self._compass.x = 1
                 else:
-                    self.compass.x *= -1
-                self.compass.y = 0
-                self.last_time_stored = current_time_in_seconds
+                    self._compass.x *= -1
+                self._compass.y = 0
+                self._last_time_stored = current_time_in_seconds
 
             self.collision_handler()
-            self.move(self.speed)
+            self.move(self._speed)
 
-    def flee_movement(self):
-        """Change direction based on where player is."""
-        if self.current_state == self.states.Flee:
-            if self.facing_towards_entity(self.target_sprite):
+    def flee_movement(self) -> None:
+        """Change direction based on where target is."""
+        if self._current_state == self._states.Flee:
+            if self.facing_towards_entity(self._target_sprite):
                 # must set to copy or it gives the entity a shared compass
-                self.compass = self.target_sprite.compass.copy()
+                self._compass = self._target_sprite._compass.copy()
                 self.collision_handler()
 
             # move according to the compass direction
-            self.move(self.speed)
+            self.move(self._speed)
 
-    def attack_movement(self):
-        """Change compass based on where good_sprite is."""
-        if self.current_state == self.states.Attack:
+    def attack_movement(self) -> None:
+        """Change compass based on where target sprite is."""
+        if self._current_state == self._states.Attack:
             self.move_towards_target_sprite()
 
-    def follow_movement(self):
+    def follow_movement(self) -> None:
         """Follow behind another entity."""
         # TODO: only follow at a set distance
-        if self.current_state == self.states.Follow:
+        if self._current_state == self._states.Follow:
             self.move_towards_target_sprite()
 
-    def thrown_movement(self):
+    def thrown_movement(self) -> None:
         """Get thrown from current position."""
         # TODO: move to game counter
-        current_time_in_seconds = time.perf_counter()
+        current_time_in_seconds: float = time.perf_counter()
 
-        seconds_per_throw = 1
-        if current_time_in_seconds - self.last_time_stored > seconds_per_throw:
-            self.current_state = self.states.Patrol
+        seconds_per_throw: int = 1
+        if current_time_in_seconds - self._last_time_stored > seconds_per_throw:
+            self._current_state = self._states.Patrol
         else:
-            collision_dictionary = self.collision_detection(self.obstacle_sprites)
+            collision_dictionary: dict = self.collision_detection(
+                self._obstacle_sprites
+            )
             if collision_dictionary["collision_detected"]:
                 self.die()
             else:
-                speed = 5
+                speed: int = 5
                 self.move(speed)
 
-    def move_towards_target_sprite(self):
+    def move_towards_target_sprite(self) -> None:
         """Move towards the target sprite."""
-        if self.rect.x < self.target_sprite.rect.x:
-            self.move_right(self.speed)
-        elif self.rect.x > self.target_sprite.rect.x:
-            self.move_left(self.speed)
+        if self.rect.x < self._target_sprite.rect.x:
+            self.move_right(self._speed)
+        elif self.rect.x > self._target_sprite.rect.x:
+            self.move_left(self._speed)
 
-        if self.rect.y < self.target_sprite.rect.y:
-            self.move_down(self.speed)
-        elif self.rect.y > self.target_sprite.rect.y:
-            self.move_up(self.speed)
+        if self.rect.y < self._target_sprite.rect.y:
+            self.move_down(self._speed)
+        elif self.rect.y > self._target_sprite.rect.y:
+            self.move_up(self._speed)
 
-        self.compass = self.target_sprite.compass.copy()
+        self._compass = self._target_sprite._compass.copy()
 
-    def set_state_patrol(self):
+    def set_state_patrol(self) -> None:
         """Set state machine to 'Patrol'."""
-        if self.current_state != self.states.Thrown:
-            self.current_state = self.states.Patrol
+        if self._current_state != self._states.Thrown:
+            self._current_state = self._states.Patrol
 
-    def set_state_attack(self):
+    def set_state_attack(self) -> None:
         """Set state machine to 'Attack'."""
-        if self.current_state != self.states.Thrown:
-            self.current_state = self.states.Attack
+        if self._current_state != self._states.Thrown:
+            self._current_state = self._states.Attack
 
-    def set_state_flee(self):
+    def set_state_flee(self) -> None:
         """Set state machine to 'Flee'."""
-        self.current_state = self.states.Flee
+        self._current_state = self._states.Flee
 
-    def set_state_follow(self):
+    def set_state_follow(self) -> None:
         """Set state machine to 'Follow'."""
-        if self.current_state != self.states.Thrown:
-            self.current_state = self.states.Follow
+        if self._current_state != self._states.Thrown:
+            self._current_state = self._states.Follow
 
-    def set_state_thrown(self):
+    def set_state_thrown(self) -> None:
         """Set state machine to 'Thrown'."""
-        self.current_state = self.states.Thrown
+        self._current_state = self._states.Thrown
         # TODO: switch to game clock
-        self.last_time_stored = time.perf_counter()
-        self.compass = self.player.compass.copy()
+        self._last_time_stored = time.perf_counter()
+        self._compass = self._player._compass.copy()
 
-    def set_player(self, player: pygame.sprite):
+    def set_player(self, player: pygame.sprite) -> None:
         """Set the player for the entity to track.
 
         Parameters
@@ -335,7 +365,34 @@ class NPC(Character):
         player: pygame.sprite
             Player sprite to track
         """
-        self.player = player
+        self._player = player
+
+    def collided_with_player(self) -> None:
+        """Go through player action when colliding with a player.
+
+        Raises
+        ------
+        ValueError: Cannot set player consume attribute
+        """
+        if self._current_state != self._states.Thrown:
+            current_player_action: Actions = self._player.pop_next_player_action()
+            if current_player_action == Actions.destroy:
+                self.die()
+            elif current_player_action == Actions.consume:
+                self.die()
+                # TODO: make consume logic
+                # set player consumption attribute with setter
+                child_class: str = self.__class__.__name__
+                if child_class == "Skeleton":
+                    self._player.eaten_power = EatenPowers.basic_skeleton
+                elif child_class == "Damsel":
+                    self._player.eaten_power = EatenPowers.damsel
+                else:
+                    raise ValueError(
+                        "Unknown caller, cannot set player consume attribute."
+                    )
+            elif current_player_action == Actions.throw:
+                self.set_state_thrown()
 
     def facing_towards_entity(self, other_sprite: pygame.sprite) -> bool:
         """Check if another sprite is looking at this sprite.
@@ -344,12 +401,17 @@ class NPC(Character):
         ----------
         other_sprite: pygame.sprite
             The sprite to check against
+
+        Returns
+        -------
+        is_same_direction: bool
+            The boolean value of entity is facing towards this entity
         """
-        is_same_direction = False
+        is_same_direction: bool = False
 
         # find greater distance, x or y
-        delta_x = abs(self.rect.x - other_sprite.rect.x)
-        delta_y = abs(self.rect.y - other_sprite.rect.y)
+        delta_x: float = abs(self.rect.x - other_sprite.rect.x)
+        delta_y: float = abs(self.rect.y - other_sprite.rect.y)
 
         # further left or right
         if delta_x >= delta_y:
@@ -373,7 +435,7 @@ class NPC(Character):
 
         return is_same_direction
 
-    def collision_set_compass(self, collided_coords: tuple):
+    def collision_set_compass(self, collided_coords: tuple) -> None:
         """Set the compass away from the position of the collision.
 
         Parameters
@@ -383,7 +445,7 @@ class NPC(Character):
         """
         super().collision_set_compass(collided_coords)
         # TODO: time should be retrieved from levelManager
-        self.last_time_stored = time.perf_counter()
+        self._last_time_stored = time.perf_counter()
 
     def teleport_out_of_sprite(self, collision_rect: pygame.Rect):
         """Remove self from the collided sprite's collision bounds.
@@ -399,50 +461,28 @@ class NPC(Character):
         # check if still within bounds,
         # might not be from prev calls
 
-        axis = self.further_axis((collision_rect.centerx, collision_rect.centery))
+        axis: str = self.further_axis((collision_rect.centerx, collision_rect.centery))
 
         if axis == "horizontal":
             # collided sprite is on the right
-            if self.hitbox.centerx < collision_rect.centerx:
+            if self._hitbox.centerx < collision_rect.centerx:
                 # teleport to the left
-                if collision_rect.left - (self.hitbox.right + 1) < 0:
+                if collision_rect.left - (self._hitbox.right + 1) < 0:
                     self.move_left()
             # collided sprite is on the left
             else:
                 # teleport to the right of the sprite
-                if collision_rect.right - (self.hitbox.left - 1) > 0:
+                if collision_rect.right - (self._hitbox.left - 1) > 0:
                     self.move_right()
 
         else:
             # collided sprite is below
-            if self.hitbox.centery < collision_rect.centery:
+            if self._hitbox.centery < collision_rect.centery:
                 # teleport above the bottom of the sprite
-                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
+                if collision_rect.top - (self._hitbox.bottom + 1) < 0:
                     self.move_up()
             # collided sprite is above
             else:
                 # teleport below the top of the sprite
-                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
+                if collision_rect.bottom - (self._hitbox.top - 1) > 0:
                     self.move_down()
-
-    def collided_with_player(self):
-        """Go through action when colliding with a player."""
-        if self.current_state != self.states.Thrown:
-            current_player_action = self.player.pop_next_player_action()
-            if current_player_action == Actions.destroy:
-                self.die()
-            elif current_player_action == Actions.consume:
-                self.die()
-                # TODO: make consume logic
-                # set player consumption attribute with setter
-                child_class = self.__class__.__name__
-                if child_class == "Skeleton":
-                    self.player.eaten_power = EatenPowers.basic_skeleton
-                elif child_class == "Damsel":
-                    self.player.eaten_power = EatenPowers.damsel
-                else:
-                    raise ValueError(
-                        "Unknown caller, cannot set player consume attribute."
-                    )
-            elif current_player_action == Actions.throw:
-                self.set_state_thrown()
