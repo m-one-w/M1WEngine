@@ -12,17 +12,13 @@ class CameraManager(pygame.sprite.Group):
 
     Attributes
     ----------
-    _player_character: Player
-        The currently shown frame represented by an index
     _display_surface: pygame.Surface
         The game surface in which to render all sprites
-    _offset: vector2
-        The offset at which to render all sprites
     _half_width: int
         Half the display surface width
     _half_height: int
         Half the display surface height
-    _offset: vector2
+    _offset: pygame.math.Vector2
         The offset at which to render all sprites
     _player_character: Player
         The currently shown frame represented by an index
@@ -33,7 +29,6 @@ class CameraManager(pygame.sprite.Group):
         Renders all sprites relative to the player character position
     """
 
-    # initialize all groups and their current positions
     def __init__(self, player_character: Player) -> None:
         """Construct a CameraManager object.
 
@@ -46,18 +41,18 @@ class CameraManager(pygame.sprite.Group):
             The player character that entities move around
         """
         super().__init__()
-        surfaceX = 0
-        surfaceY = 1
-        self._display_surface = pygame.display.get_surface()
-        self._half_width = (
-            self._display_surface.get_size()[surfaceX] // 2
+        surface_x: int = 0
+        surface_y: int = 1
+        self._display_surface: pygame.Surface = pygame.display.get_surface()
+        self._half_width: int = (
+            self._display_surface.get_size()[surface_x] // 2
         )  # floor division, returns int
-        self._half_height = (
-            self._display_surface.get_size()[surfaceY] // 2
+        self._half_height: int = (
+            self._display_surface.get_size()[surface_y] // 2
         )  # floor division, returns int
 
-        self._offset = pygame.math.Vector2()
-        self._player_character = player_character
+        self._offset: pygame.math.Vector2 = pygame.math.Vector2()
+        self._player_character: Player = player_character
 
     def camera_update(self) -> None:
         """Update the camera sprites.
@@ -70,7 +65,9 @@ class CameraManager(pygame.sprite.Group):
         """
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             # offset = sprite.rect.topleft - self.offset
-            prevDirection = sprite.compass.copy()
-            sprite.compass = self._player_character.compass.copy() * -1
-            sprite.move(self._player_character.speed)
-            sprite.compass = pygame.math.Vector2(prevDirection.x, prevDirection.y)
+            previous_direction = sprite._compass.copy()
+            sprite._compass = self._player_character._compass.copy() * -1
+            sprite.move(self._player_character._speed)
+            sprite._compass = pygame.math.Vector2(
+                previous_direction.x, previous_direction.y
+            )
