@@ -14,9 +14,9 @@ class Skeleton(NPC):
     ----------
     _sprite_sheet: SpriteSheet
         Hold the art assets info
-    _image: pygame.Surface
+    image: pygame.Surface
         Hold the current sprite image
-    _rect: pygame.Rect
+    rect: pygame.Rect
         Hold the current sprite position
     _hitbox: pygame.Rect
         Hold the hitbox rect
@@ -99,8 +99,10 @@ class Skeleton(NPC):
 
     def die(self) -> None:
         """Handle actions on skeleton death."""
+        self._score_controller.bad_entity_destroyed_update_score(
+            self.__class__.__name__
+        )
         super().die()
-        self.scoreController.bad_entity_destroyed_update_score(self.__class__.__name__)
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group

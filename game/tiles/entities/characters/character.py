@@ -79,7 +79,7 @@ class Character(Entity):
         self._compass.x: Direction = Direction.right
         self._status: str = "right"
         self._score_controller: ScoreController = ScoreController()
-        self._sprite_sheet: SpriteSheet = SpriteSheet()
+        self._sprite_sheet: SpriteSheet = object()
         self._animations: dict = {}
 
     def import_assets(self) -> None:
@@ -268,7 +268,11 @@ class Character(Entity):
             All the collision information between this sprite and a group.
         """
         # get list of sprites from the passed in sprite group
-        obstacle_sprites: list[pygame.sprite.Group] = sprite_group.sprites()
+        obstacle_sprites: list = sprite_group.sprites()
+        # extract list of rects from obstacle_sprites
+        sprite_rects: list[pygame.Rect] = list()
+        for sprite in obstacle_sprites:
+            sprite_rects.append(sprite.rect)
 
         # list of all obstacle sprite indicies player has collisions with
         collision_indicies: list[int] = self.rect.collidelistall(obstacle_sprites)

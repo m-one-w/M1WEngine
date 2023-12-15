@@ -12,9 +12,9 @@ class Tile(pygame.sprite.Sprite):
         the x and y direction of movement bounded [-1, 1]
     _movement_tracker: dict[str, float]
         Contains how far the entity has traveled without moving
-    _image: pygame.Surface
+    image: pygame.Surface
         The current image to display on the screen
-    _rect: pygame.Rect
+    rect: pygame.Rect
         The size of the current image as a Rect
     _hitbox: pygame.Rect
         The modified image Rect for collision checks
@@ -61,9 +61,9 @@ class Tile(pygame.sprite.Sprite):
         self.colorKeyWhite = (255, 255, 255)
         self.colorKeyBlack = (0, 0, 0)
 
-        self.image: pygame.Surface
-        self.rect: pygame.Rect
-        self._hitbox: pygame.Rect
+        self.image: pygame.Surface = object()
+        self.rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
+        self._hitbox: pygame.Rect = self.rect
 
     def move(self, speed: int = 1) -> None:
         """Handle movement of the tile.

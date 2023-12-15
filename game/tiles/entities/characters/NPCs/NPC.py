@@ -18,7 +18,7 @@ class NPC(Character):
 
     Attributes
     ----------
-    _rect: pygame.Rect
+    rect: pygame.Rect
         The size of the NPC
     _player: Character
         The player's character, tracked by each NPC
@@ -177,11 +177,15 @@ class NPC(Character):
         is_player: bool = entities.__class__.__name__ == "Player"
 
         if is_player:
-            collisions = self._radar.colliderect(entities)
+            # if is_player, then entities is a single sprite
+            entity_rect_list: list[pygame.sprite.Sprite] = entities
+            collisions = self._radar.colliderect(entity_rect_list)
         else:
             # sprites as a list of sprites, not a Group of sprites
-            sprite_group_list: list[pygame.sprite.Sprite] = entities.sprites()
-            hitbox_list: list[int] = [sprite.hitbox for sprite in sprite_group_list]
+            sprite_group_list: list[pygame.sprite.Sprite] = pygame.sprite.Group.sprites(
+                entities
+            )
+            hitbox_list: list[int] = [sprite._hitbox for sprite in sprite_group_list]
             # list of all NPC collisions
             collisions = self._radar.collidelistall(hitbox_list)
 
@@ -417,20 +421,20 @@ class NPC(Character):
         if delta_x >= delta_y:
             # current sprite is to the left
             if self.rect.x < other_sprite.rect.x:
-                if other_sprite.status == "left":
+                if other_sprite._status == "left":
                     is_same_direction = True
             else:
-                if other_sprite.status == "right":
+                if other_sprite._status == "right":
                     is_same_direction = True
 
         # further up or down
         if delta_y > delta_x:
             # current sprite is above
             if self.rect.y < other_sprite.rect.y:
-                if other_sprite.status == "up":
+                if other_sprite._status == "up":
                     is_same_direction = True
             else:
-                if other_sprite.status == "down":
+                if other_sprite._status == "down":
                     is_same_direction = True
 
         return is_same_direction

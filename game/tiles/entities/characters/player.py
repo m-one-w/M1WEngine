@@ -23,9 +23,9 @@ class Player(Character):
     ----------
     _sprite_sheet: SpriteSheet
         Hold all the player animations
-    _image: pygame.Surface
+    image: pygame.Surface
         Hold the current player animation image
-    _rect: pygame.Rect
+    rect: pygame.Rect
         Hold the player position and size
     _hitbox: pygame.Rect
         Hold the player hitbox
@@ -83,8 +83,8 @@ class Player(Character):
         player_image_rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        self._image: pygame.surface = self._sprite_sheet.image_at(player_image_rect)
-        self.rect = self._image.get_rect(topleft=pos)
+        self.image: pygame.surface = self._sprite_sheet.image_at(player_image_rect)
+        self.rect = self.image.get_rect(topleft=pos)
         # ensure hitbox is large enough to cover player rotations
         self._hitbox = self.rect.inflate(2, 0)
 
@@ -192,7 +192,7 @@ class Player(Character):
         self.ensure_full_action_queue()
         self.set_status_by_curr_rotation()
         image = self.animate()
-        self._image = self.set_image_rotation(image)
+        self.image = self.set_image_rotation(image)
         # a new direction may be set by the collision handler
         self.collision_handler()
         # will move twice as fast as any other entity at the same speed due to camera.

@@ -15,9 +15,9 @@ class Damsel(NPC):
     ----------
     _sprite_sheet: SpriteSheet
         The sprite sheet containing damsel images
-    _image: pygame.Surface
+    image: pygame.Surface
         The current damsel image to render
-    _rect: pygame.Rect
+    rect: pygame.Rect
         The rectangle of the damsel image
     _obstacle_sprites: pygame.sprite.Group
         The sprite group containing all obstacles
@@ -64,8 +64,8 @@ class Damsel(NPC):
         damsel_image_rect: pygame.Rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        self._image: pygame.Surface = self._sprite_sheet.image_at(damsel_image_rect)
-        self.rect: pygame.Rect = self._image.get_rect(topleft=pos)
+        self.image: pygame.Surface = self._sprite_sheet.image_at(damsel_image_rect)
+        self.rect: pygame.Rect = self.image.get_rect(topleft=pos)
         self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
         self.import_assets()
 
@@ -93,12 +93,14 @@ class Damsel(NPC):
         collisions: list[int] = self.rect.collidelistall(enemy_sprites)
 
         if collisions:
-            self.damsel_die()
+            self.die()
 
     def die(self) -> None:
         """Handle effects of damsel death."""
-        self.scoreController.good_entity_destroyed_update_score(self.__class__.__name__)
-        self.die()
+        self._score_controller.good_entity_destroyed_update_score(
+            self.__class__.__name__
+        )
+        super().die()
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
@@ -117,7 +119,7 @@ class Damsel(NPC):
         self._bad_sprites = bad_sprites
         self._good_sprites = good_sprites
         self.set_status_by_curr_rotation()
-        self._image = self.animate()
+        self.image = self.animate()
         # will move half as fast as player at the same speed
         self.automate_movement()
         self.collision_handler()
