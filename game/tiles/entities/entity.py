@@ -6,10 +6,10 @@ from tiles.tile import Tile
 class Entity(Tile):
     """Entity class.
 
-    Base class for all entities including.
+    Base class for all entities including NPC and the player.
     """
 
-    def __init__(self, groups: pygame.sprite.Group):
+    def __init__(self, groups: pygame.sprite.Group) -> None:
         """Initialize an entity.
 
         Parameters
