@@ -1,6 +1,7 @@
 """This module contains the Level class."""
 from typing import List
 import pygame
+from tiles.entities.items.crystal import Crystal
 from tiles.entities.characters.player import Player
 from tiles.entities.characters.NPCs.damsel import Damsel
 from tiles.entities.characters.NPCs.skeleton import Skeleton
@@ -10,6 +11,7 @@ from settings import TILESIZE, LOOP_MUSIC
 from managers.camera_manager import CameraManager
 from game_data import level_data
 from game_data import character_keys
+from game_data import item_keys
 
 
 class Level(object):
@@ -40,6 +42,8 @@ class Level(object):
         Parse the level map's layout for entities and initialize them
     create_tile_group(self, layout: List[int]) -> pygame.sprite.Group
         Create tiles for the map using the layout and universal assets
+    create_items_from_layout(self)
+        Create all itmes
     add_obstacles(self)
         Add level specific obstacles to _obstacle_sprites
     add_sprites_to_camera(self)
@@ -75,6 +79,7 @@ class Level(object):
         self.create_sprite_groups()
         self.add_obstacles()
         self.create_entities_from_layout(self._character_layout)
+        self.create_items_from_layout()
 
         self._camera = CameraManager(self.player)
         self.add_sprites_to_camera()
@@ -100,6 +105,9 @@ class Level(object):
         self._character_layout: list[int] = import_csv_layout(
             level_data[level_key]["characters"]
         )
+        self._items_layout: list[int] = import_csv_layout(
+            level_data[level_key]["items"]
+        )
 
         self._terrain_sprites: pygame.sprite.Group = self.create_tile_group(
             terrain_layout
@@ -117,6 +125,7 @@ class Level(object):
         self._good_sprites = pygame.sprite.Group()
         self._attack_sprites = pygame.sprite.Group()
         self._player_group = pygame.sprite.GroupSingle()
+        self._item_sprites = pygame.sprite.Group()
 
     def create_entities_from_layout(self, layout: List[int]) -> None:
         """Initialize the entities on a layout.
@@ -158,6 +167,23 @@ class Level(object):
         for entity in self._bad_sprites:
             entity.set_player(self.player)
 
+    def create_items_from_layout(self) -> None:
+        """Initialize the entities on a layout."""
+        # default location of top left corner should never be used
+        x: int = 0
+        y: int = 0
+        position: tuple = (x, y)
+        for row_index, row in enumerate(self._items_layout):
+            for col_index, val in enumerate(row):
+                # all logic for every entity
+                if val != -1:
+                    x = col_index * TILESIZE
+                    y = row_index * TILESIZE
+                    position = (x, y)
+                # initialize the player
+                if val == item_keys["crystal"]:
+                    Crystal(self._item_sprites, position)
+
     def create_tile_group(self, layout: List[int]) -> pygame.sprite.Group:
         """Create the :func:`Sprite group<pygame.sprite.Group>` for a layout.
 
@@ -190,6 +216,7 @@ class Level(object):
         self._camera.add(self._plant_sprites)
         self._camera.add(self._fence_sprites)
         self._camera.add(self._extra_sprites)
+        self._camera.add(self._item_sprites)
 
         self._camera.add(self._good_sprites)
         self._camera.add(self._bad_sprites)
@@ -221,6 +248,7 @@ class Level(object):
             self._player_group.update(self._bad_sprites, self._good_sprites)
             self._bad_sprites.update(self._bad_sprites, self._good_sprites)
             self._good_sprites.update(self._bad_sprites, self._good_sprites)
+            self._item_sprites.update()
 
             # draw the game behind the player character
             self._camera.camera_update()

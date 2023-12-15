@@ -14,6 +14,7 @@ level_data = {
         "fence": "game_assets/level_layout/test_level/test_map_fence.csv",
         "extra": "game_assets/level_layout/test_level/test_map_extra.csv",
         "characters": "game_assets/level_layout/test_level/test_map_characters.csv",
+        "items": "game_assets/level_layout/test_level/test_map_items.csv",
     },
 }
 
@@ -22,3 +23,5 @@ character_keys = {
     "damsel": "1243",
     "skeleton": "1241",
 }
+
+item_keys = {"crystal": "1301"}
