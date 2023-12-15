@@ -20,6 +20,7 @@ class Game:
         Flag whether to quit the game or continue the game loop
     _level_manager: LevelManager
         The LevelManager which will handle all menu and game assets
+
     Methods
     -------
     run(self)
