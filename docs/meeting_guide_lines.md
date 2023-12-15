@@ -8,11 +8,10 @@
 ## Push all code worked on to github before the afternoon review
 
 ## Afternoon review
-- Were there any issues that came up?
 - How many story points were finished?
 - Did the issue scope make sense for the work involved?
-- Do the issues need to be adjusted in scope?
-- Do new issues need to be created?
+    - Do the issues need to be adjusted in scope?
+    - Do new issues need to be created?
 - 1-2 things that went poorly.
 - 1 thing that went well.
 
