@@ -23,3 +23,6 @@ MAIN_MENU_BACKGROUND_PATH = "game_assets/graphics/main_menu/ground.png"
 # Constant used to loop game music
 LOOP_MUSIC = -1
 MAIN_MENU_MUSIC = "game_assets/music/main_menu/science-documentary-169621.mp3"
+
+CHARACTER_IMAGES = "game_assets/graphics/tiles/entities/characters/"
+ITEM_IMAGES = "game_assets/graphics/tiles/entities/items/"
