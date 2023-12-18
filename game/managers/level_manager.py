@@ -35,6 +35,16 @@ class LevelManager:
         Run the currently loaded menu or level and return user menu selection
     """
 
+    def __new__(cls):
+        """Create a singleton object.
+
+        If singleton already exists returns the previous singleton object
+        """
+        if not hasattr(cls, "instance"):
+            cls.instance = super(LevelManager, cls).__new__(cls)
+            print("A new level manager is made!")
+        return cls.instance
+
     def __init__(self) -> None:
         """Construct the LevelManager class.
 
@@ -48,7 +58,7 @@ class LevelManager:
         self._asset_manager: AssetManager = AssetManager("ook")
         # main menu is the first thing that is loaded
         self._menu: MainMenu = MainMenu()
-        self._level: object = object()
+        self._level: Level = object()
         self._user_input: str = "None"
 
         # quit flag returned to game

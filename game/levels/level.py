@@ -1,6 +1,8 @@
 """This module contains the Level class."""
 from typing import List
 import pygame
+from HUD import HeadsUpDisplay
+from managers.camera_manager import CameraManager
 from tiles.entities.items.crystal import Crystal
 from tiles.entities.characters.player import Player
 from tiles.entities.characters.NPCs.damsel import Damsel
@@ -8,7 +10,6 @@ from tiles.entities.characters.NPCs.skeleton import Skeleton
 from tiles.tile import Tile
 from file_managers.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
-from managers.camera_manager import CameraManager
 from game_data import level_data
 from game_data import character_keys
 from game_data import item_keys
@@ -90,6 +91,8 @@ class Level(object):
 
         # pause flag used to display pause menu
         self._paused = False
+
+        self._hud = HeadsUpDisplay()
 
     def create_map(self, level_key: str) -> None:
         """Read level data from gameData.py and stage it for rendering."""
@@ -227,11 +230,6 @@ class Level(object):
         self._mixer.music.load(path)
         self._mixer.music.play(LOOP_MUSIC)
 
-    def pause_menu(self) -> None:
-        """Pauses the game and opens the pause menu."""
-        print("PAUSED!")
-        pass
-
     def run(self) -> None:
         """Draw and update all sprite groups."""
         self._display_surface.fill("black")
@@ -240,11 +238,9 @@ class Level(object):
         for event in pygame.event.get():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_ESCAPE:
-                    self._paused is not self._paused
+                    print("found in level")
 
-        if self._paused:
-            self.pause_menu()
-        else:
+        if not self._hud.pause_level:
             self._player_group.update(self._bad_sprites, self._good_sprites)
             self._bad_sprites.update(self._bad_sprites, self._good_sprites)
             self._good_sprites.update(self._bad_sprites, self._good_sprites)
@@ -252,6 +248,9 @@ class Level(object):
 
             # draw the game behind the player character
             self._camera.camera_update()
-            self._camera.draw(self._display_surface)
-            # draw the player chacter
-            self._player_group.draw(self._display_surface)
+
+        self._camera.draw(self._display_surface)
+        # draw the player chacter
+        self._player_group.draw(self._display_surface)
+        self._hud.draw(self._display_surface)
+        self._hud.update()

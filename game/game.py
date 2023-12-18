@@ -1,6 +1,8 @@
 """This module contains the main game class."""
 import pygame
 import sys
+from HUD import HeadsUpDisplay
+from score_controller import ScoreController
 from settings import STUDIO_SPLASH_SCREEN_PATH, WINDOW_HEIGHT, WINDOW_WIDTH
 from managers.level_manager import LevelManager
 
@@ -37,6 +39,9 @@ class Game:
         )
         pygame.display.set_caption("Reluctant Hero")
         pygame.display.set_icon(self._screen)
+        ScoreController()
+        LevelManager()
+        self._hud = HeadsUpDisplay()
 
         # display studio splash screen while loading game stuff
         self._studio_splash_screen: pygame.Surface = pygame.image.load(
@@ -59,6 +64,9 @@ class Game:
         while not self._quit_game:
             # check game events
             for event in pygame.event.get():
+                if event.type == pygame.KEYUP:
+                    if event.key == pygame.K_ESCAPE:
+                        self._hud.pause_level = not self._hud.pause_level
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
