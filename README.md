@@ -68,8 +68,7 @@ It is recommended to use Visual Studio Code IDE. Please install the following pl
 * Python
 * Pylance
 * isort
-* Black
-* Flake8
+* autorun
 
 ### Running the Game
 To run the game from within Visual Studio Code, navigate to the game.py file and select the run python file button in the top right corner of the IDE.
