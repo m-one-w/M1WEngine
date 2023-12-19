@@ -89,20 +89,26 @@ class Level(object):
     def create_map(self, level_key: str) -> None:
         """Read level data from gameData.py and stage it for rendering."""
         # setup map
-        terrain_layout = import_csv_layout(level_data[level_key]["ground"])
-        rocks_layout = import_csv_layout(level_data[level_key]["rocks"])
-        raised_ground_layout = import_csv_layout(level_data[level_key]["raised_ground"])
-        plants_layout = import_csv_layout(level_data[level_key]["plants"])
-        fence_layout = import_csv_layout(level_data[level_key]["fence"])
-        extra_layout = import_csv_layout(level_data[level_key]["extra"])
-        self._character_layout = import_csv_layout(level_data[level_key]["characters"])
+        terrain_layout: list[int] = import_csv_layout(level_data[level_key]["ground"])
+        rocks_layout: list[int] = import_csv_layout(level_data[level_key]["rocks"])
+        raised_ground_layout: list[int] = import_csv_layout(
+            level_data[level_key]["raised_ground"]
+        )
+        plants_layout: list[int] = import_csv_layout(level_data[level_key]["plants"])
+        fence_layout: list[int] = import_csv_layout(level_data[level_key]["fence"])
+        extra_layout: list[int] = import_csv_layout(level_data[level_key]["extra"])
+        self._character_layout: list[int] = import_csv_layout(
+            level_data[level_key]["characters"]
+        )
 
-        self._terrain_sprites = self.create_tile_group(terrain_layout)
+        self._terrain_sprites: pygame.sprite.Group = self.create_tile_group(
+            terrain_layout
+        )
         self._terrain_sprites.add(self.create_tile_group(rocks_layout))
         self._terrain_sprites.add(self.create_tile_group(raised_ground_layout))
-        self._plant_sprites = self.create_tile_group(plants_layout)
-        self._fence_sprites = self.create_tile_group(fence_layout)
-        self._extra_sprites = self.create_tile_group(extra_layout)
+        self._plant_sprites: pygame.sprite.Group = self.create_tile_group(plants_layout)
+        self._fence_sprites: pygame.sprite.Group = self.create_tile_group(fence_layout)
+        self._extra_sprites: pygame.sprite.Group = self.create_tile_group(extra_layout)
 
     def create_sprite_groups(self) -> None:
         """Create all sprite groups for the level."""
