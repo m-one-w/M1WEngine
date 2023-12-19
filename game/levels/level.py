@@ -7,7 +7,7 @@ from tiles.entities.characters.NPCs.skeleton import Skeleton
 from tiles.tile import Tile
 from filemanagement.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
-from cameraControl.cameraManager import CameraManager
+from levels.managers.cameraManager import CameraManager
 from levels.gameData import level_data
 from levels.gameData import character_keys
 

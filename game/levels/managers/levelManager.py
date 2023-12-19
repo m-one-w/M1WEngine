@@ -2,9 +2,9 @@
 import pygame
 from levels.level import Level
 from levels.testLevel import TestLevel
-from levels.mainMenu import MainMenu
+from levels.managers.AssetManager import AssetManager
+from menus.mainMenu import MainMenu
 from settings import FPS
-from levels.AssetManager import AssetManager
 
 
 class LevelManager:
