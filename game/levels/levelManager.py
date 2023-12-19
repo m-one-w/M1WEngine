@@ -1,5 +1,4 @@
 """This module contains the LevelManager class."""
-
 import pygame
 from levels.level import Level
 from levels.testLevel import TestLevel
@@ -42,14 +41,14 @@ class LevelManager:
         This LevelManager will instantiate a level's contents
         onto the pygame display surface.
         """
-        self._screen = pygame.display.get_surface()
+        self._screen: pygame.Surface = pygame.display.get_surface()
         # TODO: move clock to setter/getter style
-        self._clock = pygame.time.Clock()
+        self._clock: pygame.time.Clock = pygame.time.Clock()
         # TODO: AssetManager requires path to MainMenu music. In gameData.py
         self._asset_manager: AssetManager = AssetManager("ook")
         # main menu is the first thing that is loaded
         self._menu: MainMenu = MainMenu()
-        self._level = object()
+        self._level: object = object()
         self._user_input: str = "None"
 
         # quit flag returned to game

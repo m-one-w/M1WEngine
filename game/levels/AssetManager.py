@@ -1,6 +1,4 @@
 """AssetManager class."""
-
-
 import pygame
 from filemanagement.support import import_cut_graphic
 
