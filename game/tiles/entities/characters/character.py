@@ -2,9 +2,9 @@
 import math
 import pygame
 from enums.direction import Direction
-from file_managers.spriteSheet import SpriteSheet
+from file_managers.sprite_sheet import SpriteSheet
 from tiles.entities.entity import Entity
-from scoreController import ScoreController
+from score_controller import ScoreController
 from tiles.tile import Tile
 import settings
 

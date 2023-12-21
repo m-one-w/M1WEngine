@@ -1,9 +1,9 @@
 """This module contains the Player class."""
 import random
 import pygame
-from file_managers.spriteSheet import SpriteSheet
+from file_managers.sprite_sheet import SpriteSheet
 from enums.actions import Actions
-from enums.eatenPowers import EatenPowers
+from enums.eaten_powers import EatenPowers
 from tiles.entities.characters.character import Character
 import settings
 
@@ -176,7 +176,7 @@ class Player(Character):
     ) -> None:
         """Update player behavior based on player input.
 
-        Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
+        Controls and movement logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/spec_sheet.md#player-movement).# noqa: E501
         Updates local good and bad sprites, handles user input,
         ensures full action queue, sets status by current rotation,
         gets next animation image, handles collisions, and moves the player

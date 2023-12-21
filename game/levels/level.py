@@ -7,9 +7,9 @@ from tiles.entities.characters.NPCs.skeleton import Skeleton
 from tiles.tile import Tile
 from file_managers.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
-from managers.cameraManager import CameraManager
-from gameData import level_data
-from gameData import character_keys
+from managers.camera_manager import CameraManager
+from game_data import level_data
+from game_data import character_keys
 
 
 class Level(object):

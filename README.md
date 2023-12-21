@@ -77,7 +77,7 @@ Alternatively, right click on the game.py file and click 'run python file in ter
 
 ## Gameplay and Mechanics
 The objective of Reluctant Hero is to maximize your score while traversing the map.
-A detailed spec sheet of the mechanics can be found [here](./docs/specSheet.md)
+A detailed spec sheet of the mechanics can be found [here](./docs/spec_sheet.md)
 
 ## System Design
 The system design document was created through the draw.io web UI.

@@ -2,7 +2,7 @@
 import pygame
 import sys
 from settings import STUDIO_SPLASH_SCREEN_PATH, WINDOW_HEIGHT, WINDOW_WIDTH
-from managers.levelManager import LevelManager
+from managers.level_manager import LevelManager
 
 
 class Game:

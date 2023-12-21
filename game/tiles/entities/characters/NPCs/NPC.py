@@ -6,7 +6,7 @@ import time
 from typing import Callable, List
 import pygame
 from enums.actions import Actions
-from enums.eatenPowers import EatenPowers
+from enums.eaten_powers import EatenPowers
 from tiles.entities.characters.character import Character
 import settings
 

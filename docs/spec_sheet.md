@@ -139,7 +139,7 @@ The player rotation effects the sprite animation and where the sprite is moving.
 Due to the player always going forward, as the sprite rotates, the rotation determines which direction points forward.
 The Direction is stored in a vector containing the X and Y orientation in a grid from -1 to 1 as shown below:
 
-<img src="./specSheetImages/sprite-directions.PNG" width="300" height="300" style="padding-left: 50px;">
+<img src="./spec_sheet_images/sprite_directions.png" width="300" height="300" style="padding-left: 50px;">
 
 #### Movement Rotation
 The player movement rotation refers to rotating the X and Y direction with the left and right keyboard buttons.

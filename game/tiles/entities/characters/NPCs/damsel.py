@@ -1,6 +1,6 @@
 """This module contains the Damsel class."""
 import pygame
-from file_managers.spriteSheet import SpriteSheet
+from file_managers.sprite_sheet import SpriteSheet
 from tiles.entities.characters.NPCs.NPC import NPC
 import settings
 
@@ -109,7 +109,7 @@ class Damsel(NPC):
     ) -> None:
         """Update damsel behavior based on entities on the map.
 
-        Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/specSheet.md#player-movement).# noqa: E501
+        Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/spec_sheet.md#player-movement).# noqa: E501
 
         Parameters
         ----------

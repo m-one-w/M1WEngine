@@ -1,9 +1,9 @@
 """This module contains the LevelManager class."""
 import pygame
 from levels.level import Level
-from levels.test_level.testLevel import TestLevel
-from managers.AssetManager import AssetManager
-from menus.main_menu.mainMenu import MainMenu
+from levels.test_level.test_level import TestLevel
+from managers.asset_manager import AssetManager
+from menus.main_menu.main_menu import MainMenu
 from settings import FPS
 
 
