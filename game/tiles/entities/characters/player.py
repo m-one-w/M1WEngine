@@ -1,7 +1,7 @@
 """This module contains the Player class."""
 import random
 import pygame
-from filemanagement.spriteSheet import SpriteSheet
+from file_managers.spriteSheet import SpriteSheet
 from enums.actions import Actions
 from enums.eatenPowers import EatenPowers
 from tiles.entities.characters.character import Character
@@ -78,7 +78,9 @@ class Player(Character):
         super().__init__(groups)
 
         # grab self image
-        playerMovementsPath = "graphics/player/playerWalking.png"
+        playerMovementsPath = (
+            "game_assets/graphics/tiles/entities/characters/player/player.png"
+        )
         self._sprite_sheet = SpriteSheet(playerMovementsPath, pygame.Color("black"))
         player_image_rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT

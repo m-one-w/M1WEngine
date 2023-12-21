@@ -1,6 +1,6 @@
 """This module contains the Damsel class."""
 import pygame
-from filemanagement.spriteSheet import SpriteSheet
+from file_managers.spriteSheet import SpriteSheet
 from tiles.entities.characters.NPCs.NPC import NPC
 import settings
 
@@ -57,7 +57,9 @@ class Damsel(NPC):
         """
         super().__init__(groups)
 
-        damsel_image_path: str = "graphics/damsel/damselWalking.png"
+        damsel_image_path: str = (
+            "game_assets/graphics/tiles/entities/characters/NPCs/damsel/damsel.png"
+        )
         self._sprite_sheet: SpriteSheet = SpriteSheet(
             damsel_image_path, pygame.Color("black")
         )

@@ -5,11 +5,11 @@ from tiles.entities.characters.player import Player
 from tiles.entities.characters.NPCs.damsel import Damsel
 from tiles.entities.characters.NPCs.skeleton import Skeleton
 from tiles.tile import Tile
-from filemanagement.support import import_csv_layout
+from file_managers.support import import_csv_layout
 from settings import TILESIZE, LOOP_MUSIC
-from levels.managers.cameraManager import CameraManager
-from levels.gameData import level_data
-from levels.gameData import character_keys
+from managers.cameraManager import CameraManager
+from gameData import level_data
+from gameData import character_keys
 
 
 class Level(object):

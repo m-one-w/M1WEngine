@@ -2,7 +2,7 @@
 import math
 import pygame
 from enums.direction import Direction
-from filemanagement.spriteSheet import SpriteSheet
+from file_managers.spriteSheet import SpriteSheet
 from tiles.entities.entity import Entity
 from scoreController import ScoreController
 from tiles.tile import Tile

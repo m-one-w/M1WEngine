@@ -1,6 +1,6 @@
 """AssetManager class."""
 import pygame
-from filemanagement.support import import_cut_graphic
+from file_managers.support import import_cut_graphic
 
 
 class AssetManager:
@@ -27,7 +27,7 @@ class AssetManager:
         """
         # csv file with sprites used in every level, like player.
         self._univeral_sprites: pygame.sprite = import_cut_graphic(
-            "graphics/tilesets/tiny_atlas.png"
+            "game_assets/graphics/tilesets/tiny_atlas.png"
         )
 
         # TODO: music mixer initialized with MainMenu music

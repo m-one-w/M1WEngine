@@ -1,6 +1,6 @@
 """This module contains the Skeleton class."""
 import pygame
-from filemanagement.spriteSheet import SpriteSheet
+from file_managers.spriteSheet import SpriteSheet
 from tiles.entities.characters.NPCs.NPC import NPC
 import settings
 
@@ -58,7 +58,9 @@ class Skeleton(NPC):
         super().__init__(groups)
 
         # grab self image
-        skeleton_sprite_path = "graphics/skeleton/skeleton.png"
+        skeleton_sprite_path = (
+            "game_assets/graphics/tiles/entities/characters/NPCs/skeleton/skeleton.png"
+        )
         self._sprite_sheet = SpriteSheet(skeleton_sprite_path, pygame.Color("black"))
         size_of_single_sprite = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
