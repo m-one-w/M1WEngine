@@ -84,7 +84,7 @@ The system design document was created through the draw.io web UI.
 All system modules are created to reflect the design choices defined in the [system design specification](./docs/Reluctant_Hero_System_Design.png)
 
 ## Agile Guidelines
-The agile story point estimates are defined in the following [documentation](./docs/agileGuideLines.md)
+The agile story point estimates are defined in the following [documentation](./docs/agile_guide_lines.md)
 
 ## Further references
 This project was initially based on the following youtube tutorial:

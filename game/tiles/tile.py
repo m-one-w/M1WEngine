@@ -58,8 +58,8 @@ class Tile(pygame.sprite.Sprite):
         self._movement_tracker: dict[str, float] = {"vertical": 0.0, "horizontal": 0.0}
 
         # r,g,b vals for key color
-        self.colorKeyWhite = (255, 255, 255)
-        self.colorKeyBlack = (0, 0, 0)
+        self.color_key_white = (255, 255, 255)
+        self.color_key_black = (0, 0, 0)
 
         self.image: pygame.Surface = object()
         self.rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)

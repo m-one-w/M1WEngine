@@ -44,7 +44,7 @@ class Level(object):
         Add level specific obstacles to _obstacle_sprites
     add_sprites_to_camera(self)
         Add all visible sprites to the CameraManager
-    pauseMenu(self)
+    pause_menu(self)
         Handle a paused game
     run(self)
         Draw and update all sprite groups
@@ -200,7 +200,7 @@ class Level(object):
         self._mixer.music.load(path)
         self._mixer.music.play(LOOP_MUSIC)
 
-    def pauseMenu(self) -> None:
+    def pause_menu(self) -> None:
         """Pauses the game and opens the pause menu."""
         print("PAUSED!")
         pass
@@ -216,7 +216,7 @@ class Level(object):
                     self._paused is not self._paused
 
         if self._paused:
-            self.pauseMenu()
+            self.pause_menu()
         else:
             self._player_group.update(self._bad_sprites, self._good_sprites)
             self._bad_sprites.update(self._bad_sprites, self._good_sprites)

@@ -3,7 +3,7 @@
 from enum import Enum
 import sys
 import time
-from typing import Callable, List
+from typing import Callable
 import pygame
 from enums.actions import Actions
 from enums.eaten_powers import EatenPowers
@@ -26,7 +26,7 @@ class NPC(Character):
         The state machine for automated movement
     _current_state: states
         The current NPC state
-    target_sprite: Entity
+    _target_sprite: Entity
         The currently tracked sprite detected in radar
     _last_time_stored: int
         The last time an automated state used a timer
@@ -50,7 +50,7 @@ class NPC(Character):
         set_active_state: type(Callable[[], None]),
     ) -> bool
         Set the state on a radar detection of entities
-    set_target_sprite_from_list(self, spriteGroupList: List, collisions: List)
+    set_target_sprite_from_list(self, sprite_group_list: list, collisions: list)
         Choose a target sprite from a list of sprites
     move_based_on_state(self)
         Automatically move depending on the current state
@@ -215,15 +215,15 @@ class NPC(Character):
         return collisions
 
     def set_target_sprite_from_list(
-        self, sprite_group_list: List, collisions: list[int]
+        self, sprite_group_list: list, collisions: list[int]
     ) -> None:
         """Set the target sprite from a radar collision.
 
         Parameters
         ----------
-        sprite_group_list: List
+        sprite_group_list: list
             List of all sprites that might have collided
-        collisions: List[int]
+        collisions: list[int]
             List of indices for which sprites have collided
         """
         current_min_distance: float = float(sys.maxsize)
@@ -448,7 +448,7 @@ class NPC(Character):
             A tuple containing the x and y of the average collision point
         """
         super().collision_set_compass(collided_coords)
-        # TODO: time should be retrieved from levelManager
+        # TODO: time should be retrieved from level_manager
         self._last_time_stored = time.perf_counter()
 
     def teleport_out_of_sprite(self, collision_rect: pygame.Rect):
