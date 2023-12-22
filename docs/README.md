@@ -5,4 +5,4 @@
 - [Meeting Guidelines](./meeting_guide_lines.md)
 - [IP Ownership Draft](./ip_ownership_draft.md)
 - [Licensing Draft](./licensing_draft.md)
-- [Spec Sheet](./specSheet.md)
+- [Spec Sheet](./spec_sheet.md)
