@@ -7,7 +7,6 @@ from dict_structures.animation_dict import AnimationDict
 from tiles.entities.entity import Entity
 from score_controller import ScoreController
 from tiles.tile import Tile
-import settings
 
 # number of images for each directional animation
 WALKING_IMAGE_COUNT = 3
@@ -85,6 +84,7 @@ class Character(Entity):
         image_rect: pygame.Rect
             The rectangle representing the character
         """
+        self.setup_import_assets(image_rect.height, image_rect.width)
         super().__init__(group, pos, sprite_sheet_path, image_rect)
         self._speed: int = 1
         self._compass.x: Direction = Direction.right
@@ -92,35 +92,34 @@ class Character(Entity):
         self._score_controller: ScoreController = ScoreController()
         self._sprite_sheet: SpriteSheet = SpriteSheet()
 
-    def import_assets(self) -> None:
+    def setup_import_assets(self, height, width) -> None:
         """Import and divide the animation image into it's smaller parts.
 
-        Called at end of :func:'init()', takes the image with all character animations
-        and divides it into its sub-images. Can be expanded with more images to fulfill
-        idle and attack animations.
+        Takes the image with all character animations and divides it into its
+        sub-images.
         """
         animation_up: AnimationDict = {
             "name": "up",
             "image_rect": (
                 0,
-                settings.ENTITY_HEIGHT * 3,
-                settings.ENTITY_WIDTH,
-                settings.ENTITY_HEIGHT,
+                height * 3,
+                width,
+                height,
             ),
             "image_count": 3,
         }
         animation_down: AnimationDict = {
             "name": "down",
-            "image_rect": (0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT),
+            "image_rect": (0, 0, width, height),
             "image_count": 3,
         }
         animation_left: AnimationDict = {
             "name": "left",
             "image_rect": (
                 0,
-                settings.ENTITY_HEIGHT,
-                settings.ENTITY_WIDTH,
-                settings.ENTITY_HEIGHT,
+                height,
+                width,
+                height,
             ),
             "image_count": 3,
         }
@@ -128,21 +127,19 @@ class Character(Entity):
             "name": "right",
             "image_rect": (
                 0,
-                settings.ENTITY_HEIGHT * 2,
-                settings.ENTITY_WIDTH,
-                settings.ENTITY_HEIGHT,
+                height * 2,
+                width,
+                height,
             ),
             "image_count": 3,
         }
 
-        animation_dicts = [
+        self._animation_dict = [
             animation_up,
             animation_down,
             animation_left,
             animation_right,
         ]
-
-        super().import_assets(animation_dicts)
 
     def set_status_by_curr_rotation(self) -> None:
         """Set the correct status based on the current compass direction.

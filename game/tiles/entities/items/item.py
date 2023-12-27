@@ -55,8 +55,8 @@ class Item(Entity):
             ),
             "image_count": 3,
         }
-        animation_dicts: list[AnimationDict] = [idle_animation]
-        super().import_assets(animation_dicts)
+        self._animation_dict: list[AnimationDict] = [idle_animation]
+        super().import_assets()
 
     def update(self):
         """Update the item instance."""

@@ -1,6 +1,5 @@
 """This module contains the Entity class."""
 import pygame
-from dict_structures.animation_dict import AnimationDict
 from file_managers.sprite_sheet import SpriteSheet
 from tiles.tile import Tile
 
@@ -48,6 +47,7 @@ class Entity(Tile):
         super().__init__(group)
         self._frame_index: int = 0
         self._animation_speed: float = 0.15
+        # need error handling for _animation_dict does not exist
         self._animations: dict = {}
 
         self._sprite_sheet: SpriteSheet = SpriteSheet(
@@ -79,12 +79,12 @@ class Entity(Tile):
 
         return animation_strip[int(self._frame_index)]
 
-    def import_assets(self, animation_dict: list[AnimationDict]) -> None:
+    def import_assets(self) -> None:
         """Import and divide the animation image into it's smaller parts.
 
         Import all Entity animations according to the animation dictionary passed in.
         """
-        for animation in animation_dict:
+        for animation in self._animation_dict:
             self._animations[animation["name"]] = self._sprite_sheet.load_strip(
                 animation["image_rect"], animation["image_count"]
             )
