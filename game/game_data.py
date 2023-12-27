@@ -18,6 +18,13 @@ level_data = {
     },
 }
 
+menu_data = {
+    "main_menu": {
+        "music": "game_assets/music/main_menu/science-documentary-169621.mp3",
+        "background_image_path": "game_assets/graphics/main_menu/ground.png",
+    }
+}
+
 character_keys = {
     "player": "1242",
     "damsel": "1243",

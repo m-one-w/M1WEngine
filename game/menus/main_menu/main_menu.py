@@ -35,13 +35,13 @@ class MainMenu(pygame_menu.Menu):
         Draw the menu to the display surface and start the menuLoop
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Construct the main menu class.
 
         This method will instantiate all required sprite groups for the main menu level
         """
-        super().__init__("Main Menu", WINDOW_WIDTH, WINDOW_HEIGHT)
         self._menu_image: pygame.Surface = pygame.image.load(MAIN_MENU_BACKGROUND_PATH)
+        super().__init__("Main Menu", WINDOW_WIDTH, WINDOW_HEIGHT)
         self._display_surface: pygame.Surface = pygame.display.get_surface()
         # create pygame_menu options for the main menu
         self.add_menu_options()
