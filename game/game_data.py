@@ -29,6 +29,7 @@ character_keys = {
     "player": "1242",
     "damsel": "1243",
     "skeleton": "1241",
+    "minotaur": "1178",
 }
 
 item_keys = {"crystal": "1301"}

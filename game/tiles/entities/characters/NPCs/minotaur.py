@@ -1,37 +1,33 @@
-"""This module contains the Skeleton class."""
+"""This module contains the Minotaur class."""
 import pygame
 from tiles.entities.characters.NPCs.NPC import NPC
 import settings
 
 
-class Skeleton(NPC):
-    """Skeleton class.
+class Minotaur(NPC):
+    """Minotaur class.
 
-    Defines how the skeleton behaves.
+    Defines how a minotaur will behave.
 
     Attributes
     ----------
-    _sprite_sheet: SpriteSheet
-        Hold the art assets info
-    image: pygame.Surface
-        Hold the current sprite image
-    rect: pygame.Rect
-        Hold the current sprite position
-    _hitbox: pygame.Rect
-        Hold the hitbox rect
-    _radar: pygame.Rect
-        Hold the radar rect
+    _minotaur_width: int
+        How wide the sprite is
+    _minotaur_height: int
+        How heigh the sprite is
     _obstacle_sprites: pygame.sprite.Group
         Hold the sprites that block movement
+    _hitbox: pygame.Rect
+        Hold the hitbox rect
 
     Methods
     -------
     automate_movement(self)
-        Define how skeleton will move
+        Define how minotaur will move
     collision_handler(self)
         Define how to handle collisions
     die(self)
-        Handle skeleton death actions
+        Handle minotaur death actions
     update(self,  bad_sprites: pygame.sprite.Group,
     good_sprites: pygame.sprite.Group)
         Update animation and move with collision handling
@@ -43,27 +39,29 @@ class Skeleton(NPC):
         group: pygame.sprite.Group,
         obstacle_sprites: pygame.sprite.Group,
     ):
-        """Construct the skeleton class.
+        """Construct the minotaur class.
 
         Parameters
         ----------
         pos: tuple
             The spawning position in the map as (x,y) coordinates
         group: pygame.sprite.Group
-            The sprite groups this skeleton is a part of
+            The sprite groups this minotaur is a part of
         obstacle_sprites: pygame.sprite.Group
-            The sprites the skeleton cannot move through
+            The sprites the minotaur cannot move through
         """
-        skeleton_movements_path: str = (
-            settings.CHARACTER_IMAGES + "NPCs/skeleton/skeleton.png"
+        self._minotaur_width = 48
+        self._minotaur_height = 48
+        minotaur_movements_path: str = (
+            settings.CHARACTER_IMAGES + "NPCs/minotaur/minotaur.png"
         )
-        skeleton_image_rect: pygame.Rect = pygame.Rect(
-            0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
+        minotaur_image_rect: pygame.Rect = pygame.Rect(
+            0, 0, self._minotaur_width, self._minotaur_height
         )
-        super().__init__(group, pos, skeleton_movements_path, skeleton_image_rect)
-
+        # self.setup_import_assets()
+        super().__init__(group, pos, minotaur_movements_path, minotaur_image_rect)
         self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
-        self._hitbox: pygame.Rect = self.rect.inflate(-4, 0)
+        self._hitbox: pygame.Rect = self.rect
 
     def automate_movement(self) -> None:
         """Movement logic method."""
@@ -77,13 +75,17 @@ class Skeleton(NPC):
         self.radar_set_states(self._player, active_state, passive_state)
 
         # change state to attack if there is good_entity nearby
-        active_state = self.set_state_attack
+        active_state = self.set_state_charge
         self.radar_set_state(self._good_sprites, active_state)
 
         self.move_based_on_state()
 
     def collision_handler(self) -> None:
-        """Handle collision interactions with environment."""
+        """Handle collision interactions with environment.
+
+        Raises:
+            ValueError: when unable to resolve player collisions
+        """
         super().collision_handler()
         collisions = self.rect.colliderect(self._player._hitbox)
 
@@ -91,10 +93,10 @@ class Skeleton(NPC):
             try:
                 self.collided_with_player()
             except ValueError:
-                print("Unable to resolve player collisions from skeleton.")
+                print("Unable to resolve player collisions from minotaur.")
 
     def die(self) -> None:
-        """Handle actions on skeleton death."""
+        """Handle actions on minotaur death."""
         self._score_controller.bad_entity_destroyed_update_score(
             self.__class__.__name__
         )
@@ -103,9 +105,7 @@ class Skeleton(NPC):
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
     ) -> None:
-        """Update skeleton behavior based on entities on the map.
-
-        Reaction logic is described in the [documentation](https://github.com/Sean-Nishi/Lunk-Game/blob/main/docs/spec_sheet.md#player-movement).# noqa: E501
+        """Update minotaur behavior based on entities on the map.
 
         Parameters
         ----------
@@ -117,10 +117,11 @@ class Skeleton(NPC):
         self._bad_sprites = bad_sprites
         self._good_sprites = good_sprites
         self.set_status_by_curr_rotation()
-        self.image = self.animate()
+        image = self.animate()
+        self.image = self.set_image_rotation(image)
         # will move half as fast as player at the same speed
         self.automate_movement()
 
         if self._current_state != self._states.Thrown:
-            # Flee collision handler must be handled within auto movement
+            # thrown collision handler must be handled within auto movement
             self.collision_handler()

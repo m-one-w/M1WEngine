@@ -3,6 +3,7 @@ from typing import List
 import pygame
 from HUD import HeadsUpDisplay
 from managers.camera_manager import CameraManager
+from tiles.entities.characters.NPCs.minotaur import Minotaur
 from tiles.entities.items.crystal import Crystal
 from tiles.entities.characters.player import Player
 from tiles.entities.characters.NPCs.damsel import Damsel
@@ -159,6 +160,8 @@ class Level(object):
                 # initialize skeletons
                 elif val == character_keys["skeleton"]:
                     Skeleton(position, self._bad_sprites, self._obstacle_sprites)
+                elif val == character_keys["minotaur"]:
+                    Minotaur(position, self._bad_sprites, self._obstacle_sprites)
 
         # add player awareness to friendly_sprites
         for entity in self._good_sprites:

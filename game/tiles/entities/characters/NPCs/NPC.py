@@ -1,12 +1,14 @@
 """This module contains the Entity class."""
 
 from enum import Enum
+import math
 import sys
 import time
 from typing import Callable
 import pygame
 from enums.actions import Actions
 from enums.eaten_powers import EatenPowers
+from enums.direction import Direction
 from tiles.entities.characters.character import Character
 import settings
 
@@ -64,6 +66,10 @@ class NPC(Character):
         Define the follow movement
     thrown_movement(self)
         Throw self from current position
+    charge_movement(self)
+        Charge self from current position
+    rotate_compass_to_target_sprite(self)
+        Rotate the compass to point at the target sprite
     move_towards_target_sprite(self)
         Move to the target sprite
     set_state_patrol(self)
@@ -76,6 +82,8 @@ class NPC(Character):
         Set state to follow
     set_state_thrown(self)
         Set the state to thrown
+    set_state_charge(self)
+        Set the state to charge
     set_player(self, player: pygame.sprite)
         Set player for NPC to track
     collided_with_player(self)
@@ -109,9 +117,10 @@ class NPC(Character):
 
         # setting up state machine
         self._states: Enum = Enum(
-            "states", ["Patrol", "Attack", "Flee", "Follow", "Thrown"]
+            "states", ["Patrol", "Attack", "Flee", "Follow", "Thrown", "Charge"]
         )
         self._current_state: Enum = self._states.Patrol
+        self._initial_charge_compass: pygame.Vector2 = pygame.Vector2(0, 0)
 
         # the closest sprite on our radar
         self._target_sprite: Character = pygame.sprite.Sprite()
@@ -210,6 +219,10 @@ class NPC(Character):
             elif set_active_state == self.set_state_follow:
                 if self._current_state != self._states.Follow:
                     set_active_state()
+            # try to charge
+            elif set_active_state == self.set_state_charge:
+                if self._current_state != self._states.Flee:
+                    set_active_state()
             # cannot try to patrol as an active state
             elif set_active_state == self.set_state_patrol:
                 raise Exception("Invalid active state of patrol has been found!")
@@ -264,6 +277,9 @@ class NPC(Character):
 
         elif self._current_state == self._states.Thrown:
             self.thrown_movement()
+
+        elif self._current_state == self._states.Charge:
+            self.charge_movement()
 
     def patrol_movement(self) -> None:
         """Move back and forth."""
@@ -323,6 +339,31 @@ class NPC(Character):
                 speed: int = 5
                 self.move(speed)
 
+    def charge_movement(self) -> None:
+        """Charge from current position until charge is disrupted."""
+        if self._current_state == self._states.Charge:
+            if self._initial_charge_compass == pygame.Vector2(0, 0):
+                self._initial_charge_compass = self.rotate_compass_to_target_sprite()
+
+            collision_dictionary: dict = self.collision_detection(
+                self._obstacle_sprites
+            )
+            if collision_dictionary["collision_detected"]:
+                self._initial_charge_compass = pygame.Vector2(0, 0)
+                self.set_state_patrol()
+            else:
+                speed: int = 2
+                self.move(speed)
+
+    def rotate_compass_to_target_sprite(self) -> None:
+        """Rotate compass to point towards the target sprite."""
+        opposite = self._target_sprite.rect.centerx - self.rect.centerx
+        adjecent = self.rect.centery - self._target_sprite.rect.centery
+        radians = math.atan2(opposite, adjecent)
+        self._compass.x = Direction.stop
+        self._compass.y = Direction.down
+        self._compass.rotate_ip_rad(radians)
+
     def move_towards_target_sprite(self) -> None:
         """Move towards the target sprite."""
         if self.rect.x < self._target_sprite.rect.x:
@@ -362,6 +403,11 @@ class NPC(Character):
         # TODO: switch to game clock
         self._last_time_stored = time.perf_counter()
         self._compass = self._player._compass.copy()
+
+    def set_state_charge(self) -> None:
+        """Set state machine the 'Charge'."""
+        if self._current_state != self._states.Thrown:
+            self._current_state = self._states.Charge
 
     def set_player(self, player: pygame.sprite) -> None:
         """Set the player for the entity to track.
