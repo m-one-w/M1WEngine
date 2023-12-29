@@ -31,4 +31,4 @@
         - Break apart the story points that were not finished
         - Was the scope incorrect?
         - Was there a blocker?
-        - Was there another reason the story point was not finsihed?
+        - Was there another reason the story point was not finished?
