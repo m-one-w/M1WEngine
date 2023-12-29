@@ -44,7 +44,7 @@ class Level(object):
     create_tile_group(self, layout: List[int]) -> pygame.sprite.Group
         Create tiles for the map using the layout and universal assets
     create_items_from_layout(self)
-        Create all itmes
+        Create all items
     add_obstacles(self)
         Add level specific obstacles to _obstacle_sprites
     add_sprites_to_camera(self)
