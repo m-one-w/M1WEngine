@@ -5,6 +5,7 @@ from levels.test_level.test_level import TestLevel
 from managers.asset_manager import AssetManager
 from menus.main_menu.main_menu import MainMenu
 from settings import FPS
+from enums.user_selection import UserSelection
 
 
 class LevelManager:
@@ -24,8 +25,8 @@ class LevelManager:
         MainMenu is the default menu to display from levelManager
     _level: object
         The level the user is playing. Initialized when MainMenu returns with "Level"
-    _user_input: str
-        User input used to load levels and menus
+    _user_input: UserSelection
+        Enum used to determine user input
     _quit_game: bool
         Quit flag when returning to game
 
@@ -55,7 +56,7 @@ class LevelManager:
         # TODO: move clock to setter/getter style
         self._clock: pygame.time.Clock = pygame.time.Clock()
         self._asset_manager: AssetManager = AssetManager()
-        self._user_input: str = "None"
+        self._user_input: UserSelection = UserSelection.none
         # main menu is the first thing that is loaded
         self._menu: MainMenu = MainMenu()
         self._asset_manager.load_music("menu", "main_menu")
@@ -69,9 +70,9 @@ class LevelManager:
         # running the menu check
         if self._menu.is_enabled():
             self._menu.run()
-        self._user_input: str = self._menu.get_user_selection()
+        self._user_input = self._menu.user_selection
 
-        if self._user_input == "Level":
+        if self._user_input == UserSelection.level:
             # check is menu is finished disabling
             if not self._menu.is_enabled():
                 # if the level is not loaded yet, then initialize it
@@ -85,7 +86,7 @@ class LevelManager:
                     level_key: str = "test_level"
                     self._asset_manager.load_music("level", level_key)
                 self._level.run()
-        elif self._user_input == "Quit":
+        elif self._user_input == UserSelection.quit:
             self._quit_game is not self._quit_game
 
         self._clock.tick(FPS)

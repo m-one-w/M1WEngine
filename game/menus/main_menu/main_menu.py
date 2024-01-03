@@ -2,6 +2,7 @@
 import pygame
 import pygame_menu
 from settings import WINDOW_WIDTH, WINDOW_HEIGHT, MAIN_MENU_BACKGROUND_PATH
+from enums.user_selection import UserSelection
 
 
 class MainMenu(pygame_menu.Menu):
@@ -21,10 +22,12 @@ class MainMenu(pygame_menu.Menu):
 
     Methods
     -------
-    set_user_selection(self, selection: str)
-        Sets the _user_selection
-    get_user_selection(self) -> str
+    __init__(self)
+        Initialize the menu
+    user_selection(self) -> UserSelection
         Get the _user_selection
+    user_selection(self, selection: UserSelection) -> None
+        Sets the _user_selection
     add_menu_options(self, selection: str)
         Create all buttons and selectors for the menu
     start_game(self)
@@ -46,23 +49,34 @@ class MainMenu(pygame_menu.Menu):
         # create pygame_menu options for the main menu
         self.add_menu_options()
         # TODO: self._user_selection should be Enum
-        self._user_selection: str = "None"
+        self._user_selection: UserSelection = UserSelection.none
 
-    def set_user_selection(self, selection: str) -> None:
+    @property
+    def user_selection(self) -> UserSelection:
+        """Get user selection for LevelManager."""
+        return self._user_selection
+
+    @user_selection.setter
+    def user_selection(self, selection: UserSelection) -> None:
         """Set user selection for MainMenu.
 
         Intended for use in LevelManager.
 
         Parameters
         ----------
-        selection: str
+        selection: UserSelection
             New incoming value to set
-        """
-        self._user_selection = selection
 
-    def get_user_selection(self) -> str:
-        """Get user selection for LevelManager."""
-        return self._user_selection
+        Raises
+        ------
+        TypeError: parameter must be of UserSelection type
+        """
+        if type(selection) is not UserSelection:
+            raise TypeError(
+                "ERROR: a UserSelection enum value must be passed in as the selection."
+            )
+        else:
+            self._user_selection = selection
 
     def add_menu_options(self) -> None:
         """Add all menu options to the main menu."""
@@ -79,7 +93,7 @@ class MainMenu(pygame_menu.Menu):
 
     def start_game(self) -> None:
         """Change status of user_selection to load a level and disable main menu."""
-        self.set_user_selection("Level")
+        self.user_selection = UserSelection.level
         self.disable()
 
     def set_difficulty(self, value: tuple, difficulty: str) -> None:
