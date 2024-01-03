@@ -21,10 +21,10 @@ class MainMenu(pygame_menu.Menu):
 
     Methods
     -------
-    get_user_selection(self)
-        Get the user selection
     set_user_selection(self, selection: str)
         Sets the _user_selection
+    get_user_selection(self) -> str
+        Get the _user_selection
     add_menu_options(self, selection: str)
         Create all buttons and selectors for the menu
     start_game(self)
