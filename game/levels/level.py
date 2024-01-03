@@ -1,5 +1,4 @@
 """This module contains the Level class."""
-from typing import List
 import pygame
 from HUD import HeadsUpDisplay
 from tiles.entities.characters.NPCs.postman import Postman
@@ -24,14 +23,30 @@ class Level(object):
     ----------
     _display_surface: pygame.Surface
         The surface which to display the level
-    _universal_assets: List[pygame.sprites]
-        The list of all art assets from LevelManager
-    _mixer: pygame.mixer
-        LevelManager's music mixer for level specific music
     _camera: CameraManager
         CameraManager handles sprite movement across the screen relative to the player
-    _paused: bool
-        Flag to pause the game when key is pressed
+    _terrain_sprites: pygame.sprite.Group
+        The sprite group containing all terrain sprites
+    _plant_sprites: pygame. sprite.Group
+        The sprite group containing all plant sprites
+    _fence_sprites: pygame.sprite.Group
+        The sprite group containing all the fence sprites
+    _extra_sprites
+        The sprite group containing all the extra sprites
+    _obstacle_sprites: pygame.sprite.Group
+        The sprites group containing all sprites that Characters cannot move through
+    _bad_sprites: pygame.sprite.Group
+        The sprite group for all bad aligned sprites
+    _good_sprites: pygame.sprite.Group
+        The sprite group for all good aligned sprites
+    _neutral_sprites: pygame.sprite.Group
+        The sprite group for all neutral aligned sprites
+    _attack_sprites: pygame.sprite.Group
+        The sprites group used for projectiles made from attacks
+    _player_group: pygame.sprite.GroupSingle
+        The single sprite group containing the player
+    _item_sprites: pygame.sprite.Group
+        The sprite group used for items
 
     Methods
     -------
@@ -53,38 +68,34 @@ class Level(object):
         Draw and update all sprite groups
     """
 
-    def __init__(self, universal_assets: list, level_str: str):
+    def __init__(self, universal_assets: list[pygame.Surface], level_str: str):
         """Construct the level class.
 
         This method will instantiate all required sprite groups for the current level
 
         Parameters
         ----------
-        universal_assets: List[pygame.sprite]
+        universal_assets: list[pygame.Surface]
             The list containing all game assets which the level will select from
-        level_key: str
+        level_str: str
             The key to the specific level data when parsing gameData.py
         """
         self._display_surface: pygame.Surface = pygame.display.get_surface()
-
-        self._universal_assets: List = universal_assets
-
         # extract data from level_data dictionary in gameData.py
-        self.create_map(level_str)
+        self.create_map(level_str, universal_assets)
         self.create_sprite_groups()
         self.add_obstacles()
         self.create_characters_from_layout(self._character_layout)
         self.create_items_from_layout()
 
-        self._camera = CameraManager(self.player)
+        self._camera: CameraManager = CameraManager(self._player_group.sprite)
         self.add_sprites_to_camera()
-
-        # pause flag used to display pause menu
-        self._paused = False
 
         self._hud = HeadsUpDisplay()
 
-    def create_map(self, level_key: str) -> None:
+    def create_map(
+        self, level_key: str, universal_assets: list[pygame.Surface]
+    ) -> None:
         """Read level data from gameData.py and stage it for rendering."""
         # setup map
         terrain_layout: list[int] = import_csv_layout(
@@ -113,13 +124,23 @@ class Level(object):
         )
 
         self._terrain_sprites: pygame.sprite.Group = self.create_tile_group(
-            terrain_layout
+            terrain_layout, universal_assets
         )
-        self._terrain_sprites.add(self.create_tile_group(rocks_layout))
-        self._terrain_sprites.add(self.create_tile_group(raised_ground_layout))
-        self._plant_sprites: pygame.sprite.Group = self.create_tile_group(plants_layout)
-        self._fence_sprites: pygame.sprite.Group = self.create_tile_group(fence_layout)
-        self._extra_sprites: pygame.sprite.Group = self.create_tile_group(extra_layout)
+        self._terrain_sprites.add(
+            self.create_tile_group(rocks_layout, universal_assets)
+        )
+        self._terrain_sprites.add(
+            self.create_tile_group(raised_ground_layout, universal_assets)
+        )
+        self._plant_sprites: pygame.sprite.Group = self.create_tile_group(
+            plants_layout, universal_assets
+        )
+        self._fence_sprites: pygame.sprite.Group = self.create_tile_group(
+            fence_layout, universal_assets
+        )
+        self._extra_sprites: pygame.sprite.Group = self.create_tile_group(
+            extra_layout, universal_assets
+        )
 
     def create_sprite_groups(self) -> None:
         """Create all sprite groups for the level."""
@@ -139,9 +160,9 @@ class Level(object):
         layout: array of values each representing an individual entity
         """
         # default location of top left corner should never be used
-        x = 0
-        y = 0
-        position = (x, y)
+        x: int = 0
+        y: int = 0
+        position: pygame.math.Vector2 = (x, y)
         for row_index, row in enumerate(layout):
             for col_index, val in enumerate(row):
                 # all logic for every entity
@@ -151,11 +172,12 @@ class Level(object):
                     position = (x, y)
                 # initialize the player
                 if val == character_keys["player"]:
-                    self.player = Player(
+                    player: Player = Player(
                         position,
                         [self._player_group],
                         self._obstacle_sprites,
                     )
+                    self._player_group.add(player)
                 # initialize damsels
                 elif val == character_keys["damsel"]:
                     Damsel(position, self._good_sprites, self._obstacle_sprites)
@@ -169,15 +191,15 @@ class Level(object):
 
         # add player awareness to friendly_sprites
         for entity in self._good_sprites:
-            entity.set_player(self.player)
+            entity.set_player(self._player_group.sprite)
 
         # add player awareness to enemy_sprites
         for entity in self._bad_sprites:
-            entity.set_player(self.player)
+            entity.set_player(self._player_group.sprite)
 
         # add player awareness to neutral_sprites
         for entity in self._neutral_sprites:
-            entity.set_player(self.player)
+            entity.set_player(self._player_group.sprite)
 
     def create_items_from_layout(self) -> None:
         """Initialize the entities on a layout."""
@@ -196,22 +218,28 @@ class Level(object):
                 if val == item_keys["crystal"]:
                     Crystal(self._item_sprites, position)
 
-    def create_tile_group(self, layout: List[int]) -> pygame.sprite.Group:
+    def create_tile_group(
+        self, layout: list[int], universal_assets: list[pygame.Surface]
+    ) -> pygame.sprite.Group:
         """Create the :func:`Sprite group<pygame.sprite.Group>` for a layout.
 
         Parameters
         ----------
-        layout: List[int]
-            List of values each representing an individual sprite
+        layout: list[int]
+            The list of values each representing an individual sprite
+        universal_assets: list[pygame.Surface]
+            The list of all pygame surfaces to be used
         """
-        sprite_group = pygame.sprite.Group()
+        sprite_group: pygame.sprite.Group = pygame.sprite.Group()
         for row_index, row in enumerate(layout):
             for col_index, val in enumerate(row):
                 if val != "-1":
-                    coords = (col_index * TILESIZE, row_index * TILESIZE)
-
-                    tile_surface = self._universal_assets[int(val)]
-                    sprite = Tile(sprite_group)
+                    coords: tuple[int, int] = (
+                        col_index * TILESIZE,
+                        row_index * TILESIZE,
+                    )
+                    tile_surface: pygame.Surface = universal_assets[int(val)]
+                    sprite: Tile = Tile(sprite_group)
                     sprite.set_tile(coords, tile_surface)
                     sprite.image.set_colorkey(pygame.Color("black"), pygame.RLEACCEL)
                     sprite_group.add(sprite)
@@ -230,8 +258,8 @@ class Level(object):
         self._camera.add(self._extra_sprites)
         self._camera.add(self._item_sprites)
 
-        self._camera.add(self._good_sprites)
         self._camera.add(self._bad_sprites)
+        self._camera.add(self._good_sprites)
         self._camera.add(self._neutral_sprites)
 
     def run(self) -> None:
@@ -255,6 +283,7 @@ class Level(object):
             self._camera.camera_update()
 
         self._camera.draw(self._display_surface)
+
         # draw the player chacter
         self._player_group.draw(self._display_surface)
         self._hud.draw(self._display_surface)
