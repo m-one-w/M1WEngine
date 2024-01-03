@@ -79,7 +79,7 @@ class LevelManager:
                 if not isinstance(self._level, Level):
                     # TODO: safely access and give asset_manager's stuff to level
                     self._level = TestLevel(
-                        self._asset_manager._univeral_sprites,
+                        self._asset_manager.universal_sprites,
                         "test_level",
                     )
                     # unload music and load in new music

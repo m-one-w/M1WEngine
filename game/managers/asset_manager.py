@@ -12,13 +12,15 @@ class AssetManager:
 
     Attributes
     ----------
-    _universal_sprites: pygame.sprite
+    _universal_sprites: list[pygame.sprite]
         The list of pygame.sprites that will be used by levels
     _music_manager: pygame.mixer
         The mixer that loads and plays music
 
     Methods
     -------
+    universal_sprites(self) -> list[pygame.sprite]
+        Get the universal sprites
     load_music(self, menu_flag: str, key: str)
         Unload previous music and loads new music
     """
@@ -26,12 +28,17 @@ class AssetManager:
     def __init__(self) -> None:
         """Load sprite and music assets."""
         # csv file with sprites used in every level, like player.
-        self._univeral_sprites: pygame.sprite = import_cut_graphic(
+        self._univeral_sprites: list[pygame.Surface] = import_cut_graphic(
             "game_assets/graphics/tilesets/tiny_atlas.png"
         )
 
         self._music_manager: pygame.mixer = pygame.mixer
         self._music_manager.init()
+
+    @property
+    def universal_sprites(self) -> list:
+        """Get the universal sprites."""
+        return self._univeral_sprites
 
     def load_music(self, menu_flag: str, key: str) -> None:
         """Unload previous music and loads menu music."""
