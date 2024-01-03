@@ -15,8 +15,6 @@ class LevelManager:
 
     Attributes
     ----------
-    _surface: pygame.Surface
-        The screen to display levels and menu to
     _clock: pygame.time.Clock
         Clock to track time in levels
     _asset_manager: AssetManager
@@ -32,11 +30,13 @@ class LevelManager:
 
     Methods
     -------
+    __new__(cls) -> object()
+        Check if singleton LevelManager already exists, return the instance
     run(self) -> bool
-        Run the currently loaded menu or level and return user menu selection
+        Run the currently loaded menu or level and return user input selection
     """
 
-    def __new__(cls):
+    def __new__(cls) -> object():
         """Create a singleton object.
 
         If singleton already exists returns the previous singleton object
@@ -52,7 +52,6 @@ class LevelManager:
         This LevelManager will instantiate a level's contents
         onto the pygame display surface.
         """
-        self._screen: pygame.Surface = pygame.display.get_surface()
         # TODO: move clock to setter/getter style
         self._clock: pygame.time.Clock = pygame.time.Clock()
         self._asset_manager: AssetManager = AssetManager()
@@ -62,11 +61,18 @@ class LevelManager:
         self._asset_manager.load_music("menu", "main_menu")
         self._level: Level = object()
 
+        self._user_input: str = "None"
         # quit flag returned to game
         self._quit_game: bool = False
 
     def run(self) -> bool:
-        """Refresh the screen and run the level."""
+        """Refresh the screen and run the level.
+
+        Returns
+        -------
+        _quit_game: bool
+            Returns true if user wants to quit the game
+        """
         # running the menu check
         if self._menu.is_enabled():
             self._menu.run()
