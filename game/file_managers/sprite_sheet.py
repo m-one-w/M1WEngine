@@ -49,6 +49,10 @@ class SpriteSheet:
         -------
         image: pygame.Surface
             The surface containing the image of the specified rect from the animations
+
+        Raises
+        ------
+        ValueError: no sprite sheet was set, cannot get an image
         """
         # Loads image from x, y, x+offset, y+offset.
         rect: pygame.Rect = pygame.Rect(rectangle)
@@ -58,7 +62,7 @@ class SpriteSheet:
             image.set_colorkey(self._color_key)
             return image
         else:
-            print("Fatal ERROR!! No sprite sheet was set!")
+            raise ValueError("ERROR: No sprite sheet was set!")
 
     def images_at(self, rects: list[tuple[int]]) -> list[pygame.Surface]:
         """Load multiple images and return them as a list.
