@@ -14,7 +14,7 @@ class Game:
 
     Attributes
     ----------
-    _screen: pygame.Surface
+    _display_surface: pygame.Surface
         The window the game will run on
     _studio_splash_screen: pygame.Surface
         The studio splash screen to display while booting the game
@@ -34,20 +34,20 @@ class Game:
         # general setup
         pygame.init()
         # display setup
-        self._screen: pygame.Surface = pygame.display.set_mode(
+        self._display_surface: pygame.Surface = pygame.display.set_mode(
             (WINDOW_WIDTH, WINDOW_HEIGHT)
         )
         pygame.display.set_caption("Reluctant Hero")
-        pygame.display.set_icon(self._screen)
+        pygame.display.set_icon(self._display_surface)
         ScoreController()
         LevelManager()
-        self._hud = HeadsUpDisplay()
+        self._hud: HeadsUpDisplay = HeadsUpDisplay()
 
         # display studio splash screen while loading game stuff
         self._studio_splash_screen: pygame.Surface = pygame.image.load(
             STUDIO_SPLASH_SCREEN_PATH
         )
-        self._screen.blit(
+        self._display_surface.blit(
             self._studio_splash_screen,
             (
                 (WINDOW_WIDTH - self._studio_splash_screen.get_width()) / 2,
