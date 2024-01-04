@@ -114,7 +114,7 @@ class NPC(Character):
         self._current_state: Enum = self._states.Patrol
 
         # the closest sprite on our radar
-        self._target_sprite: pygame.sprite.Sprite = pygame.sprite.Sprite()
+        self._target_sprite: Character = pygame.sprite.Sprite()
 
         # for automated movements, store a previous timestamp
         self._last_time_stored: int = 0
