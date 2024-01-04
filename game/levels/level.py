@@ -71,7 +71,7 @@ class Level(object):
         self.create_map(level_str)
         self.create_sprite_groups()
         self.add_obstacles()
-        self.create_entities_from_layout(self._character_layout)
+        self.create_characters_from_layout(self._character_layout)
         self.create_items_from_layout()
 
         self._camera = CameraManager(self.player)
@@ -128,7 +128,7 @@ class Level(object):
         self._player_group = pygame.sprite.GroupSingle()
         self._item_sprites = pygame.sprite.Group()
 
-    def create_entities_from_layout(self, layout: list[int]) -> None:
+    def create_characters_from_layout(self, layout: list[int]) -> None:
         """Initialize the entities on a layout.
 
         Parameters
