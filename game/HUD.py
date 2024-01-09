@@ -1,4 +1,5 @@
 """This module contains the HUD class."""
+import time
 import pygame
 from button import Button
 from score_controller import ScoreController
@@ -27,6 +28,10 @@ class HeadsUpDisplay(pygame.sprite.Group):
         Init score information
     toggle_pause_level(self)
         Toggle the level pause value
+    start_prompt_timer(self)
+        Start timer for displaying level prompt
+    try_close_level_prompt(self)
+        Attempt to close out the level prompt
     add_box(self, rect, height, width) -> pygame.sprite.Sprite
         Add a box to the HUD
     update(self)
@@ -77,6 +82,9 @@ class HeadsUpDisplay(pygame.sprite.Group):
         self._level_hint_added_flag: bool = False
         self._level_hint_text: str = ""
         self._level_paused: bool = False
+        self._level_hint_txt_sprite = pygame.sprite.Sprite()
+        self._level_box_sprite = pygame.sprite.Sprite()
+        self.level_prompt_timer = 0
 
         self.init_score_info()
 
@@ -128,6 +136,18 @@ class HeadsUpDisplay(pygame.sprite.Group):
         """Toggle the pause level value."""
         self.pause_level = not self.pause_level
 
+    def start_prompt_timer(self):
+        """Start the timer for displaying level prompts."""
+        # 4 seconds of prompt displaying
+        self.level_prompt_timer = int(time.perf_counter()) + 4
+        self.display_level_hint = True
+
+    def try_close_level_prompt(self):
+        """Check if the prompt timer has ended."""
+        current_time = int(time.perf_counter())
+        if self.level_prompt_timer < current_time:
+            self.display_level_hint = False
+
     def add_box(self, rect, height, width) -> pygame.sprite.Sprite:
         """Create a background box for HUD elements."""
         sprite: pygame.sprite.Sprite = pygame.sprite.Sprite()
@@ -157,18 +177,23 @@ class HeadsUpDisplay(pygame.sprite.Group):
                     self.LEVEL_HINT_BOX_WIDTH,
                     self.LEVEL_HINT_BOX_HEIGHT,
                 )
-                self._level_box_spr: pygame.sprite.Sprite = self.add_box(
+                self._level_box_sprite: pygame.sprite.Sprite = self.add_box(
                     level_hint_rect,
                     self.LEVEL_HINT_BOX_WIDTH,
                     self.LEVEL_HINT_BOX_HEIGHT,
                 )
-                self.add(self._level_box_spr)
+                self.add(self._level_box_sprite)
                 self._level_hint_txt_sprite: Text = Text(
                     self.LEVEL_HINT_BOX_X_PX,
                     self.LEVEL_HINT_BOX_Y_PX + 10,
                     str(self._level_hint_text),
                 )
                 self.add(self._level_hint_txt_sprite)
+        else:
+            # remove level hint prompt sprites
+            self._level_box_sprite.kill()
+            self._level_hint_txt_sprite.kill()
+            self._level_hint_added_flag = False
 
     @property
     def level_hint(self) -> str:
@@ -176,7 +201,7 @@ class HeadsUpDisplay(pygame.sprite.Group):
         return self._level_hint_text
 
     @level_hint.setter
-    def level_hint(self, new_value: bool):
+    def level_hint(self, new_value: str):
         """Set the current level hint text.
 
         Parameters
