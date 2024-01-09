@@ -19,20 +19,12 @@ class Character(Entity):
 
     Attributes
     ----------
-    _frame_index: int
-        The currently shown frame represented by an index
-    _animation_speed: int
-        The speed at which animations run
     _speed: int
         The speed at which the sprite moves
-    _compass: Direction
-        Enum value of current direction
-    _status: str
-        The direction a character is facing stored as a string
     _score_controller: ScoreController
         The score controller to track the score
-    _sprite_sheet: SpriteSheet
-        The animation images
+    _obstacle_sprites: pygame.sprite.Group
+        The sprite group containing all obstacles
 
     Methods
     -------
@@ -70,6 +62,7 @@ class Character(Entity):
         pos: tuple,
         sprite_sheet_path: str,
         image_rect: pygame.Rect,
+        obstacle_sprites: pygame.sprite.Group,
     ):
         """Initialize character class.
 
@@ -83,14 +76,16 @@ class Character(Entity):
             The filepath where the sprite sheet is stored
         image_rect: pygame.Rect
             The rectangle representing the character
+        obstacle_sprites: pygame.sprite.Group
+            The sprite group containing all obstacle sprites
         """
         self.setup_import_assets(image_rect.height, image_rect.width)
         super().__init__(group, pos, sprite_sheet_path, image_rect)
         self._speed: int = 1
-        self._compass.x: Direction = Direction.right
-        self._status: str = "right"
+        self.compass.x: Direction = Direction.right
         self._score_controller: ScoreController = ScoreController()
-        self._sprite_sheet: SpriteSheet = SpriteSheet()
+        self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
+        self._sprite_sheet = SpriteSheet()
 
     def setup_import_assets(self, height, width) -> None:
         """Import and divide the animation image into it's smaller parts.
@@ -148,25 +143,25 @@ class Character(Entity):
         what the status should be.
         """
         # handle all edge cases first
-        if self._compass.y < 0:
+        if self.compass.y < 0:
             self._status = "up"
         else:
             self._status = "down"
 
-        if self._compass.x < 0:
+        if self.compass.x < 0:
             self._status = "left"
         else:
             self._status = "right"
 
         # -- xy | xy +-
         # -+ xy | xy ++
-        if self._compass.x > 0 and self._compass.y < 0.25 and self._compass.y > -0.25:
+        if self.compass.x > 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
             self._status = "right"
-        if self._compass.x < 0 and self._compass.y < 0.25 and self._compass.y > -0.25:
+        if self.compass.x < 0 and self.compass.y < 0.25 and self.compass.y > -0.25:
             self._status = "left"
-        if self._compass.y > 0 and self._compass.x < 0.25 and self._compass.x > -0.25:
+        if self.compass.y > 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
             self._status = "down"
-        if self._compass.y < 0 and self._compass.x < 0.25 and self._compass.x > -0.25:
+        if self.compass.y < 0 and self.compass.x < 0.25 and self.compass.x > -0.25:
             self._status = "up"
 
     def get_angle_from_direction(self, axis: str) -> float:
@@ -187,9 +182,9 @@ class Character(Entity):
         angle: float = 0.0
 
         if axis == "x":
-            angle = self._compass.y * 45
+            angle = self.compass.y * 45
         if axis == "y":
-            angle = self._compass.x * 45
+            angle = self.compass.x * 45
 
         return -angle
 
@@ -290,25 +285,25 @@ class Character(Entity):
             for collision_index in collision_indicies:
                 collided_sprite: Tile = obstacle_sprites[collision_index]
                 collided_coord: tuple[int, int] = (
-                    collided_sprite._hitbox.centerx,
-                    collided_sprite._hitbox.centery,
+                    collided_sprite.hitbox.centerx,
+                    collided_sprite.hitbox.centery,
                 )
                 # check status then add to appropriate collision direction
                 if self.further_axis(collided_coord) == "vertical":
-                    if collided_sprite._hitbox.centery < self._hitbox.centery:
+                    if collided_sprite.hitbox.centery < self.hitbox.centery:
                         sorted_collisions["up"].append(collided_coord)
-                    elif collided_sprite._hitbox.centery > self._hitbox.centery:
+                    elif collided_sprite.hitbox.centery > self.hitbox.centery:
                         sorted_collisions["down"].append(collided_coord)
 
                 # if self.status == "left" or self.status == "right":
                 if self.further_axis(collided_coord) == "horizontal":
-                    if collided_sprite._hitbox.centerx < self._hitbox.centerx:
+                    if collided_sprite.hitbox.centerx < self.hitbox.centerx:
                         sorted_collisions["left"].append(collided_coord)
-                    elif collided_sprite._hitbox.centerx > self._hitbox.centerx:
+                    elif collided_sprite.hitbox.centerx > self.hitbox.centerx:
                         sorted_collisions["right"].append(collided_coord)
 
                 # call method to teleport outside of collision sprite
-                self.teleport_out_of_sprite(collided_sprite._hitbox)
+                self.teleport_out_of_sprite(collided_sprite.hitbox)
 
         return sorted_collisions
 
@@ -325,14 +320,14 @@ class Character(Entity):
         if axis == "horizontal":
             x_dist_out_hitbox: int = 0
             # collided sprite is on the right
-            if self._hitbox.centerx < collision_rect.centerx:
+            if self.hitbox.centerx < collision_rect.centerx:
                 # teleport to the left
-                if collision_rect.left - (self._hitbox.right + 1) < 0:
+                if collision_rect.left - (self.hitbox.right + 1) < 0:
                     x_dist_out_hitbox = -1
             # collided sprite is on the left
             else:
                 # teleport to the right of the sprite
-                if collision_rect.right - (self._hitbox.left - 1) > 0:
+                if collision_rect.right - (self.hitbox.left - 1) > 0:
                     x_dist_out_hitbox = 1
 
             if x_dist_out_hitbox != 0:
@@ -340,14 +335,14 @@ class Character(Entity):
         else:
             y_dist_out_hitbox: int = 0
             # collided sprite is below
-            if self._hitbox.centery < collision_rect.centery:
+            if self.hitbox.centery < collision_rect.centery:
                 # teleport above the bottom of the sprite
-                if collision_rect.top - (self._hitbox.bottom + 1) < 0:
+                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
                     y_dist_out_hitbox = -1
             # collided sprite is above
             else:
                 # teleport below the top of the sprite
-                if collision_rect.bottom - (self._hitbox.top - 1) > 0:
+                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
                     y_dist_out_hitbox = 1
 
             if y_dist_out_hitbox != 0:
@@ -447,27 +442,27 @@ class Character(Entity):
             # if collided with sprite to the right of self
             if distance_to_x > 0:
                 # if compass pointing right
-                if self._compass.x > 0:
+                if self.compass.x > 0:
                     # bounce the compass off a horizontal vector
-                    self._compass = self._compass.reflect(horizontal_reflect_vect)
+                    self.compass = self.compass.reflect(horizontal_reflect_vect)
             # if collided with sprite to the left of self
             else:
                 # if compass pointing left
-                if self._compass.x < 0:
+                if self.compass.x < 0:
                     # bounce the compass off a horizontal vector
-                    self._compass = self._compass.reflect(horizontal_reflect_vect)
+                    self.compass = self.compass.reflect(horizontal_reflect_vect)
 
         # if up or down
         else:
             # if collided with sprite above self
             if distance_to_y < 0:
                 # if compass pointing up
-                if self._compass.y < 0:
+                if self.compass.y < 0:
                     # bounce the compass off a vertical vector
-                    self._compass = self._compass.reflect(vertical_reflect_vect)
+                    self.compass = self.compass.reflect(vertical_reflect_vect)
             # if collided with sprite below self
             else:
                 # if compass pointing down
-                if self._compass.y > 0:
+                if self.compass.y > 0:
                     # bounce the compass off a vertical vector
-                    self._compass = self._compass.reflect(vertical_reflect_vect)
+                    self.compass = self.compass.reflect(vertical_reflect_vect)

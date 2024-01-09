@@ -9,21 +9,6 @@ class Skeleton(NPC):
 
     Defines how the skeleton behaves.
 
-    Attributes
-    ----------
-    _sprite_sheet: SpriteSheet
-        Hold the art assets info
-    image: pygame.Surface
-        Hold the current sprite image
-    rect: pygame.Rect
-        Hold the current sprite position
-    _hitbox: pygame.Rect
-        Hold the hitbox rect
-    _radar: pygame.Rect
-        Hold the radar rect
-    _obstacle_sprites: pygame.sprite.Group
-        Hold the sprites that block movement
-
     Methods
     -------
     automate_movement(self)
@@ -42,7 +27,7 @@ class Skeleton(NPC):
         pos: tuple,
         group: pygame.sprite.Group,
         obstacle_sprites: pygame.sprite.Group,
-    ):
+    ) -> None:
         """Construct the skeleton class.
 
         Parameters
@@ -60,10 +45,10 @@ class Skeleton(NPC):
         skeleton_image_rect: pygame.Rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        super().__init__(group, pos, skeleton_movements_path, skeleton_image_rect)
-
-        self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
-        self._hitbox: pygame.Rect = self.rect.inflate(-4, 0)
+        super().__init__(
+            group, pos, skeleton_movements_path, skeleton_image_rect, obstacle_sprites
+        )
+        self.hitbox = self.rect.inflate(-4, 0)
 
     def automate_movement(self) -> None:
         """Movement logic method."""
@@ -85,7 +70,7 @@ class Skeleton(NPC):
     def collision_handler(self) -> None:
         """Handle collision interactions with environment."""
         super().collision_handler()
-        collisions = self.rect.colliderect(self._player._hitbox)
+        collisions = self.rect.colliderect(self._player.hitbox)
 
         if collisions:
             try:

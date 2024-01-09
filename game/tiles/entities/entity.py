@@ -15,6 +15,12 @@ class Entity(Tile):
         The currently shown frame represented by an index
     _animation_speed: int
         The speed at which animations run
+    _animations: dict
+        The dictionary containing directionally sorted animation images
+    _sprite_sheet: SpriteSheet
+        Handler for entire sprite sheet of animation images
+    _status: str
+        The direction a character is facing stored as a string
 
     Methods
     -------
@@ -53,11 +59,12 @@ class Entity(Tile):
         self._sprite_sheet: SpriteSheet = SpriteSheet(
             sprite_sheet_path, pygame.Color("black")
         )
-        self.image: pygame.Surface = self._sprite_sheet.image_at(image_rect)
+        self._status: str = "right"
+        self.image = self._sprite_sheet.image_at(image_rect)
         self.import_assets()
 
-        self.rect: pygame.Rect = self.image.get_rect(topleft=pos)
-        self._hitbox: pygame.Rect = self.rect.copy()
+        self.rect = self.image.get_rect(topleft=pos)
+        self.hitbox = self.rect.copy()
 
     def animate(self) -> pygame.Surface:
         """Animation loop for the character.

@@ -9,17 +9,6 @@ class Minotaur(NPC):
 
     Defines how a minotaur will behave.
 
-    Attributes
-    ----------
-    _minotaur_width: int
-        How wide the sprite is
-    _minotaur_height: int
-        How heigh the sprite is
-    _obstacle_sprites: pygame.sprite.Group
-        Hold the sprites that block movement
-    _hitbox: pygame.Rect
-        Hold the hitbox rect
-
     Methods
     -------
     automate_movement(self)
@@ -50,17 +39,18 @@ class Minotaur(NPC):
         obstacle_sprites: pygame.sprite.Group
             The sprites the minotaur cannot move through
         """
-        self._minotaur_width = 48
-        self._minotaur_height = 48
+        minotaur_width = 48
+        minotaur_height = 48
         minotaur_movements_path: str = (
             settings.CHARACTER_IMAGES + "NPCs/minotaur/minotaur.png"
         )
         minotaur_image_rect: pygame.Rect = pygame.Rect(
-            0, 0, self._minotaur_width, self._minotaur_height
+            0, 0, minotaur_width, minotaur_height
         )
         # self.setup_import_assets()
-        super().__init__(group, pos, minotaur_movements_path, minotaur_image_rect)
-        self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
+        super().__init__(
+            group, pos, minotaur_movements_path, minotaur_image_rect, obstacle_sprites
+        )
         self._hitbox: pygame.Rect = self.rect
 
     def automate_movement(self) -> None:

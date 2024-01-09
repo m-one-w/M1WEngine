@@ -7,11 +7,6 @@ import settings
 class Postman(NPC):
     """Postman class to represent a good NPC within the game.
 
-    Attributes
-    ----------
-    _obstacle_sprites: pygame.sprite.Group
-        The sprite group containing all obstacles
-
     Methods
     -------
     automate_movement(self)
@@ -45,9 +40,9 @@ class Postman(NPC):
         postman_image_rect: pygame.Rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        super().__init__(group, pos, postman_image_path, postman_image_rect)
-
-        self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
+        super().__init__(
+            group, pos, postman_image_path, postman_image_rect, obstacle_sprites
+        )
 
     def automate_movement(self) -> None:
         """Movement logic method."""

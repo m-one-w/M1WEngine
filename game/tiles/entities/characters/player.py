@@ -20,18 +20,12 @@ class Player(Character):
 
     Attributes
     ----------
-    _sprite_sheet: SpriteSheet
-        Hold all the player animations
-    image: pygame.Surface
-        Hold the current player animation image
-    rect: pygame.Rect
-        Hold the player position and size
-    _hitbox: pygame.Rect
-        Hold the player hitbox
     _obstacle_sprites: pygame.sprite.Group
         Hold the sprites that are considered obstacles
     _action_queue: list
         Contain the internal player action queue
+    _eaten_power: EatenPowers
+        Enum for consumed entity that gives player a unique power
 
     Methods
     -------
@@ -74,16 +68,16 @@ class Player(Character):
         obstacle_sprites: pygame.sprite.Group
             The sprite group containing all sprites the player can't move through
         """
-        player_movements_path = settings.CHARACTER_IMAGES + "player/player.png"
+        player_movements_path: str = settings.CHARACTER_IMAGES + "player/player.png"
         player_image_rect: pygame.Rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        super().__init__(group, pos, player_movements_path, player_image_rect)
+        super().__init__(
+            group, pos, player_movements_path, player_image_rect, obstacle_sprites
+        )
 
         # ensure hitbox is large enough to cover player rotations
-        self._hitbox = self.rect.inflate(2, 0)
-
-        self._obstacle_sprites = obstacle_sprites
+        self.hitbox = self.rect.inflate(2, 0)
         self._action_queue: list = []
         self._eaten_power = EatenPowers.empty_stomach
 
@@ -125,9 +119,9 @@ class Player(Character):
 
         # left/right input
         if keys[pygame.K_LEFT]:
-            self._compass.rotate_ip(-PLAYER_ROTATION_SPEED)
+            self.compass.rotate_ip(-PLAYER_ROTATION_SPEED)
         elif keys[pygame.K_RIGHT]:
-            self._compass.rotate_ip(PLAYER_ROTATION_SPEED)
+            self.compass.rotate_ip(PLAYER_ROTATION_SPEED)
 
     def ensure_full_action_queue(self) -> None:
         """Fill up the current action queue up to a limit."""
@@ -159,7 +153,7 @@ class Player(Character):
         """Player specific move function."""
         super().move(speed)
         # adjust the hitbox for optimal sprite coverage
-        self._hitbox.centerx = self.rect.centerx + 1
+        self.hitbox.centerx = self.rect.centerx + 1
 
     def update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group

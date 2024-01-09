@@ -10,17 +10,6 @@ class Damsel(NPC):
     Each damsel spawned in runs away from bad NPCs and move
     towards a nearby player.
 
-    Attributes
-    ----------
-    _sprite_sheet: SpriteSheet
-        The sprite sheet containing damsel images
-    image: pygame.Surface
-        The current damsel image to render
-    rect: pygame.Rect
-        The rectangle of the damsel image
-    _obstacle_sprites: pygame.sprite.Group
-        The sprite group containing all obstacles
-
     Methods
     -------
     automate_movement(self)
@@ -58,9 +47,9 @@ class Damsel(NPC):
         damsel_image_rect: pygame.Rect = pygame.Rect(
             0, 0, settings.ENTITY_WIDTH, settings.ENTITY_HEIGHT
         )
-        super().__init__(group, pos, damsel_image_path, damsel_image_rect)
-
-        self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
+        super().__init__(
+            group, pos, damsel_image_path, damsel_image_rect, obstacle_sprites
+        )
 
     def automate_movement(self) -> None:
         """Movement logic method."""

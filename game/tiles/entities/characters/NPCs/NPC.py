@@ -23,20 +23,20 @@ class NPC(Character):
 
     Attributes
     ----------
-    rect: pygame.Rect
-        The size of the NPC
     _player: Character
         The player's character, tracked by each NPC
     _states: Enum
         The state machine for automated movement
     _current_state: states
         The current NPC state
+    _initial_charge_compass: pygame.math.Vector2
+        The vector of where we start the charge
+    _hud: HeadsUpDisplay
+        The handler for the HUD singleton
     _target_sprite: Entity
         The currently tracked sprite detected in radar
     _last_time_stored: int
         The last time an automated state used a timer
-    _hitbox: pygame.Rect
-        A modified NPC rectangle used for collisions
     _radar: pygame.Rect
         The inflated rectangle used to detect other nearby Characters
 
@@ -109,15 +109,24 @@ class NPC(Character):
         pos: tuple,
         sprite_sheet_path: str,
         image_rect: pygame.Rect,
-    ):
+        obstacle_sprites: pygame.sprite.Group,
+    ) -> None:
         """Initialize NPC class.
 
         Parameters
         ----------
         group: pygame.sprite.Group
             The sprite group this NPC is part of
+        pos: tuple
+            The starting (x, y) coordinates for the NPC
+        sprite_sheet_path: str
+            The path to the sprite sheet image
+        image_rect: pygame.Rect
+            The size of the individual images in the sprite_sheet
+        obstacle_sprites: pygame.sprite.Group
+            The sprite group containing all obstacle sprites
         """
-        super().__init__(group, pos, sprite_sheet_path, image_rect)
+        super().__init__(group, pos, sprite_sheet_path, image_rect, obstacle_sprites)
 
         # init empty player
         self._player: Player = pygame.sprite.Sprite()
@@ -205,7 +214,7 @@ class NPC(Character):
             sprite_group_list: list[pygame.sprite.Sprite] = pygame.sprite.Group.sprites(
                 entities
             )
-            hitbox_list: list[int] = [sprite._hitbox for sprite in sprite_group_list]
+            hitbox_list: list[int] = [sprite.hitbox for sprite in sprite_group_list]
             # list of all NPC collisions
             collisions = self._radar.collidelistall(hitbox_list)
 
@@ -298,11 +307,11 @@ class NPC(Character):
             seconds_per_direction: int = 3
             if current_time_in_seconds - self._last_time_stored > seconds_per_direction:
                 # 10 seconds passed
-                if self._compass.x != 1 or self._compass.x != 1:
-                    self._compass.x = 1
+                if self.compass.x != 1 or self.compass.x != 1:
+                    self.compass.x = 1
                 else:
-                    self._compass.x *= -1
-                self._compass.y = 0
+                    self.compass.x *= -1
+                self.compass.y = 0
                 self._last_time_stored = current_time_in_seconds
 
             self.collision_handler()
@@ -313,7 +322,7 @@ class NPC(Character):
         if self._current_state == self._states.Flee:
             if self.facing_towards_entity(self._target_sprite):
                 # must set to copy or it gives the entity a shared compass
-                self._compass = self._target_sprite._compass.copy()
+                self.compass = self._target_sprite.compass.copy()
                 self.collision_handler()
 
             # move according to the compass direction
@@ -386,7 +395,7 @@ class NPC(Character):
         elif self.rect.y > self._target_sprite.rect.y:
             self.move_up(self._speed)
 
-        self._compass = self._target_sprite._compass.copy()
+        self.compass = self._target_sprite.compass.copy()
 
     def set_state_patrol(self) -> None:
         """Set state machine to 'Patrol'."""
@@ -412,7 +421,7 @@ class NPC(Character):
         self._current_state = self._states.Thrown
         # TODO: switch to game clock
         self._last_time_stored = time.perf_counter()
-        self._compass = self._player._compass.copy()
+        self.compass = self._player.compass.copy()
 
     def set_state_charge(self) -> None:
         """Set state machine the 'Charge'."""
@@ -535,26 +544,26 @@ class NPC(Character):
 
         if axis == "horizontal":
             # collided sprite is on the right
-            if self._hitbox.centerx < collision_rect.centerx:
+            if self.hitbox.centerx < collision_rect.centerx:
                 # teleport to the left
-                if collision_rect.left - (self._hitbox.right + 1) < 0:
+                if collision_rect.left - (self.hitbox.right + 1) < 0:
                     self.move_left()
             # collided sprite is on the left
             else:
                 # teleport to the right of the sprite
-                if collision_rect.right - (self._hitbox.left - 1) > 0:
+                if collision_rect.right - (self.hitbox.left - 1) > 0:
                     self.move_right()
 
         else:
             # collided sprite is below
-            if self._hitbox.centery < collision_rect.centery:
+            if self.hitbox.centery < collision_rect.centery:
                 # teleport above the bottom of the sprite
-                if collision_rect.top - (self._hitbox.bottom + 1) < 0:
+                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
                     self.move_up()
             # collided sprite is above
             else:
                 # teleport below the top of the sprite
-                if collision_rect.bottom - (self._hitbox.top - 1) > 0:
+                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
                     self.move_down()
 
     def flip_current_image(self):

@@ -12,8 +12,6 @@ class CameraManager(pygame.sprite.Group):
 
     Attributes
     ----------
-    _display_surface: pygame.Surface
-        The game surface in which to render all sprites
     _half_width: int
         Half the display surface width
     _half_height: int
@@ -43,12 +41,12 @@ class CameraManager(pygame.sprite.Group):
         super().__init__()
         surface_x: int = 0
         surface_y: int = 1
-        self._display_surface: pygame.Surface = pygame.display.get_surface()
+        display_surface: pygame.Surface = pygame.display.get_surface()
         self._half_width: int = (
-            self._display_surface.get_size()[surface_x] // 2
+            display_surface.get_size()[surface_x] // 2
         )  # floor division, returns int
         self._half_height: int = (
-            self._display_surface.get_size()[surface_y] // 2
+            display_surface.get_size()[surface_y] // 2
         )  # floor division, returns int
 
         self._offset: pygame.math.Vector2 = pygame.math.Vector2()
@@ -65,9 +63,9 @@ class CameraManager(pygame.sprite.Group):
         """
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             # offset = sprite.rect.topleft - self.offset
-            previous_direction = sprite._compass.copy()
-            sprite._compass = self._player_character._compass.copy() * -1
+            previous_direction = sprite.compass.copy()
+            sprite.compass = self._player_character.compass.copy() * -1
             sprite.move(self._player_character._speed)
-            sprite._compass = pygame.math.Vector2(
+            sprite.compass = pygame.math.Vector2(
                 previous_direction.x, previous_direction.y
             )

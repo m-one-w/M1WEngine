@@ -8,19 +8,27 @@ class Tile(pygame.sprite.Sprite):
 
     Attributes
     ----------
-    _compass: pygame.math.Vector2
-        the x and y direction of movement bounded [-1, 1]
     _movement_tracker: dict[str, float]
         Contains how far the entity has traveled without moving
-    image: pygame.Surface
+    _compass: pygame.math.Vector2
+        The x and y direction of movement bounded [-1, 1]
+    _image: pygame.Surface
         The current image to display on the screen
-    rect: pygame.Rect
+    _rect: pygame.Rect
         The size of the current image as a Rect
     _hitbox: pygame.Rect
         The modified image Rect for collision checks
 
     Methods
     -------
+    compass(self) -> pygame.math.Vector2
+        Return _compass value
+    compass(self, new_value: pygame.math.Vector2) -> None
+        Change the compass value
+    image(self) -> pygame.Surface
+        Return the current image to display onto the screen
+    image(self, new_value: pygame.Surface) -> None
+        Change the tile image
     move(self, speed: int)
         Handles movement of the entity
     move_left(self, speed: int)
@@ -54,16 +62,81 @@ class Tile(pygame.sprite.Sprite):
             The groups this sprite is a part of
         """
         super().__init__(groups)
-        self._compass: pygame.math.Vector2 = pygame.math.Vector2()
         self._movement_tracker: dict[str, float] = {"vertical": 0.0, "horizontal": 0.0}
+        self._compass: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
 
-        # r,g,b vals for key color
-        self.color_key_white = (255, 255, 255)
-        self.color_key_black = (0, 0, 0)
-
-        self.image: pygame.Surface = object()
-        self.rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
+        self._image: pygame.Surface = object()
+        self._rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
         self._hitbox: pygame.Rect = self.rect
+
+    @property
+    def compass(self) -> pygame.math.Vector2:
+        """Return the compass Vector2."""
+        return self._compass
+
+    @compass.setter
+    def compass(self, new_value: pygame.math.Vector2) -> None:
+        """Assign the new Vector2 to the tile's compass.
+
+        Parameters
+        ----------
+        new_value: pygame.math.Vector2
+            The new compass vector to set
+
+        Raises
+        ------
+        TypeError: parameter must be a Vector2 type
+        """
+        if type(new_value) is not pygame.math.Vector2:
+            raise TypeError("ERROR: compass must be a Vector2 type.")
+        else:
+            self._compass = new_value
+
+    @property
+    def image(self) -> pygame.Surface:
+        """Return the current tile image."""
+        return self._image
+
+    @image.setter
+    def image(self, new_value: pygame.Surface) -> None:
+        """Assign the new image to the tile.
+
+        Parameters
+        ----------
+        new_value: pygame.Surface
+            The new image Surface to set
+
+        Raises
+        ------
+        TypeError: parameter must be a pygame.Surface type
+        """
+        if type(new_value) is not pygame.Surface:
+            raise TypeError("ERROR: image must be a pygame.Surface type.")
+        else:
+            self._image = new_value
+
+    @property
+    def rect(self) -> pygame.Rect:
+        """Return the tile's rectangle."""
+        return self._rect
+
+    @rect.setter
+    def rect(self, new_value: pygame.Rect) -> None:
+        """Set the tile's new rect.
+
+        Parameters
+        ----------
+        new_value: pygame.Rect
+            The new rectangle size of the tile
+
+        Raises
+        ------
+        TypeError: parameter must be a pygame.Rect type
+        """
+        if type(new_value) is not pygame.Rect:
+            raise TypeError("ERROR: new value must be a pygame.Rect type")
+        else:
+            self._rect = new_value
 
     def move(self, speed: int = 1) -> None:
         """Handle movement of the tile.
