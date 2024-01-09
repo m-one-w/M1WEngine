@@ -9,8 +9,10 @@ import pygame
 from enums.actions import Actions
 from enums.eaten_powers import EatenPowers
 from enums.direction import Direction
+from HUD import HeadsUpDisplay
 from tiles.entities.characters.character import Character
 import settings
+import prompt_strings
 
 
 class NPC(Character):
@@ -88,6 +90,8 @@ class NPC(Character):
         Set player for NPC to track
     collided_with_player(self)
         NPC actions on collision with player
+    neutral_collided_with_player(self)
+        Neutral sprite collision logic
     facing_towards_entity(self, other_sprite: pygame.sprite) -> bool
         Determine if another sprite is facing towards this sprite
     collision_set_compass(self, collided_coords: tuple)
@@ -121,6 +125,7 @@ class NPC(Character):
         )
         self._current_state: Enum = self._states.Patrol
         self._initial_charge_compass: pygame.Vector2 = pygame.Vector2(0, 0)
+        self._hud = HeadsUpDisplay()
 
         # the closest sprite on our radar
         self._target_sprite: Character = pygame.sprite.Sprite()
@@ -133,6 +138,7 @@ class NPC(Character):
         self._radar: pygame.Rect = self.rect.inflate(
             settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
         )
+        self._player_collision_resolved = True
 
     def radar_set_states(
         self,
@@ -445,6 +451,14 @@ class NPC(Character):
                     )
             elif current_player_action == Actions.throw:
                 self.set_state_thrown()
+
+    def neutral_collided_with_player(self):
+        """Player has collided with a neutral sprite."""
+        self._hud.start_prompt_timer()
+        child_class: str = self.__class__.__name__
+
+        prompt_text: str = prompt_strings.npc_prompts[child_class]["hint_text"]
+        self._hud.level_hint = prompt_text
 
     def facing_towards_entity(self, other_sprite: pygame.sprite) -> bool:
         """Check if another sprite is looking at this sprite.

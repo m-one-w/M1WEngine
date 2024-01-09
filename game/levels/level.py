@@ -2,6 +2,7 @@
 from typing import List
 import pygame
 from HUD import HeadsUpDisplay
+from tiles.entities.characters.NPCs.postman import Postman
 from managers.camera_manager import CameraManager
 from tiles.entities.characters.NPCs.minotaur import Minotaur
 from tiles.entities.items.crystal import Crystal
@@ -125,6 +126,7 @@ class Level(object):
         self._obstacle_sprites = pygame.sprite.Group()
         self._bad_sprites = pygame.sprite.Group()
         self._good_sprites = pygame.sprite.Group()
+        self._neutral_sprites = pygame.sprite.Group()
         self._attack_sprites = pygame.sprite.Group()
         self._player_group = pygame.sprite.GroupSingle()
         self._item_sprites = pygame.sprite.Group()
@@ -162,6 +164,8 @@ class Level(object):
                     Skeleton(position, self._bad_sprites, self._obstacle_sprites)
                 elif val == character_keys["minotaur"]:
                     Minotaur(position, self._bad_sprites, self._obstacle_sprites)
+                elif val == character_keys["postman"]:
+                    Postman(position, self._neutral_sprites, self._obstacle_sprites)
 
         # add player awareness to friendly_sprites
         for entity in self._good_sprites:
@@ -169,6 +173,10 @@ class Level(object):
 
         # add player awareness to enemy_sprites
         for entity in self._bad_sprites:
+            entity.set_player(self.player)
+
+        # add player awareness to neutral_sprites
+        for entity in self._neutral_sprites:
             entity.set_player(self.player)
 
     def create_items_from_layout(self) -> None:
@@ -224,6 +232,7 @@ class Level(object):
 
         self._camera.add(self._good_sprites)
         self._camera.add(self._bad_sprites)
+        self._camera.add(self._neutral_sprites)
 
     def run(self) -> None:
         """Draw and update all sprite groups."""
@@ -239,6 +248,7 @@ class Level(object):
             self._player_group.update(self._bad_sprites, self._good_sprites)
             self._bad_sprites.update(self._bad_sprites, self._good_sprites)
             self._good_sprites.update(self._bad_sprites, self._good_sprites)
+            self._neutral_sprites.update(self._bad_sprites, self._good_sprites)
             self._item_sprites.update()
 
             # draw the game behind the player character
