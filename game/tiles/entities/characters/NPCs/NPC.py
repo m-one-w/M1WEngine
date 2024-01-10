@@ -10,6 +10,7 @@ from enums.actions import Actions
 from enums.eaten_powers import EatenPowers
 from enums.direction import Direction
 from HUD import HeadsUpDisplay
+from tiles.entities.characters.player import Player
 from tiles.entities.characters.character import Character
 import settings
 import prompt_strings
@@ -117,7 +118,7 @@ class NPC(Character):
         super().__init__(group, pos, sprite_sheet_path, image_rect)
 
         # init empty player
-        self._player: Character = pygame.sprite.Sprite()
+        self._player: Player = pygame.sprite.Sprite()
 
         # setting up state machine
         self._states: Enum = Enum(
