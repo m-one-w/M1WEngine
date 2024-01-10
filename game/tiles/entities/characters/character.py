@@ -24,9 +24,17 @@ class Character(Entity):
         The score controller to track the score
     _obstacle_sprites: pygame.sprite.Group
         The sprite group containing all obstacles
+    _bad_sprites: pygame.sprite.Group
+        The sprite group containing all bad sprites
+    _good_sprites: pygame.sprite.Group
+        The sprite group containing all good sprites
 
     Methods
     -------
+    speed(self) -> int
+        Return _speed value
+    speed(self, new_value: int) -> None
+        Assign new value to _speed
     set_sprite_sheet(self, path: str)
         Create sprite sheet from path
     import_assets(self)
@@ -84,6 +92,31 @@ class Character(Entity):
         self.compass.x: Direction = Direction.right
         self._score_controller: ScoreController = ScoreController()
         self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
+        self._bad_sprites: pygame.sprite.Group
+        self._good_sprites: pygame.sprite.Group
+
+    @property
+    def speed(self) -> int:
+        """Return speed value."""
+        return self._speed
+
+    @speed.setter
+    def speed(self, new_value: int) -> None:
+        """Set the new speed value.
+
+        Raises
+        ------
+        TypeError: new_value must be an int
+
+        ValueError: speed must be at least 0
+        """
+        if type(new_value) is not int:
+            raise TypeError("ERROR: speed must be of type int.")
+
+        if new_value >= 0:
+            self._speed = new_value
+        else:
+            raise ValueError("ERROR: speed cannot be less than 0.")
 
     def setup_import_assets(self, height, width) -> None:
         """Import and divide the animation image into it's smaller parts.

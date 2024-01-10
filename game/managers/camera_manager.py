@@ -63,9 +63,9 @@ class CameraManager(pygame.sprite.Group):
         """
         for sprite in sorted(self.sprites(), key=lambda sprite: sprite.rect.centery):
             # offset = sprite.rect.topleft - self.offset
-            previous_direction = sprite.compass.copy()
+            previous_direction: pygame.math.Vector2 = sprite.compass.copy()
             sprite.compass = self._player_character.compass.copy() * -1
-            sprite.move(self._player_character._speed)
+            sprite.move(self._player_character.speed)
             sprite.compass = pygame.math.Vector2(
                 previous_direction.x, previous_direction.y
             )
