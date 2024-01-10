@@ -20,12 +20,10 @@ class Player(Character):
 
     Attributes
     ----------
-    _obstacle_sprites: pygame.sprite.Group
-        Hold the sprites that are considered obstacles
     _action_queue: list
         Contain the internal player action queue
     _eaten_power: EatenPowers
-        Enum for consumed entity that gives player a unique power
+        Enum value of the current power the player has
 
     Methods
     -------
@@ -46,7 +44,7 @@ class Player(Character):
     update(
         self, bad_sprites: pygame.sprite.Group, good_sprites: pygame.sprite.Group
     )
-        Update data, get user input, animate, rotate, handle collisions, and movement
+        Update the player with new info
     """
 
     def __init__(

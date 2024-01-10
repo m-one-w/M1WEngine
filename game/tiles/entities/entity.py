@@ -15,8 +15,10 @@ class Entity(Tile):
         The currently shown frame represented by an index
     _animation_speed: int
         The speed at which animations run
-    _animations: dict
+    _animation_dict: dict
         The dictionary containing directionally sorted animation images
+    _animations: dict
+        The dictionary containing all animations for the current direction
     _sprite_sheet: SpriteSheet
         Handler for entire sprite sheet of animation images
     _status: str
@@ -53,7 +55,6 @@ class Entity(Tile):
         super().__init__(group)
         self._frame_index: int = 0
         self._animation_speed: float = 0.15
-        # need error handling for _animation_dict does not exist
         self._animations: dict = {}
 
         self._sprite_sheet: SpriteSheet = SpriteSheet(
@@ -74,7 +75,7 @@ class Entity(Tile):
 
         Returns
         -------
-        surface: pygame.Surface
+        animation_strip: pygame.Surface
             The surface containing the image of the specified rect from the animations
         """
         animation_strip = self._animations[self._status]

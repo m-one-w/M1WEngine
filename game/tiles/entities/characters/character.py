@@ -2,7 +2,6 @@
 import math
 import pygame
 from enums.direction import Direction
-from file_managers.sprite_sheet import SpriteSheet
 from dict_structures.animation_dict import AnimationDict
 from tiles.entities.entity import Entity
 from score_controller import ScoreController
@@ -85,7 +84,6 @@ class Character(Entity):
         self.compass.x: Direction = Direction.right
         self._score_controller: ScoreController = ScoreController()
         self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
-        self._sprite_sheet = SpriteSheet()
 
     def setup_import_assets(self, height, width) -> None:
         """Import and divide the animation image into it's smaller parts.
@@ -285,25 +283,25 @@ class Character(Entity):
             for collision_index in collision_indicies:
                 collided_sprite: Tile = obstacle_sprites[collision_index]
                 collided_coord: tuple[int, int] = (
-                    collided_sprite.hitbox.centerx,
-                    collided_sprite.hitbox.centery,
+                    collided_sprite._hitbox.centerx,
+                    collided_sprite._hitbox.centery,
                 )
                 # check status then add to appropriate collision direction
                 if self.further_axis(collided_coord) == "vertical":
-                    if collided_sprite.hitbox.centery < self.hitbox.centery:
+                    if collided_sprite._hitbox.centery < self.hitbox.centery:
                         sorted_collisions["up"].append(collided_coord)
-                    elif collided_sprite.hitbox.centery > self.hitbox.centery:
+                    elif collided_sprite._hitbox.centery > self.hitbox.centery:
                         sorted_collisions["down"].append(collided_coord)
 
                 # if self.status == "left" or self.status == "right":
                 if self.further_axis(collided_coord) == "horizontal":
-                    if collided_sprite.hitbox.centerx < self.hitbox.centerx:
+                    if collided_sprite._hitbox.centerx < self.hitbox.centerx:
                         sorted_collisions["left"].append(collided_coord)
-                    elif collided_sprite.hitbox.centerx > self.hitbox.centerx:
+                    elif collided_sprite._hitbox.centerx > self.hitbox.centerx:
                         sorted_collisions["right"].append(collided_coord)
 
                 # call method to teleport outside of collision sprite
-                self.teleport_out_of_sprite(collided_sprite.hitbox)
+                self.teleport_out_of_sprite(collided_sprite._hitbox)
 
         return sorted_collisions
 
