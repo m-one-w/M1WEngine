@@ -99,30 +99,30 @@ class HeadsUpDisplay(pygame.sprite.Group):
             self.SCORE_BOX_HEIGHT,
         )
         self.add(self.add_box(score_rect, self.SCORE_BOX_HEIGHT, self.SCORE_BOX_WIDTH))
-        self.__current_score_spr: Text = Text(
+        self.__current_score_sprite: Text = Text(
             self.SCORE_BOX_X_PX,
             self.SCORE_BOX_Y_PX,
             "Current Score:",
         )
-        self.add(self.__current_score_spr)
+        self.add(self.__current_score_sprite)
         self.__boredom_meter_spr: Text = Text(
             self.SCORE_BOX_X_PX,
             self.SCORE_BOX_Y_PX + 20,
             "Boredom Meter:",
         )
         self.add(self.__boredom_meter_spr)
-        self.__current_score_value_spr: Text = Text(
+        self.__current_score_value_sprite: Text = Text(
             self.SCORE_BOX_VALUE_X_SCORE,
             self.SCORE_BOX_Y_PX + 1,
             str(self._score.current_score),
         )
-        self.add(self.__current_score_value_spr)
-        self.__boredom_meter_value_spr: Text = Text(
+        self.add(self.__current_score_value_sprite)
+        self.__boredom_meter_value_sprite: Text = Text(
             self.SCORE_BOX_VALUE_X_BOREDOM,
             self.SCORE_BOX_Y_PX + 21,
             str(self._score.boredom_meter),
         )
-        self.add(self.__boredom_meter_value_spr)
+        self.add(self.__boredom_meter_value_sprite)
 
     def toggle_pause_level(self) -> None:
         """Toggle the pause level value."""
@@ -140,8 +140,8 @@ class HeadsUpDisplay(pygame.sprite.Group):
     def update(self):
         """Run the HUD."""
         super().update()
-        self.__current_score_value_spr.text_str = self._score.current_score
-        self.__boredom_meter_value_spr.text_str = self._score.boredom_meter
+        self.__current_score_value_sprite.text_string = self._score.current_score
+        self.__boredom_meter_value_sprite.text_string = self._score.boredom_meter
         self.add_level_hint()
 
     def add_level_hint(self):
@@ -163,12 +163,12 @@ class HeadsUpDisplay(pygame.sprite.Group):
                     self.LEVEL_HINT_BOX_HEIGHT,
                 )
                 self.add(self._level_box_spr)
-                self._level_hint_txt_spr: Text = Text(
+                self._level_hint_txt_sprite: Text = Text(
                     self.LEVEL_HINT_BOX_X_PX,
                     self.LEVEL_HINT_BOX_Y_PX + 10,
                     str(self._level_hint_text),
                 )
-                self.add(self._level_hint_txt_spr)
+                self.add(self._level_hint_txt_sprite)
 
     @property
     def level_hint(self) -> str:

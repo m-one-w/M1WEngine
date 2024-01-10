@@ -41,12 +41,12 @@ class Text(pygame.sprite.Sprite):
         self.rect: pygame.Rect = pygame.Rect(x_pos, y_pos, 50, 50)
 
     @property
-    def text_str(self) -> str:
+    def text_string(self) -> str:
         """Get the text string value."""
         return self._text
 
-    @text_str.setter
-    def text_str(self, new_value) -> None:
+    @text_string.setter
+    def text_string(self, new_value) -> None:
         """Set the text string value.
 
         Parameters
