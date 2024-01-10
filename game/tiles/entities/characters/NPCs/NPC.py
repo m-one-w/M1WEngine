@@ -99,6 +99,8 @@ class NPC(Character):
         Set the compass away from the direction of the collision
     teleport_out_of_sprite(self, collision_rect: pygame.Rect)
         Teleport out of a collided wall - NPC specific
+    flip_current_image(self)
+        Flip the current image
     """
 
     def __init__(
@@ -345,6 +347,7 @@ class NPC(Character):
             else:
                 speed: int = 5
                 self.move(speed)
+                self.flip_current_image()
 
     def charge_movement(self) -> None:
         """Charge from current position until charge is disrupted."""
@@ -553,3 +556,8 @@ class NPC(Character):
                 # teleport below the top of the sprite
                 if collision_rect.bottom - (self._hitbox.top - 1) > 0:
                     self.move_down()
+
+    def flip_current_image(self):
+        """Spin the current image 180 degrees."""
+        spin_angle = 180
+        self.image = pygame.transform.rotate(self.image, spin_angle)
