@@ -65,7 +65,7 @@ class Entity(Tile):
         self.import_assets()
 
         self.rect = self.image.get_rect(topleft=pos)
-        self.hitbox = self.rect.copy()
+        self._hitbox = self.rect.copy()
 
     def animate(self) -> pygame.Surface:
         """Animation loop for the character.

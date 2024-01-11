@@ -140,7 +140,7 @@ class NPC(Character):
         self._hud = HeadsUpDisplay()
 
         # the closest sprite on our radar
-        self._target_sprite: Character = pygame.sprite.Sprite()
+        self._target_sprite: pygame.sprite.Sprite = pygame.sprite.Sprite()
 
         # for automated movements, store a previous timestamp
         self._last_time_stored: int = 0
@@ -208,15 +208,17 @@ class NPC(Character):
         if is_player:
             # if is_player, then entities is a single sprite
             entity_rect_list: list[pygame.sprite.Sprite] = entities
-            collisions = self._radar.colliderect(entity_rect_list)
+            collisions: bool = self._radar.colliderect(entity_rect_list)
         else:
             # sprites as a list of sprites, not a Group of sprites
             sprite_group_list: list[pygame.sprite.Sprite] = pygame.sprite.Group.sprites(
                 entities
             )
-            hitbox_list: list[int] = [sprite.hitbox for sprite in sprite_group_list]
+            hitbox_list: list[pygame.Rect] = [
+                sprite._hitbox for sprite in sprite_group_list
+            ]
             # list of all NPC collisions
-            collisions = self._radar.collidelistall(hitbox_list)
+            collisions: bool = self._radar.collidelistall(hitbox_list)
 
         # if there is an entity inside our radar
         if collisions and self._current_state != self._states.Thrown:
@@ -544,26 +546,26 @@ class NPC(Character):
 
         if axis == "horizontal":
             # collided sprite is on the right
-            if self.hitbox.centerx < collision_rect.centerx:
+            if self._hitbox.centerx < collision_rect.centerx:
                 # teleport to the left
-                if collision_rect.left - (self.hitbox.right + 1) < 0:
+                if collision_rect.left - (self._hitbox.right + 1) < 0:
                     self.move_left()
             # collided sprite is on the left
             else:
                 # teleport to the right of the sprite
-                if collision_rect.right - (self.hitbox.left - 1) > 0:
+                if collision_rect.right - (self._hitbox.left - 1) > 0:
                     self.move_right()
 
         else:
             # collided sprite is below
-            if self.hitbox.centery < collision_rect.centery:
+            if self._hitbox.centery < collision_rect.centery:
                 # teleport above the bottom of the sprite
-                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
+                if collision_rect.top - (self._hitbox.bottom + 1) < 0:
                     self.move_up()
             # collided sprite is above
             else:
                 # teleport below the top of the sprite
-                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
+                if collision_rect.bottom - (self._hitbox.top - 1) > 0:
                     self.move_down()
 
     def flip_current_image(self):

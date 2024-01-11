@@ -70,7 +70,7 @@ class Skeleton(NPC):
     def collision_handler(self) -> None:
         """Handle collision interactions with environment."""
         super().collision_handler()
-        collisions = self.rect.colliderect(self._player.hitbox)
+        collisions = self.rect.colliderect(self._player._hitbox)
 
         if collisions:
             try:

@@ -321,16 +321,16 @@ class Character(Entity):
                 )
                 # check status then add to appropriate collision direction
                 if self.further_axis(collided_coord) == "vertical":
-                    if collided_sprite._hitbox.centery < self.hitbox.centery:
+                    if collided_sprite._hitbox.centery < self._hitbox.centery:
                         sorted_collisions["up"].append(collided_coord)
-                    elif collided_sprite._hitbox.centery > self.hitbox.centery:
+                    elif collided_sprite._hitbox.centery > self._hitbox.centery:
                         sorted_collisions["down"].append(collided_coord)
 
                 # if self.status == "left" or self.status == "right":
                 if self.further_axis(collided_coord) == "horizontal":
-                    if collided_sprite._hitbox.centerx < self.hitbox.centerx:
+                    if collided_sprite._hitbox.centerx < self._hitbox.centerx:
                         sorted_collisions["left"].append(collided_coord)
-                    elif collided_sprite._hitbox.centerx > self.hitbox.centerx:
+                    elif collided_sprite._hitbox.centerx > self._hitbox.centerx:
                         sorted_collisions["right"].append(collided_coord)
 
                 # call method to teleport outside of collision sprite
@@ -351,14 +351,14 @@ class Character(Entity):
         if axis == "horizontal":
             x_dist_out_hitbox: int = 0
             # collided sprite is on the right
-            if self.hitbox.centerx < collision_rect.centerx:
+            if self._hitbox.centerx < collision_rect.centerx:
                 # teleport to the left
-                if collision_rect.left - (self.hitbox.right + 1) < 0:
+                if collision_rect.left - (self._hitbox.right + 1) < 0:
                     x_dist_out_hitbox = -1
             # collided sprite is on the left
             else:
                 # teleport to the right of the sprite
-                if collision_rect.right - (self.hitbox.left - 1) > 0:
+                if collision_rect.right - (self._hitbox.left - 1) > 0:
                     x_dist_out_hitbox = 1
 
             if x_dist_out_hitbox != 0:
@@ -366,14 +366,14 @@ class Character(Entity):
         else:
             y_dist_out_hitbox: int = 0
             # collided sprite is below
-            if self.hitbox.centery < collision_rect.centery:
+            if self._hitbox.centery < collision_rect.centery:
                 # teleport above the bottom of the sprite
-                if collision_rect.top - (self.hitbox.bottom + 1) < 0:
+                if collision_rect.top - (self._hitbox.bottom + 1) < 0:
                     y_dist_out_hitbox = -1
             # collided sprite is above
             else:
                 # teleport below the top of the sprite
-                if collision_rect.bottom - (self.hitbox.top - 1) > 0:
+                if collision_rect.bottom - (self._hitbox.top - 1) > 0:
                     y_dist_out_hitbox = 1
 
             if y_dist_out_hitbox != 0:
