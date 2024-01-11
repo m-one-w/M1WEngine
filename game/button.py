@@ -12,29 +12,27 @@ class Button(pygame.sprite.Sprite):
 
     Attributes
     ----------
-    _x: int
+    __x: int
         The x position of the sprite
-    _y: int
+    __y: int
         The y position of the sprite
-    _width: int
+    __width: int
         The width of the button
-    _height: int
+    __height: int
         The height of the button
     _on_click_function: callable
         The function to execute on button clicks
-    _one_press: boolean
+    __on_press: bool
         If buttons are pressed once per click
-    _already_pressed: boolean
+    __already_pressed: bool
         If the button is already pressed
-    _button_text_string: str
-        Button text to display
     image: pygame.Surface
         Image to display
-    rect: pygame.rect
+    rect: pygame.Rect
         Rect to store button position
-    _text: Text
+    __text: Text
         Object holding the Text
-    _fill_colors: dict
+    __fill_colors: dict[str, str]
         What colors the button can have
 
     Methods
@@ -75,21 +73,20 @@ class Button(pygame.sprite.Sprite):
             Should the button click once or call repeatedly when held
         """
         super().__init__()
-        self._x: int = x
-        self._y: int = y
-        self._width: int = width
-        self._height: int = height
+        self.__x: int = x
+        self.__y: int = y
+        self.__width: int = width
+        self.__height: int = height
         self._on_click_function: callable = on_click_function
-        self._one_press: bool = one_press
-        self._already_pressed: bool = False
-        self._button_text_string: str = button_text
-        self.image: pygame.Surface = pygame.Surface((self._width, self._height))
+        self.__on_press: bool = one_press
+        self.__already_pressed: bool = False
+        self.image: pygame.Surface = pygame.Surface((self.__width, self.__height))
         self.rect: pygame.Rect = pygame.Rect(
-            self._x, self._y, self._width, self._height
+            self.__x, self.__y, self.__width, self.__height
         )
-        self._text: Text = Text(x, y, button_text)
+        self.__text: Text = Text(x, y, button_text)
 
-        self._fill_colors = {
+        self.__fill_colors: dict[str, str] = {
             "normal": "#ffffff",
             "hover": "#666666",
             "pressed": "#333333",
@@ -98,17 +95,17 @@ class Button(pygame.sprite.Sprite):
     def update(self):
         """Update the state of the button as needed."""
         mouse_position: tuple = pygame.mouse.get_pos()
-        self.image.fill(self._fill_colors["normal"])
+        self.image.fill(self.__fill_colors["normal"])
         if self.rect.collidepoint(mouse_position):
-            self.image.fill(self._fill_colors["hover"])
+            self.image.fill(self.__fill_colors["hover"])
             if pygame.mouse.get_pressed(num_buttons=3)[0]:
-                self.image.fill(self._fill_colors["pressed"])
-                if self._one_press:
+                self.image.fill(self.__fill_colors["pressed"])
+                if self.__on_press:
                     self._on_click_function()
-                elif not self._already_pressed:
+                elif not self.__already_pressed:
                     self._on_click_function()
-                    self._already_pressed = True
+                    self.__already_pressed = True
             else:
-                self._already_pressed = False
-        self._text.render_font()
-        self.image.blit(self._text.image, (0, 0))
+                self.__already_pressed = False
+        self.__text.render_font()
+        self.image.blit(self.__text.image, (0, 0))
