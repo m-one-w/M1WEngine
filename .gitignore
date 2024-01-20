@@ -1,3 +1,6 @@
 **/__pycache__/
 *.py[cod]
 env/
+/build/**
+/dist/**
+/m1wengine.egg-info/**
