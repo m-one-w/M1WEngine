@@ -59,11 +59,29 @@ class LevelManager:
         # main menu is the first thing that is loaded
         self._menu: MainMenu = MainMenu()
         self._asset_manager.load_music("menu", "main_menu")
-        self._level: Level = object()
+        self._level: object = object()
 
         self._user_input: str = "None"
         # quit flag returned to game
         self._quit_game: bool = False
+
+    @property
+    def level(self) -> str:
+        """Get the current level hint text."""
+        return self._level
+
+    @level.setter
+    def level(self, new_value: str):
+        """Set the current level hint text.
+
+        Parameters
+        ----------
+        new_value: str
+            New level hint to set
+        """
+        self._level = new_value
+
+    # TODO: add method to change the music
 
     def run(self) -> bool:
         """Refresh the screen and run the level.
@@ -81,16 +99,6 @@ class LevelManager:
         if self._user_input == UserSelection.level:
             # check is menu is finished disabling
             if not self._menu.is_enabled():
-                # if the level is not loaded yet, then initialize it
-                if not isinstance(self._level, Level):
-                    # TODO: safely access and give asset_manager's stuff to level
-                    self._level = TestLevel(
-                        self._asset_manager.universal_sprites,
-                        "test_level",
-                    )
-                    # unload music and load in new music
-                    level_key: str = "test_level"
-                    self._asset_manager.load_music("level", level_key)
                 self._level.run()
         elif self._user_input == UserSelection.quit:
             self._quit_game is not self._quit_game
