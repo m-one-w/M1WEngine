@@ -1,7 +1,7 @@
 """This module contains the Entity class."""
 import pygame
-from file_managers.sprite_sheet import SpriteSheet
-from tiles.tile import Tile
+from m1wengine.file_managers.sprite_sheet import SpriteSheet
+from m1wengine.tiles.tile import Tile
 
 
 class Entity(Tile):

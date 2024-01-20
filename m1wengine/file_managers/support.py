@@ -2,7 +2,7 @@
 from csv import reader
 from os import walk
 import pygame
-from settings import TILESIZE
+from m1wengine.settings import TILESIZE
 
 
 def import_csv_layout(path: str) -> list[int]:

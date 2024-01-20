@@ -1,8 +1,8 @@
 """This module contains the Item class."""
 import pygame
-from dict_structures.animation_dict import AnimationDict
-from tiles.entities.entity import Entity
-import settings
+from m1wengine.dict_structures.animation_dict import AnimationDict
+from m1wengine.tiles.entities.entity import Entity
+import m1wengine.settings as settings
 
 
 class Item(Entity):

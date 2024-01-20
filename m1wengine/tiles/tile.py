@@ -1,6 +1,6 @@
 """This module contains the Tile class."""
 import pygame
-from enums.direction import Direction
+from m1wengine.enums.direction import Direction
 
 
 class Tile(pygame.sprite.Sprite):

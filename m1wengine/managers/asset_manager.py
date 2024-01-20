@@ -1,6 +1,6 @@
 """AssetManager class."""
 import pygame
-from file_managers.support import import_cut_graphic
+from m1wengine.file_managers.support import import_cut_graphic
 from game_data import level_data, menu_data
 
 

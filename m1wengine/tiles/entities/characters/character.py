@@ -1,11 +1,11 @@
 """This module contains the Character class."""
 import math
 import pygame
-from enums.direction import Direction
-from dict_structures.animation_dict import AnimationDict
-from tiles.entities.entity import Entity
-from score_controller import ScoreController
-from tiles.tile import Tile
+from m1wengine.enums.direction import Direction
+from m1wengine.dict_structures.animation_dict import AnimationDict
+from m1wengine.tiles.entities.entity import Entity
+from m1wengine.score_controller import ScoreController
+from m1wengine.tiles.tile import Tile
 
 # number of images for each directional animation
 WALKING_IMAGE_COUNT = 3

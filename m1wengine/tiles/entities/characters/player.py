@@ -1,10 +1,10 @@
 """This module contains the Player class."""
 import random
 import pygame
-from enums.actions import Actions
-from enums.eaten_powers import EatenPowers
-from tiles.entities.characters.character import Character
-import settings
+from m1wengine.enums.actions import Actions
+from m1wengine.enums.eaten_powers import EatenPowers
+from m1wengine.tiles.entities.characters.character import Character
+import m1wengine.settings as settings
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5
