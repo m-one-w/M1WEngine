@@ -1,9 +1,9 @@
 """This module contains the HUD class."""
 import time
 import pygame
-from button import Button
-from score_controller import ScoreController
-from text import Text
+from m1wengine.button import Button
+from m1wengine.score_controller import ScoreController
+from m1wengine.text import Text
 
 
 class HeadsUpDisplay(pygame.sprite.Group):

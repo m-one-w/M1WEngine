@@ -2,7 +2,7 @@
 
 
 import pygame
-from text import Text
+from m1wengine.text import Text
 
 
 class Button(pygame.sprite.Sprite):

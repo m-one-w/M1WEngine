@@ -6,14 +6,14 @@ import sys
 import time
 from typing import Callable
 import pygame
-from enums.actions import Actions
-from enums.eaten_powers import EatenPowers
-from enums.direction import Direction
-from HUD import HeadsUpDisplay
-from tiles.entities.characters.player import Player
-from tiles.entities.characters.character import Character
-import settings
-import prompt_strings
+from m1wengine.enums.actions import Actions
+from m1wengine.enums.eaten_powers import EatenPowers
+from m1wengine.enums.direction import Direction
+from m1wengine.HUD import HeadsUpDisplay
+from m1wengine.tiles.entities.characters.player import Player
+from m1wengine.tiles.entities.characters.character import Character
+import m1wengine.settings as settings
+import m1wengine.prompt_strings as prompt_strings
 
 
 class NPC(Character):

@@ -1,8 +1,8 @@
 """This module contains the MainMenu class."""
 import pygame
 import pygame_menu
-from settings import WINDOW_WIDTH, WINDOW_HEIGHT, MAIN_MENU_BACKGROUND_PATH
-from enums.user_selection import UserSelection
+from m1wengine.settings import WINDOW_WIDTH, WINDOW_HEIGHT, MAIN_MENU_BACKGROUND_PATH
+from m1wengine.enums.user_selection import UserSelection
 
 
 class MainMenu(pygame_menu.Menu):
