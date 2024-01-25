@@ -8,7 +8,7 @@ setup(
     description="A game engine built on top of pygame",
     url="https://github.com/Sean-Nishi/M1Wengine",
     packages=find_packages(),
-    install_requires=["pygame-menu==4.4.3", "pygame==3.11.1"],
+    install_requires=["pygame-menu==4.4.3", "pygame==2.5.2"],
     extra_requires={
         "dev": ["black==23.1.0", "flake8==4.0.1", "pydocstyle==6.3.0", "twine>=4.0.2"]
     },
