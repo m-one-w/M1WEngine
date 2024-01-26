@@ -363,6 +363,7 @@ class NPC(Character):
     def charge_movement(self) -> None:
         """Charge from current position until charge is disrupted."""
         if self._current_state == self._states.Charge:
+            # if initial_charge_compass is the default vector value, rotate to target
             if self._initial_charge_compass == pygame.Vector2(0, 0):
                 self._initial_charge_compass = self.rotate_compass_to_target_sprite()
 
@@ -378,12 +379,16 @@ class NPC(Character):
 
     def rotate_compass_to_target_sprite(self) -> None:
         """Rotate compass to point towards the target sprite."""
-        opposite = self._target_sprite.rect.centerx - self.rect.centerx
-        adjecent = self.rect.centery - self._target_sprite.rect.centery
-        radians = math.atan2(opposite, adjecent)
-        self._compass.x = Direction.stop
-        self._compass.y = Direction.down
-        self._compass.rotate_ip_rad(radians)
+        if self._target_sprite is not None:
+            opposite = self._target_sprite.rect.centerx - self.rect.centerx
+            adjecent = self.rect.centery - self._target_sprite.rect.centery
+            radians = math.atan2(opposite, adjecent)
+            # compass direction must be facing up for rotate_ip_rad to work correctly
+            self._compass.x = Direction.stop
+            self._compass.y = Direction.up
+            self._compass.rotate_ip_rad(radians)
+        else:
+            raise ValueError("ERROR: _target_sprite not set.")
 
     def move_towards_target_sprite(self) -> None:
         """Move towards the target sprite."""
