@@ -87,7 +87,7 @@ class Tile(pygame.sprite.Sprite):
         ------
         TypeError: parameter must be a Vector2 type
         """
-        if type(new_value) is not pygame.math.Vector2:
+        if type(new_value) is not pygame.math.Vector2 or not pygame.Vector2:
             raise TypeError("ERROR: compass must be a Vector2 type.")
         else:
             self._compass = new_value

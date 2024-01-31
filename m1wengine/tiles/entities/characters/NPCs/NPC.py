@@ -35,6 +35,22 @@ class NPC(Character):
         The handler for the HUD singleton
     _target_sprite: Entity
         The currently tracked sprite detected in radar
+    DEFAULT_SPEED: int
+        Default speed for an NPC
+    DEFAULT_SPEED_FAST: int
+        Default speed for a fast moving NPC
+    DEFAULT_SPEED_ZERO: int
+        Default speed for a stationary NPC
+    DEFAULT_VECTOR2: pygame.Vector2
+        Default vector2 for tracking a sprite
+    DEFAULT_TIMER_VALUE: int
+        Negative timer value for resetting initial tracking and charging
+    TRACKING_TIMER: int
+        The amount of time to spend tracking a target sprite
+    _initial_tracking_time: int
+        The starting time in seconds when tracking a target sprite
+    _initial_charge_time: int
+        The starting time in seconds when beginning a charge move
     _last_time_stored: int
         The last time an automated state used a timer
     _radar: pygame.Rect
@@ -59,6 +75,8 @@ class NPC(Character):
         Choose a target sprite from a list of sprites
     move_based_on_state(self)
         Automatically move depending on the current state
+    default_movement(self)
+        Do not move, intermediary state
     patrol_movement(self)
         Define the patrol movement
     flee_movement(self)
@@ -69,12 +87,24 @@ class NPC(Character):
         Define the follow movement
     thrown_movement(self)
         Throw self from current position
+    tracking_movement(self)
+        Stop movement and track sprite on radar
     charge_movement(self)
-        Charge self from current position
+        Charge self from current position at target sprite
+    reset_charge_variables(self)
+        Reset all variables relating to charge logic back to defaults
+    is_timer_finished(self, initial_timer: int, timer_threshold_seconds: int) -> bool
+        Check if timer has reached a threshold
+    charged_into_obstacle(self) -> bool
+        Check if obstacle sprite collision detected
+    charged_into_good_sprite(self)
+        Check for good sprite collision
     rotate_compass_to_target_sprite(self)
         Rotate the compass to point at the target sprite
     move_towards_target_sprite(self)
         Move to the target sprite
+    set_state_default(self)
+        Set state to default
     set_state_patrol(self)
         Set state to patrol
     set_state_attack(self)
@@ -133,14 +163,37 @@ class NPC(Character):
 
         # setting up state machine
         self._states: Enum = Enum(
-            "states", ["Patrol", "Attack", "Flee", "Follow", "Thrown", "Charge"]
+            "states",
+            [
+                "Default",
+                "Patrol",
+                "Attack",
+                "Flee",
+                "Follow",
+                "Thrown",
+                "Tracking",
+                "Charging",
+            ],
         )
-        self._current_state: Enum = self._states.Patrol
-        self._initial_charge_compass: pygame.Vector2 = pygame.Vector2(0, 0)
+        self._current_state: Enum = self._states.Default
+        self._initial_charge_compass: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
         self._hud = HeadsUpDisplay()
 
         # the closest sprite on our radar
         self._target_sprite: pygame.sprite.Sprite = pygame.sprite.Sprite()
+
+        # default constants
+        self.DEFAULT_SPEED: int = 1
+        self.DEFAULT_SPEED_FAST: int = 5
+        self.DEFAULT_SPEED_ZERO: int = 0
+        self.DEFAULT_VECTOR2: pygame.Vector2 = pygame.Vector2(0, 0)
+        self.DEFAULT_TIMER_VALUE: int = -1
+
+        # vars for targetting and charging
+        self.TRACKING_TIMER_SECONDS: int = 2
+        self.CHARGING_TIMER_SECONDS: int = 3
+        self._initial_tracking_time: int = self.DEFAULT_TIMER_VALUE
+        self._initial_charge_time: int = self.DEFAULT_TIMER_VALUE
 
         # for automated movements, store a previous timestamp
         self._last_time_stored: int = 0
@@ -239,9 +292,13 @@ class NPC(Character):
             elif set_active_state == self.set_state_follow:
                 if self._current_state != self._states.Follow:
                     set_active_state()
+            # try to track
+            elif set_active_state == self.set_state_track:
+                if self._current_state != self._states.Tracking:
+                    set_active_state()
             # try to charge
             elif set_active_state == self.set_state_charge:
-                if self._current_state != self._states.Flee:
+                if self._current_state != self._states.Charging:
                     set_active_state()
             # cannot try to patrol as an active state
             elif set_active_state == self.set_state_patrol:
@@ -283,7 +340,10 @@ class NPC(Character):
 
     def move_based_on_state(self) -> None:
         """Logic to determine which _movement() method to call."""
-        if self._current_state == self._states.Attack:
+        if self._current_state == self._states.Default:
+            self.default_movement()
+
+        elif self._current_state == self._states.Attack:
             self.attack_movement()
 
         elif self._current_state == self._states.Flee:
@@ -298,16 +358,28 @@ class NPC(Character):
         elif self._current_state == self._states.Thrown:
             self.thrown_movement()
 
-        elif self._current_state == self._states.Charge:
+        elif self._current_state == self._states.Tracking:
+            self.tracking_movement()
+
+        # separate conditional because tracking may be over
+        if self._current_state == self._states.Charging:
             self.charge_movement()
+
+    def default_movement(self) -> None:
+        """Behavior for default movement."""
+        pass
 
     def patrol_movement(self) -> None:
         """Move back and forth."""
         if self._current_state == self._states.Patrol:
             current_time_in_seconds = time.perf_counter()
 
+            # make sure speed is default
+            if self.speed != self.DEFAULT_SPEED:
+                self.speed = self.DEFAULT_SPEED
+
             seconds_per_direction: int = 3
-            if current_time_in_seconds - self._last_time_stored > seconds_per_direction:
+            if self.is_timer_finished(self._last_time_stored, seconds_per_direction):
                 # 10 seconds passed
                 if self.compass.x != 1 or self.compass.x != 1:
                     self.compass.x = 1
@@ -317,7 +389,7 @@ class NPC(Character):
                 self._last_time_stored = current_time_in_seconds
 
             self.collision_handler()
-            self.move(self._speed)
+            self.move(self.speed)
 
     def flee_movement(self) -> None:
         """Change direction based on where target is."""
@@ -328,7 +400,7 @@ class NPC(Character):
                 self.collision_handler()
 
             # move according to the compass direction
-            self.move(self._speed)
+            self.move(self.speed)
 
     def attack_movement(self) -> None:
         """Change compass based on where target sprite is."""
@@ -348,7 +420,7 @@ class NPC(Character):
 
         seconds_per_throw: int = 1
         if current_time_in_seconds - self._last_time_stored > seconds_per_throw:
-            self._current_state = self._states.Patrol
+            self._current_state = self._states.Default
         else:
             collision_dictionary: dict = self.collision_detection(
                 self._obstacle_sprites
@@ -356,26 +428,117 @@ class NPC(Character):
             if collision_dictionary["collision_detected"]:
                 self.die()
             else:
-                speed: int = 5
-                self.move(speed)
+                self.speed = self.DEFAULT_SPEED_FAST
+                self.move(self.speed)
                 self.flip_current_image()
 
-    def charge_movement(self) -> None:
-        """Charge from current position until charge is disrupted."""
-        if self._current_state == self._states.Charge:
-            # if initial_charge_compass is the default vector value, rotate to target
-            if self._initial_charge_compass == pygame.Vector2(0, 0):
-                self._initial_charge_compass = self.rotate_compass_to_target_sprite()
+    def tracking_movement(self) -> None:
+        """Stop moving and track nearest entity."""
+        # if we are in the tracking state
+        if self._current_state == self._states.Tracking:
+            # stop moving
+            if self.speed != self.DEFAULT_SPEED_ZERO:
+                self.speed = self.DEFAULT_SPEED_ZERO
+            # rotate compass to target sprite
+            self.rotate_compass_to_target_sprite()
+            self._initial_charge_compass = self.compass.copy()
 
+            # check if any good_sprites are on the tracker's radar
             collision_dictionary: dict = self.collision_detection(
                 self._obstacle_sprites
             )
+
+            # if there is a good_sprite on tracker's radar
             if collision_dictionary["collision_detected"]:
-                self._initial_charge_compass = pygame.Vector2(0, 0)
-                self.set_state_patrol()
+                # if first loop, set _initial_tracking_time
+                if self._initial_tracking_time == self.DEFAULT_TIMER_VALUE:
+                    self._initial_tracking_time = int(time.perf_counter())
+
+                # if we've tracked the target long enough, switch to charge
+                if self.is_timer_finished(
+                    self._initial_tracking_time, self.TRACKING_TIMER_SECONDS
+                ):
+                    self.set_state_charge()
+            # else nothing has hit the NPC rect, go back to patrolling
             else:
-                speed: int = 2
-                self.move(speed)
+                self.reset_charge_variables()
+
+    def charge_movement(self) -> None:
+        """Charge from current position until charge is disrupted."""
+        if self._current_state == self._states.Charging:
+            # protect compass to prevent it from being overwritten
+            self.compass = self._initial_charge_compass
+
+            # if first loop, set _initial_charge_time
+            if self._initial_charge_time == self.DEFAULT_TIMER_VALUE:
+                self._initial_charge_time = int(time.perf_counter())
+
+            # if NPC charges long enough or hit an obstacle, go back to default state
+            if (
+                self.is_timer_finished(
+                    self._initial_charge_time, self.CHARGING_TIMER_SECONDS
+                )
+                or self.charged_into_obstacle()
+            ):
+                self.reset_charge_variables()
+                self.set_state_default()
+            else:
+                # charge fast if first time in charge loop
+                if self.speed == self.DEFAULT_SPEED or self.DEFAULT_SPEED_ZERO:
+                    self.speed = self.DEFAULT_SPEED_FAST
+                self.move(self.speed)
+
+    def reset_charge_variables(self) -> None:
+        """Reset all variables used in tracking and charging."""
+        if self.speed != self.DEFAULT_SPEED:
+            self.speed = self.DEFAULT_SPEED
+        self._target_sprite = pygame.sprite.Sprite()
+        self._initial_tracking_time = self.DEFAULT_TIMER_VALUE
+        self._initial_charge_time = self.DEFAULT_TIMER_VALUE
+
+    def is_timer_finished(
+        self, initial_timer: int, timer_threshold_seconds: int
+    ) -> bool:
+        """Check that a time has elapsed based on current_time.
+
+        Parameters
+        ----------
+        initial_timer: int
+            The initial time, in seconds
+        timer_threshold_seconds: int
+            Number to seconds to be added to initial timer
+
+        Raises
+        ------
+        ValueError: initial timer must not be default value (-1)
+        """
+        # timer validation
+        if initial_timer == self.DEFAULT_TIMER_VALUE:
+            raise ValueError("ERROR: initial timer still set to default.")
+        # get current time
+        current_time = int(time.perf_counter())
+        if current_time >= initial_timer + timer_threshold_seconds:
+            return True
+        else:
+            return False
+
+    def charged_into_obstacle(self) -> bool:
+        """Check if we collided with an obstacle sprite."""
+        collision = False
+        if self.collision_detection(self._obstacle_sprites, self._hitbox)[
+            "collision_detected"
+        ]:
+            collision = True
+        return collision
+
+    def charged_into_good_sprite(self) -> bool:
+        """Check if charging NPC has collided with a good_sprite."""
+        collision = False
+        if self.collision_detection(self._good_sprites, self._hitbox)[
+            "collision_detected"
+        ]:
+            collision = True
+        return collision
 
     def rotate_compass_to_target_sprite(self) -> None:
         """Rotate compass to point towards the target sprite."""
@@ -404,9 +567,13 @@ class NPC(Character):
 
         self.compass = self._target_sprite.compass.copy()
 
+    def set_state_default(self) -> None:
+        """Set state to intermediary state, reset variables."""
+        self._current_state = self._states.Default
+
     def set_state_patrol(self) -> None:
         """Set state machine to 'Patrol'."""
-        if self._current_state != self._states.Thrown:
+        if self._current_state != self._states.Thrown and not self._states.Charging:
             self._current_state = self._states.Patrol
 
     def set_state_attack(self) -> None:
@@ -430,10 +597,15 @@ class NPC(Character):
         self._last_time_stored = time.perf_counter()
         self.compass = self._player.compass.copy()
 
+    def set_state_track(self) -> None:
+        """Set state machine to 'Tracking'."""
+        if self._current_state == self._states.Patrol:
+            self._current_state = self._states.Tracking
+
     def set_state_charge(self) -> None:
-        """Set state machine the 'Charge'."""
-        if self._current_state != self._states.Thrown:
-            self._current_state = self._states.Charge
+        """Set state machine to 'Charge'."""
+        if self._current_state == self._states.Tracking:
+            self._current_state = self._states.Charging
 
     def set_player(self, player: pygame.sprite) -> None:
         """Set the player for the entity to track.
