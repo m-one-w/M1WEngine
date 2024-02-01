@@ -554,14 +554,14 @@ class NPC(Character):
     def move_towards_target_sprite(self) -> None:
         """Move towards the target sprite."""
         if self.rect.x < self._target_sprite.rect.x:
-            self.move_right(self._speed)
+            self.move_right(self.speed)
         elif self.rect.x > self._target_sprite.rect.x:
-            self.move_left(self._speed)
+            self.move_left(self.speed)
 
         if self.rect.y < self._target_sprite.rect.y:
-            self.move_down(self._speed)
+            self.move_down(self.speed)
         elif self.rect.y > self._target_sprite.rect.y:
-            self.move_up(self._speed)
+            self.move_up(self.speed)
 
         self.compass = self._target_sprite.compass.copy()
 
