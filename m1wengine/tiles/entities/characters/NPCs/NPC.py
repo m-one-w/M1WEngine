@@ -378,8 +378,9 @@ class NPC(Character):
             if self.speed != self.DEFAULT_SPEED:
                 self.speed = self.DEFAULT_SPEED
 
-            seconds_per_direction: int = 3
-            if self.is_timer_finished(self._last_time_stored, seconds_per_direction):
+            if self.is_timer_finished(
+                self._last_time_stored, timer_threshold_seconds=3
+            ):
                 # 10 seconds passed
                 if self.compass.x != 1 or self.compass.x != 1:
                     self.compass.x = 1
@@ -415,11 +416,8 @@ class NPC(Character):
 
     def thrown_movement(self) -> None:
         """Get thrown from current position."""
-        # TODO: move to game counter
-        current_time_in_seconds: float = time.perf_counter()
-
-        seconds_per_throw: int = 1
-        if current_time_in_seconds - self._last_time_stored > seconds_per_throw:
+        # if NPC is thrown long enough. TODO: make far enough (number of tiles)
+        if self.is_timer_finished(self._last_time_stored, timer_threshold_seconds=1):
             self._current_state = self._states.Default
         else:
             collision_dictionary: dict = self.collision_detection(
