@@ -9,12 +9,13 @@ import pygame
 from m1wengine.enums.actions import Actions
 from m1wengine.enums.eaten_powers import EatenPowers
 from m1wengine.enums.direction import Direction
-from m1wengine.HUD import HeadsUpDisplay
+from m1wengine.managers.level_manager import LevelManager
 from m1wengine.tiles.entities.characters.player import Player
 from m1wengine.tiles.entities.characters.character import Character
 from m1wengine.tiles.tile import Tile
 from m1wengine.settings import TILESIZE
 import m1wengine.prompt_strings as prompt_strings
+import m1wengine.abstract_HUD as AbstractHud
 
 
 class NPC(Character):
@@ -176,7 +177,6 @@ class NPC(Character):
         )
         self._current_state: Enum = self._states.Default
         self._initial_charge_compass: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
-        self._hud = HeadsUpDisplay()
 
         # the closest sprite on our radar
         self._target_sprite: pygame.sprite.Sprite = pygame.sprite.Sprite()
@@ -200,6 +200,11 @@ class NPC(Character):
             TILESIZE * inflation_size, TILESIZE * inflation_size
         )
         self._player_collision_resolved = True
+        self._hud = None
+
+    def init_hud(self):
+        """Initialize the NPC handle to HUD."""
+        self._hud: AbstractHud = LevelManager.global_level_manager._hud
 
     def radar_set_states(
         self,
@@ -637,6 +642,8 @@ class NPC(Character):
 
     def neutral_collided_with_player(self):
         """Player has collided with a neutral sprite."""
+        if self._hud is None:
+            self.init_hud()
         self._hud.start_prompt_timer()
         child_class: str = self.__class__.__name__
 
