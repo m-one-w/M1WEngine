@@ -188,8 +188,8 @@ class NPC(Character):
         # vars for targetting and charging
         self.TRACKING_TIMER_SECONDS: int = 2
         self.CHARGING_TIMER_SECONDS: int = 3
-        self._initial_tracking_time: int = self.DEFAULT_TIMER_VALUE
-        self._initial_charge_time: int = self.DEFAULT_TIMER_VALUE
+        self._initial_tracking_time_seconds: int = self.DEFAULT_TIMER_VALUE
+        self._initial_charge_time_seconds: int = self.DEFAULT_TIMER_VALUE
 
         # for automated movements, store a previous timestamp
         self._last_time_stored: int = 0
@@ -378,9 +378,7 @@ class NPC(Character):
         if self.speed != Tile.DEFAULT_SPEED:
             self.speed = Tile.DEFAULT_SPEED
 
-        if self.is_timer_finished(
-            self._last_time_stored, timer_threshold_seconds=3
-        ):
+        if self.is_timer_finished(self._last_time_stored, timer_threshold_seconds=3):
             # 10 seconds passed
             if self.compass.x != 1 or self.compass.x != 1:
                 self.compass.x = 1
@@ -403,7 +401,7 @@ class NPC(Character):
         self.move(self.speed)
 
     def attack_movement(self) -> None:
-        """Change compass based on where target sprite is."""    
+        """Change compass based on where target sprite is."""
         self.move_towards_target_sprite()
 
     def follow_movement(self) -> None:
@@ -486,8 +484,8 @@ class NPC(Character):
         if self.speed != Tile.DEFAULT_SPEED:
             self.speed = Tile.DEFAULT_SPEED
         self._target_sprite = pygame.sprite.Sprite()
-        self._initial_tracking_time = self.DEFAULT_TIMER_VALUE
-        self._initial_charge_time = self.DEFAULT_TIMER_VALUE
+        self._initial_tracking_time_seconds = self.DEFAULT_TIMER_VALUE
+        self._initial_charge_time_seconds = self.DEFAULT_TIMER_VALUE
 
     def is_timer_finished(
         self, initial_timer: int, timer_threshold_seconds: int
