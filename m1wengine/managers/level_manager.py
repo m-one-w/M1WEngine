@@ -1,5 +1,6 @@
 """This module contains the LevelManager class."""
 import pygame
+from m1wengine.abstract_HUD import AbstractHud
 from m1wengine.enums.user_selection import UserSelection
 from m1wengine.managers.asset_manager import AssetManager
 from m1wengine.menus.main_menu.main_menu import MainMenu
@@ -62,6 +63,8 @@ class LevelManager:
         # quit flag returned to game
         self._quit_game: bool = False
 
+        self._hud: AbstractHud = AbstractHud.global_hud
+
     @property
     def level(self) -> str:
         """Get the current level hint text."""
@@ -102,3 +105,6 @@ class LevelManager:
 
         self._clock.tick(FPS)
         return self._quit_game
+
+
+global_level_manager: LevelManager = object()
