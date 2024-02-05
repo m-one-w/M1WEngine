@@ -41,7 +41,6 @@ class LevelManager:
         """
         if not hasattr(cls, "instance"):
             cls.instance = super(LevelManager, cls).__new__(cls)
-            print("A new level manager is made!")
         return cls.instance
 
     def __init__(self) -> None:
