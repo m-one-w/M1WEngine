@@ -12,7 +12,8 @@ from m1wengine.enums.direction import Direction
 from m1wengine.HUD import HeadsUpDisplay
 from m1wengine.tiles.entities.characters.player import Player
 from m1wengine.tiles.entities.characters.character import Character
-import m1wengine.settings as settings
+from m1wengine.tiles.tile import Tile
+from settings import TILESIZE
 import m1wengine.prompt_strings as prompt_strings
 
 
@@ -35,12 +36,6 @@ class NPC(Character):
         The handler for the HUD singleton
     _target_sprite: Entity
         The currently tracked sprite detected in radar
-    DEFAULT_SPEED: int
-        Default speed for an NPC
-    DEFAULT_SPEED_FAST: int
-        Default speed for a fast moving NPC
-    DEFAULT_SPEED_ZERO: int
-        Default speed for a stationary NPC
     DEFAULT_VECTOR2: pygame.Vector2
         Default vector2 for tracking a sprite
     DEFAULT_TIMER_VALUE: int
@@ -133,6 +128,10 @@ class NPC(Character):
         Flip the current image
     """
 
+    # default speed values used for movement in state machine
+    DEFAULT_SPEED_FAST: int = 30
+    DEFAULT_SPEED_ZERO: int = 0
+
     def __init__(
         self,
         group: pygame.sprite.Group,
@@ -183,9 +182,6 @@ class NPC(Character):
         self._target_sprite: pygame.sprite.Sprite = pygame.sprite.Sprite()
 
         # default constants
-        self.DEFAULT_SPEED: int = 1
-        self.DEFAULT_SPEED_FAST: int = 5
-        self.DEFAULT_SPEED_ZERO: int = 0
         self.DEFAULT_VECTOR2: pygame.Vector2 = pygame.Vector2(0, 0)
         self.DEFAULT_TIMER_VALUE: int = -1
 
@@ -201,7 +197,7 @@ class NPC(Character):
         # TODO: find sweet spot inflation size for radar detection
         inflation_size: int = 8
         self._radar: pygame.Rect = self.rect.inflate(
-            settings.TILESIZE * inflation_size, settings.TILESIZE * inflation_size
+            TILESIZE * inflation_size, TILESIZE * inflation_size
         )
         self._player_collision_resolved = True
 
@@ -375,8 +371,8 @@ class NPC(Character):
             current_time_in_seconds = time.perf_counter()
 
             # make sure speed is default
-            if self.speed != self.DEFAULT_SPEED:
-                self.speed = self.DEFAULT_SPEED
+            if self.speed != Tile.DEFAULT_SPEED:
+                self.speed = Tile.DEFAULT_SPEED
 
             if self.is_timer_finished(
                 self._last_time_stored, timer_threshold_seconds=3
@@ -482,14 +478,14 @@ class NPC(Character):
                 self.set_state_default()
             else:
                 # charge fast if first time in charge loop
-                if self.speed == self.DEFAULT_SPEED or self.DEFAULT_SPEED_ZERO:
+                if self.speed == Tile.DEFAULT_SPEED or self.DEFAULT_SPEED_ZERO:
                     self.speed = self.DEFAULT_SPEED_FAST
                 self.move(self.speed)
 
     def reset_charge_variables(self) -> None:
         """Reset all variables used in tracking and charging."""
-        if self.speed != self.DEFAULT_SPEED:
-            self.speed = self.DEFAULT_SPEED
+        if self.speed != Tile.DEFAULT_SPEED:
+            self.speed = Tile.DEFAULT_SPEED
         self._target_sprite = pygame.sprite.Sprite()
         self._initial_tracking_time = self.DEFAULT_TIMER_VALUE
         self._initial_charge_time = self.DEFAULT_TIMER_VALUE
