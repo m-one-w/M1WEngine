@@ -625,6 +625,8 @@ class NPC(Character):
                     self._player.eaten_power = EatenPowers.basic_skeleton
                 elif child_class == "Damsel":
                     self._player.eaten_power = EatenPowers.damsel
+                elif child_class == "Minotaur":
+                    self._player.eaten_power = EatenPowers.minotaur
                 else:
                     raise ValueError(
                         "Unknown caller, cannot set player consume attribute."

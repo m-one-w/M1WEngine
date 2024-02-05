@@ -3,6 +3,8 @@ SCORE_REDUCE_DAMSEL_DEATH = 6
 BOREDOM_REDUCE_DAMSEL_DEATH = 10
 SCORE_INCREASE_SKELETON_DEATH = 1
 BOREDOM_INCREASE_SKELETON_DEATH = 5
+SCORE_INCREASE_MINOTAUR_DEATH: int = 1
+BOREDOM_INCREASE_MINOTAUR_DEATH: int = 5
 
 
 class ScoreController(object):
@@ -101,6 +103,9 @@ class ScoreController(object):
         if check == "Skeleton":
             self.current_score += SCORE_INCREASE_SKELETON_DEATH
             self.boredom_meter += BOREDOM_INCREASE_SKELETON_DEATH
+        elif check == "Minotaur":
+            self.current_score += SCORE_INCREASE_MINOTAUR_DEATH
+            self.boredom_meter += BOREDOM_INCREASE_MINOTAUR_DEATH
 
     def good_entity_destroyed_update_score(self, entity_name: str):
         """Update meta data on good entity destroyed.

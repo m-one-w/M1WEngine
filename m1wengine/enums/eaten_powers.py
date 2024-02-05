@@ -18,3 +18,4 @@ class EatenPowers(Enum):
     empty_stomach = auto()
     basic_skeleton = auto()
     damsel = auto()
+    minotaur = auto()
