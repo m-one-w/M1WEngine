@@ -53,6 +53,9 @@ class Tile(pygame.sprite.Sprite):
         Internal move down
     """
 
+    # default speed used for all movement
+    DEFAULT_SPEED: int = 10
+
     def __init__(self, groups: pygame.sprite.Group) -> None:
         """Initialize a tile.
 
@@ -138,7 +141,7 @@ class Tile(pygame.sprite.Sprite):
         else:
             self._rect = new_value
 
-    def move(self, speed: int = 1) -> None:
+    def move(self, speed: int = DEFAULT_SPEED) -> None:
         """Handle movement of the tile.
 
         Updates position of the tile using current heading and speed.
@@ -170,7 +173,7 @@ class Tile(pygame.sprite.Sprite):
             self._move_right(speed)
             self._movement_tracker["horizontal"] += left
 
-    def move_right(self, speed: int = 1) -> None:
+    def move_right(self, speed: int = DEFAULT_SPEED) -> None:
         """Move to the right.
 
         Update the compass and move to the right.
@@ -184,7 +187,7 @@ class Tile(pygame.sprite.Sprite):
         self._compass.y = 0
         self._move_right(speed)
 
-    def move_left(self, speed: int = 1) -> None:
+    def move_left(self, speed: int = DEFAULT_SPEED) -> None:
         """Move to the left.
 
         Update the compass and move to the left.
@@ -198,7 +201,7 @@ class Tile(pygame.sprite.Sprite):
         self._compass.y = 0
         self._move_left(speed)
 
-    def move_up(self, speed: int = 1) -> None:
+    def move_up(self, speed: int = DEFAULT_SPEED) -> None:
         """Move up.
 
         Update the compass and move up.
@@ -212,7 +215,7 @@ class Tile(pygame.sprite.Sprite):
         self._compass.y = Direction.up
         self._move_up(speed)
 
-    def move_down(self, speed: int = 1) -> None:
+    def move_down(self, speed: int = DEFAULT_SPEED) -> None:
         """Move down.
 
         Update the compass and move down.

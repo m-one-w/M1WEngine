@@ -8,7 +8,7 @@ from m1wengine.score_controller import ScoreController
 from m1wengine.tiles.tile import Tile
 
 # number of images for each directional animation
-WALKING_IMAGE_COUNT = 3
+WALKING_IMAGE_COUNT: int = 3
 
 
 class Character(Entity):
@@ -88,7 +88,7 @@ class Character(Entity):
         """
         self.setup_import_assets(image_rect.height, image_rect.width)
         super().__init__(group, pos, sprite_sheet_path, image_rect)
-        self._speed: int = 1
+        self._speed: int = Tile.DEFAULT_SPEED
         self.compass.x: Direction = Direction.right
         self._score_controller: ScoreController = ScoreController()
         self._obstacle_sprites: pygame.sprite.Group = obstacle_sprites
