@@ -72,6 +72,8 @@ class Tile(pygame.sprite.Sprite):
         self._rect: pygame.Rect = pygame.Rect(0, 0, 0, 0)
         self._hitbox: pygame.Rect = self.rect
 
+        self._move_remainder: float = 0.0
+
     @property
     def compass(self) -> pygame.math.Vector2:
         """Return the compass Vector2."""
@@ -266,10 +268,10 @@ class Tile(pygame.sprite.Sprite):
         speed: int
             Multiplier for changing the sprite position
         """
+        speed = self.refine_speed(speed)
         move_pixels_x = -1 * speed
         move_pixels_y = 0
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self._hitbox.center = self.rect.center
+        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
 
     def _move_right(self, speed: int) -> None:
         """Move to the right.
@@ -279,10 +281,10 @@ class Tile(pygame.sprite.Sprite):
         speed: int
             Multiplier for changing the sprite position
         """
+        speed = self.refine_speed(speed)
         move_pixels_x = speed
         move_pixels_y = 0
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self._hitbox.center = self.rect.center
+        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
 
     def _move_up(self, speed: int) -> None:
         """Move up.
@@ -292,10 +294,10 @@ class Tile(pygame.sprite.Sprite):
         speed: int
             Multiplier for changing the sprite position
         """
+        speed = self.refine_speed(speed)
         move_pixels_x = 0
         move_pixels_y = -1 * speed
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
-        self._hitbox.center = self.rect.center
+        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
 
     def _move_down(self, speed: int) -> None:
         """Move down.
@@ -305,7 +307,41 @@ class Tile(pygame.sprite.Sprite):
         speed: int
             Multiplier for changing the sprite position
         """
+        speed = self.refine_speed(speed)
         move_pixels_x = 0
         move_pixels_y = speed
-        self.rect.move_ip(move_pixels_x, move_pixels_y)
+        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
+
+    def refine_speed(self, speed: int) -> int:
+        """Reduce speed by factor of 10 and save remainder.
+
+        Parameters
+        ----------
+        speed: int
+            The speed the tile is moving
+
+        Returns
+        -------
+        speed: int
+            The refined speed after adding in remainder from last move
+        """
+        # store remainder. Note: % (in python) always returns a number
+        # having the same sign as the denominator
+        speed /= 10
+        if speed >= 0:
+            self._move_remainder += speed % 1
+        else:
+            self._move_remainder += speed % -1
+        speed = int(speed + self._move_remainder)
+        return speed
+
+    def move_and_update_hitbox(self, move_coordinates: pygame.Vector2) -> None:
+        """Move tile by x, y pixels and update hitbox.
+
+        Parameters
+        ----------
+        move_coordinates: pygame.Vector2
+            The number of x and y pixels to move.
+        """
+        self.rect.move_ip(move_coordinates)
         self._hitbox.center = self.rect.center
