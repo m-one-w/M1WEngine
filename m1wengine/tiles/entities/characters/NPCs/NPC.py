@@ -13,7 +13,7 @@ from m1wengine.HUD import HeadsUpDisplay
 from m1wengine.tiles.entities.characters.player import Player
 from m1wengine.tiles.entities.characters.character import Character
 from m1wengine.tiles.tile import Tile
-from settings import TILESIZE
+from m1wengine.settings import TILESIZE
 import m1wengine.prompt_strings as prompt_strings
 
 
