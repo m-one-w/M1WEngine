@@ -175,7 +175,7 @@ class NPC(Character):
                 "Charging",
             ],
         )
-        self._current_state: Enum = self._states.Default
+        self._current_state: Enum = self._states.Patrol
         self._initial_charge_compass: pygame.math.Vector2 = pygame.math.Vector2(0, 0)
 
         # the closest sprite on our radar
