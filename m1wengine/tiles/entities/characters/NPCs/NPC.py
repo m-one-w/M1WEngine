@@ -461,7 +461,7 @@ class NPC(Character):
         """Charge from current position until charge is disrupted."""
         if self._current_state == self._states.Charging:
             # protect compass to prevent it from being overwritten
-            self.compass = self._initial_charge_compass
+            self.compass = self._initial_charge_compass.copy()
 
             # if first loop, set _initial_charge_time
             if self._initial_charge_time == self.DEFAULT_TIMER_VALUE:
