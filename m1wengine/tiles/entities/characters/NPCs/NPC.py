@@ -417,7 +417,7 @@ class NPC(Character):
             self._current_state = self._states.Default
         else:
             collision_dictionary: dict = self.collision_detection(
-                self._obstacle_sprites
+                self._obstacle_sprites, self._hitbox
             )
             if collision_dictionary["collision_detected"]:
                 self.die()
@@ -439,7 +439,7 @@ class NPC(Character):
 
             # check if any good_sprites are on the tracker's radar
             collision_dictionary: dict = self.collision_detection(
-                self._obstacle_sprites
+                self._good_sprites, self._radar
             )
 
             # if there is a good_sprite on tracker's radar

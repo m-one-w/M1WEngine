@@ -270,7 +270,9 @@ class Character(Entity):
         rotated_image: pygame.Surface = pygame.transform.rotate(image, angle)
         return rotated_image
 
-    def collision_detection(self, sprite_group: pygame.sprite.Group) -> dict:
+    def collision_detection(
+        self, sprite_group: pygame.sprite.Group, rect_to_test: pygame.rect.Rect
+    ) -> dict:
         """Get a dictionary of collision coordinates.
 
         Detect all the collisions between self and a sprite group, and
@@ -280,6 +282,8 @@ class Character(Entity):
         ----------
         sprite_group: pygame.sprite.Group
             The group of sprites to check for collisions against
+        rect_to_test: pygame.rect.Rect
+            The rectangle used to test sprite_group against. Can be hitbox or radar
 
         Returns
         -------
@@ -294,7 +298,7 @@ class Character(Entity):
             sprite_rects.append(sprite.rect)
 
         # list of all obstacle sprite indicies player has collisions with
-        collision_indicies: list[int] = self.rect.collidelistall(obstacle_sprites)
+        collision_indicies: list[int] = rect_to_test.collidelistall(obstacle_sprites)
 
         left_coords: list = []
         right_coords: list = []
@@ -440,7 +444,9 @@ class Character(Entity):
         Handles collision checks for entities and other entities/the environment.
         Prevents entity from moving through obstacles.
         """
-        collision_dictionary: dict = self.collision_detection(self._obstacle_sprites)
+        collision_dictionary: dict = self.collision_detection(
+            self._obstacle_sprites, self._hitbox
+        )
         if collision_dictionary["collision_detected"]:
             collided_coords: tuple = self.average_collision_coordinates(
                 collision_dictionary
