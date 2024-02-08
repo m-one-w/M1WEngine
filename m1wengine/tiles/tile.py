@@ -269,9 +269,10 @@ class Tile(pygame.sprite.Sprite):
             Multiplier for changing the sprite position
         """
         speed = self.refine_speed(speed)
-        move_pixels_x = -1 * speed
-        move_pixels_y = 0
-        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
+        move_pixels_x: int = -1 * speed
+        move_pixels_y: int = 0
+        move_tuple: pygame.Vector2 = pygame.Vector2(move_pixels_x, move_pixels_y)
+        self.move_and_update_hitbox(move_tuple)
 
     def _move_right(self, speed: int) -> None:
         """Move to the right.
@@ -282,9 +283,10 @@ class Tile(pygame.sprite.Sprite):
             Multiplier for changing the sprite position
         """
         speed = self.refine_speed(speed)
-        move_pixels_x = speed
-        move_pixels_y = 0
-        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
+        move_pixels_x: int = speed
+        move_pixels_y: int = 0
+        move_tuple: pygame.Vector2 = pygame.Vector2(move_pixels_x, move_pixels_y)
+        self.move_and_update_hitbox(move_tuple)
 
     def _move_up(self, speed: int) -> None:
         """Move up.
@@ -295,9 +297,10 @@ class Tile(pygame.sprite.Sprite):
             Multiplier for changing the sprite position
         """
         speed = self.refine_speed(speed)
-        move_pixels_x = 0
-        move_pixels_y = -1 * speed
-        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
+        move_pixels_x: int = 0
+        move_pixels_y: int = -1 * speed
+        move_tuple: pygame.Vector2 = pygame.Vector2(move_pixels_x, move_pixels_y)
+        self.move_and_update_hitbox(move_tuple)
 
     def _move_down(self, speed: int) -> None:
         """Move down.
@@ -308,9 +311,10 @@ class Tile(pygame.sprite.Sprite):
             Multiplier for changing the sprite position
         """
         speed = self.refine_speed(speed)
-        move_pixels_x = 0
-        move_pixels_y = speed
-        self.move_and_update_hitbox(move_pixels_x, move_pixels_y)
+        move_pixels_x: int = 0
+        move_pixels_y: int = speed
+        move_tuple: pygame.Vector2 = pygame.Vector2(move_pixels_x, move_pixels_y)
+        self.move_and_update_hitbox(move_tuple)
 
     def refine_speed(self, speed: int) -> int:
         """Reduce speed by factor of 10 and save remainder.
