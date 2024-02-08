@@ -639,7 +639,8 @@ class NPC(Character):
                     raise ValueError(
                         "Unknown caller, cannot set player consume attribute."
                     )
-            elif current_player_action == Actions.throw:
+            else:
+                time.sleep(1)
                 self.set_state_thrown()
 
     def neutral_collided_with_player(self):
