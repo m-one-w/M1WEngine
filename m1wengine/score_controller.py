@@ -1,10 +1,4 @@
 """This module contains the ScoreController class."""
-SCORE_REDUCE_DAMSEL_DEATH: int = 6
-BOREDOM_REDUCE_DAMSEL_DEATH: int = 10
-SCORE_INCREASE_SKELETON_DEATH: int = 1
-BOREDOM_INCREASE_SKELETON_DEATH: int = 5
-SCORE_INCREASE_MINOTAUR_DEATH: int = 1
-BOREDOM_INCREASE_MINOTAUR_DEATH: int = 5
 
 
 class ScoreController(object):
@@ -34,6 +28,18 @@ class ScoreController(object):
     boredom_meter(self, new_value)
         Set the boredom meter
     """
+
+    score_dictionary = {
+        "damsel_death": {
+            "score": 6,
+            "boredom": 10,
+        },
+        "skeleton_death": {
+            "score": 1,
+            "boredom": 5,
+        },
+        "minotaur_death": {"score": 1, "boredom": 5},
+    }
 
     def __new__(cls):
         """Create a singleton object.
@@ -101,11 +107,11 @@ class ScoreController(object):
         """
         check = entity_name
         if check == "Skeleton":
-            self.current_score += SCORE_INCREASE_SKELETON_DEATH
-            self.boredom_meter += BOREDOM_INCREASE_SKELETON_DEATH
+            self.current_score += self.score_dictionary["skeleton_death"]["score"]
+            self.boredom_meter += self.score_dictionary["skeleton_death"]["boredom"]
         elif check == "Minotaur":
-            self.current_score += SCORE_INCREASE_MINOTAUR_DEATH
-            self.boredom_meter += BOREDOM_INCREASE_MINOTAUR_DEATH
+            self.current_score += self.score_dictionary["minotaur_death"]["score"]
+            self.boredom_meter += self.score_dictionary["minotaur_death"]["boredom"]
 
     def good_entity_destroyed_update_score(self, entity_name: str):
         """Update meta data on good entity destroyed.
@@ -118,12 +124,13 @@ class ScoreController(object):
             The name of the entity
         """
         if entity_name == "Damsel":
-            if self.current_score - SCORE_REDUCE_DAMSEL_DEATH < 0:
+            score_reduce: int = self.score_dictionary["damsel_death"]["score"]
+            if self.current_score - score_reduce < 0:
                 self.current_score = 0
             else:
-                self.current_score -= SCORE_REDUCE_DAMSEL_DEATH
+                self.current_score -= score_reduce
 
-            if self.boredom_meter - BOREDOM_REDUCE_DAMSEL_DEATH < 0:
+            if self.boredom_meter - score_reduce < 0:
                 self.boredom_meter = 0
             else:
-                self.boredom_meter -= BOREDOM_REDUCE_DAMSEL_DEATH
+                self.boredom_meter -= score_reduce
