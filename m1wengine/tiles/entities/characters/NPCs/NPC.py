@@ -457,12 +457,12 @@ class NPC(Character):
         # if there is a good_sprite on tracker's radar
         if collision_dictionary["collision_detected"]:
             # if first loop, set _initial_tracking_time
-            if self._initial_tracking_time == self.DEFAULT_TIMER_VALUE:
-                self._initial_tracking_time = int(time.perf_counter())
+            if self._initial_tracking_time_seconds == self.DEFAULT_TIMER_VALUE:
+                self._initial_tracking_time_seconds = int(time.perf_counter())
 
             # if we've tracked the target long enough, switch to charge
             if self.is_timer_finished(
-                self._initial_tracking_time, self.TRACKING_TIMER_SECONDS
+                self._initial_tracking_time_seconds, self.TRACKING_TIMER_SECONDS
             ):
                 self.set_state_charge()
         # else nothing has hit the NPC rect, go back to patrolling
