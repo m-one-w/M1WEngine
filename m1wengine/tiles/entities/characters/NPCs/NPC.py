@@ -83,6 +83,8 @@ class NPC(Character):
         Define the follow movement
     thrown_movement(self)
         Throw self from current position
+    throw_windup_movement(self) -> None:
+        Prior state to thrown movement
     tracking_movement(self)
         Stop movement and track sprite on radar
     charge_movement(self)
@@ -111,6 +113,8 @@ class NPC(Character):
         Set state to follow
     set_state_thrown(self)
         Set the state to thrown
+    set_state_throw_windup(self) -> None
+        Set the state to throw_windup
     set_state_charge(self)
         Set the state to charge
     set_player(self, player: pygame.sprite)
@@ -173,6 +177,7 @@ class NPC(Character):
                 "Thrown",
                 "Tracking",
                 "Charging",
+                "Throw_Windup",
             ],
         )
         self._current_state: Enum = self._states.Patrol
@@ -356,6 +361,9 @@ class NPC(Character):
         elif self._current_state == self._states.Follow:
             self.follow_movement()
 
+        elif self._current_state == self._states.Throw_Windup:
+            self.throw_windup_movement()
+
         elif self._current_state == self._states.Thrown:
             self.thrown_movement()
 
@@ -413,7 +421,8 @@ class NPC(Character):
         """Get thrown from current position."""
         # if NPC is thrown long enough. TODO: make far enough (number of tiles)
         if self.is_timer_finished(self._last_time_stored, timer_threshold_seconds=1):
-            self._current_state = self._states.Default
+            self._current_state = self._states.Patrol
+            self.speed = self.DEFAULT_SPEED
         else:
             collision_dictionary: dict = self.collision_detection(
                 self._obstacle_sprites, self._hitbox
@@ -424,6 +433,11 @@ class NPC(Character):
                 self.speed = self.DEFAULT_SPEED_FAST
                 self.move(self.speed)
                 self.flip_current_image()
+
+    def throw_windup_movement(self) -> None:
+        """Actions before NPC is thrown."""
+        # TODO: can add a small delay here
+        self.set_state_thrown()
 
     def tracking_movement(self) -> None:
         """Stop moving and track nearest entity."""
@@ -574,7 +588,11 @@ class NPC(Character):
 
     def set_state_flee(self) -> None:
         """Set state machine to 'Flee'."""
-        self._current_state = self._states.Flee
+        if (
+            self._current_state != self._states.Throw_Windup
+            and self._current_state != self._states.Thrown
+        ):
+            self._current_state = self._states.Flee
 
     def set_state_follow(self) -> None:
         """Set state machine to 'Follow'."""
@@ -583,10 +601,19 @@ class NPC(Character):
 
     def set_state_thrown(self) -> None:
         """Set state machine to 'Thrown'."""
-        self._current_state = self._states.Thrown
-        # TODO: switch to game clock
-        self._last_time_stored = time.perf_counter()
-        self.compass = self._player.compass.copy()
+        if self._current_state == self._states.Throw_Windup:
+            self._current_state = self._states.Thrown
+            # TODO: switch to tiles traveled
+            self._last_time_stored = time.perf_counter()
+            self.compass = self._player.compass.copy()
+
+    def set_state_throw_windup(self) -> None:
+        """Begin the windup action before throwing an NPC."""
+        if (
+            self._current_state != self._states.Thrown
+            and self._current_state != self._states.Throw_Windup
+        ):
+            self._current_state = self._states.Throw_Windup
 
     def set_state_track(self) -> None:
         """Set state machine to 'Tracking'."""
@@ -634,9 +661,9 @@ class NPC(Character):
                     raise ValueError(
                         "Unknown caller, cannot set player consume attribute."
                     )
+            # Default action is to throw
             else:
-                time.sleep(1)
-                self.set_state_thrown()
+                self.set_state_throw_windup()
 
     def neutral_collided_with_player(self):
         """Player has collided with a neutral sprite."""
