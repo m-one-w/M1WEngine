@@ -367,48 +367,44 @@ class NPC(Character):
 
     def patrol_movement(self) -> None:
         """Move back and forth."""
-        if self._current_state == self._states.Patrol:
-            current_time_in_seconds = time.perf_counter()
+        current_time_in_seconds = time.perf_counter()
 
-            # make sure speed is default
-            if self.speed != Tile.DEFAULT_SPEED:
-                self.speed = Tile.DEFAULT_SPEED
+        # make sure speed is default
+        if self.speed != Tile.DEFAULT_SPEED:
+            self.speed = Tile.DEFAULT_SPEED
 
-            if self.is_timer_finished(
-                self._last_time_stored, timer_threshold_seconds=3
-            ):
-                # 10 seconds passed
-                if self.compass.x != 1 or self.compass.x != 1:
-                    self.compass.x = 1
-                else:
-                    self.compass.x *= -1
-                self.compass.y = 0
-                self._last_time_stored = current_time_in_seconds
+        if self.is_timer_finished(
+            self._last_time_stored, timer_threshold_seconds=3
+        ):
+            # 10 seconds passed
+            if self.compass.x != 1 or self.compass.x != 1:
+                self.compass.x = 1
+            else:
+                self.compass.x *= -1
+            self.compass.y = 0
+            self._last_time_stored = current_time_in_seconds
 
-            self.collision_handler()
-            self.move(self.speed)
+        self.collision_handler()
+        self.move(self.speed)
 
     def flee_movement(self) -> None:
         """Change direction based on where target is."""
-        if self._current_state == self._states.Flee:
-            if self.facing_towards_entity(self._target_sprite):
-                # must set to copy or it gives the entity a shared compass
-                self.compass = self._target_sprite.compass.copy()
-                self.collision_handler()
+        if self.facing_towards_entity(self._target_sprite):
+            # must set to copy or it gives the entity a shared compass
+            self.compass = self._target_sprite.compass.copy()
+            self.collision_handler()
 
-            # move according to the compass direction
-            self.move(self.speed)
+        # move according to the compass direction
+        self.move(self.speed)
 
     def attack_movement(self) -> None:
-        """Change compass based on where target sprite is."""
-        if self._current_state == self._states.Attack:
-            self.move_towards_target_sprite()
+        """Change compass based on where target sprite is."""    
+        self.move_towards_target_sprite()
 
     def follow_movement(self) -> None:
         """Follow behind another entity."""
         # TODO: only follow at a set distance
-        if self._current_state == self._states.Follow:
-            self.move_towards_target_sprite()
+        self.move_towards_target_sprite()
 
     def thrown_movement(self) -> None:
         """Get thrown from current position."""
@@ -429,58 +425,56 @@ class NPC(Character):
     def tracking_movement(self) -> None:
         """Stop moving and track nearest entity."""
         # if we are in the tracking state
-        if self._current_state == self._states.Tracking:
-            # stop moving
-            if self.speed != self.DEFAULT_SPEED_ZERO:
-                self.speed = self.DEFAULT_SPEED_ZERO
-            # rotate compass to target sprite
-            self.rotate_compass_to_target_sprite()
-            self._initial_charge_compass = self.compass.copy()
+        # stop moving
+        if self.speed != self.DEFAULT_SPEED_ZERO:
+            self.speed = self.DEFAULT_SPEED_ZERO
+        # rotate compass to target sprite
+        self.rotate_compass_to_target_sprite()
+        self._initial_charge_compass = self.compass.copy()
 
-            # check if any good_sprites are on the tracker's radar
-            collision_dictionary: dict = self.collision_detection(
-                self._good_sprites, self._radar
-            )
+        # check if any good_sprites are on the tracker's radar
+        collision_dictionary: dict = self.collision_detection(
+            self._good_sprites, self._radar
+        )
 
-            # if there is a good_sprite on tracker's radar
-            if collision_dictionary["collision_detected"]:
-                # if first loop, set _initial_tracking_time
-                if self._initial_tracking_time == self.DEFAULT_TIMER_VALUE:
-                    self._initial_tracking_time = int(time.perf_counter())
+        # if there is a good_sprite on tracker's radar
+        if collision_dictionary["collision_detected"]:
+            # if first loop, set _initial_tracking_time
+            if self._initial_tracking_time == self.DEFAULT_TIMER_VALUE:
+                self._initial_tracking_time = int(time.perf_counter())
 
-                # if we've tracked the target long enough, switch to charge
-                if self.is_timer_finished(
-                    self._initial_tracking_time, self.TRACKING_TIMER_SECONDS
-                ):
-                    self.set_state_charge()
-            # else nothing has hit the NPC rect, go back to patrolling
-            else:
-                self.reset_charge_variables()
+            # if we've tracked the target long enough, switch to charge
+            if self.is_timer_finished(
+                self._initial_tracking_time, self.TRACKING_TIMER_SECONDS
+            ):
+                self.set_state_charge()
+        # else nothing has hit the NPC rect, go back to patrolling
+        else:
+            self.reset_charge_variables()
 
     def charge_movement(self) -> None:
         """Charge from current position until charge is disrupted."""
-        if self._current_state == self._states.Charging:
-            # protect compass to prevent it from being overwritten
-            self.compass = self._initial_charge_compass.copy()
+        # protect compass to prevent it from being overwritten
+        self.compass = self._initial_charge_compass.copy()
 
-            # if first loop, set _initial_charge_time
-            if self._initial_charge_time == self.DEFAULT_TIMER_VALUE:
-                self._initial_charge_time = int(time.perf_counter())
+        # if first loop, set _initial_charge_time
+        if self._initial_charge_time == self.DEFAULT_TIMER_VALUE:
+            self._initial_charge_time = int(time.perf_counter())
 
-            # if NPC charges long enough or hit an obstacle, go back to default state
-            if (
-                self.is_timer_finished(
-                    self._initial_charge_time, self.CHARGING_TIMER_SECONDS
-                )
-                or self.charged_into_obstacle()
-            ):
-                self.reset_charge_variables()
-                self.set_state_default()
-            else:
-                # charge fast if first time in charge loop
-                if self.speed == Tile.DEFAULT_SPEED or self.DEFAULT_SPEED_ZERO:
-                    self.speed = self.DEFAULT_SPEED_FAST
-                self.move(self.speed)
+        # if NPC charges long enough or hit an obstacle, go back to default state
+        if (
+            self.is_timer_finished(
+                self._initial_charge_time, self.CHARGING_TIMER_SECONDS
+            )
+            or self.charged_into_obstacle()
+        ):
+            self.reset_charge_variables()
+            self.set_state_default()
+        else:
+            # charge fast if first time in charge loop
+            if self.speed == Tile.DEFAULT_SPEED or self.DEFAULT_SPEED_ZERO:
+                self.speed = self.DEFAULT_SPEED_FAST
+            self.move(self.speed)
 
     def reset_charge_variables(self) -> None:
         """Reset all variables used in tracking and charging."""
