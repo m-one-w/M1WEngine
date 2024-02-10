@@ -49,7 +49,7 @@ class Button(pygame.sprite.Sprite):
         y: int,
         width: int,
         height: int,
-        text: str,
+        text,
         splitter: str = '',
         on_click_function: callable = None,
         one_press: bool = False,
@@ -67,7 +67,7 @@ class Button(pygame.sprite.Sprite):
         height: int
             The height of the button
         text: str
-            The string to display on the button
+            The string or list to be displayed on the button
         splitter: str
             a char that would split the string into separate elements in list, leave empty if you only want 1 element 
         on_click_function: callable
@@ -77,13 +77,17 @@ class Button(pygame.sprite.Sprite):
         """
 
         super().__init__()
-        #Splits Button_Text_Argument into a list
+        #Splits text into a list
         self.index = 0
         self.Button_Texts_List = []
-        if splitter != '':
-            self.Button_Texts_List = text.split(splitter)
-        else:
-            self.Button_Texts_List = [text]
+        self.button_text = ''
+        if type(text) == str:
+            if splitter != '':
+                self.Button_Texts_List = text.split(splitter)
+            else:
+                self.Button_Texts_List = [text]
+        elif type(text) == list:
+            self.Button_Texts_List = text
         self.button_text = self.Button_Texts_List[self.index]
         #Dimensions
         self.__x: int = x
