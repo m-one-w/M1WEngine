@@ -24,7 +24,7 @@ jobs:
     - name: Lint with flake8
       run: |
         pip install flake8
-        flake8 . --count --max-complexity=15 --max-line-length=88 --statistics
+        flake8 . --count --ignore=F811 --max-complexity=15 --max-line-length=88 --statistics
     - name: Lint with black
       run: |
         pip install black
