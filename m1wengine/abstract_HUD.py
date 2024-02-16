@@ -7,7 +7,7 @@ import pygame
 from m1wengine.builders.hud_builder import HudBuilder
 from abc import ABC, abstractmethod
 
-LEVEL_HINT_COORDINATES: tuple = (500, 400)
+LEVEL_HINT_COORDINATES: pygame.Vector2 = pygame.Vector2(500, 400)
 
 
 class AbstractHud(pygame.sprite.Group, ABC):
