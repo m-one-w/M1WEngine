@@ -103,6 +103,7 @@ class Button(pygame.sprite.Sprite):
             self.__x, self.__y, self.__width, self.__height
         )
         self.__text: Text = Text(x, y, self.button_text)
+        self.__text: Text = Text(x, y, self.button_text)
 
         self.__fill_colors: dict[str, str] = {
             "normal": "#ffffff",
@@ -134,4 +135,5 @@ class Button(pygame.sprite.Sprite):
                 self.__already_pressed = False
         self.__text.render_font()
         self.image.blit(self.__text.image, (0, 0))
+
 
