@@ -10,6 +10,7 @@
     - [Pull Request Guidelines](#pull-request-guidelines)
     - [Recommended IDE](#recommended-ide)
     - [Running the Game](#running-the-game)
+    - [Backlog](#backlog)
 - [Gameplay and Mechanics](#gameplay-and-mechanics)
 - [System Design](#system-design)
 - [Community](#Community)
@@ -114,6 +115,11 @@ An example of a fully functional game utilizing the library will exist within th
 To run the game from within Visual Studio Code, navigate to the game.py file and select the run python file button in the top right corner of the IDE.
 
 Alternatively, right click on the game.py file and click 'run python file in terminal'
+
+### Backlog
+To see the full backlog of open tasks, navigate to the public [github project](https://github.com/orgs/m-one-w/projects/2) associated with this repository. The open backlog issues are roughly sorted by priority within the backlog view.
+
+To add additional issues to the backlog, simply create a new issue for the M1WEngine repository.
 
 ## Gameplay and Mechanics
 The supported gameplay and mechanics are highly focused to support a specific game. This is intended to change as more projects make use of this game engine and submit additional features through pull requests.
