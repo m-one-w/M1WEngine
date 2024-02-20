@@ -136,4 +136,4 @@ https://discord.gg/vqdnJBfeT8
 ```
 
 ## License
-The license is an MIT open source initiave approved license. You may view it [here](./docs/LICENSE.md). Use of, copying, and modifying this project are all welcome and allowed. Please consider contributing to this open source project to show your appreciation for the hard work of the community in developing this software.
+The license is an MIT open source initiave approved license. You may view it [here](LICENSE.md). Use of, copying, and modifying this project are all welcome and allowed. Please consider contributing to this open source project to show your appreciation for the hard work of the community in developing this software.
