@@ -102,6 +102,8 @@ When submitting a pull request ensure all of the following have been completed:
 * Try your best to not introduce bugs into the main branch.
 * Review your code first before requesting a reviewer.
 
+Additional contribution guidelines can be found [here](https://github.com/m-one-w/M1WEngine/blob/main/CONTRIBUTING.md)
+
 ### Recommended IDE
 It is recommended to use Visual Studio Code IDE. Please install the following plugins if using VS Code:
 * Python
