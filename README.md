@@ -86,7 +86,7 @@ The vscode extension to make use of this script is called the "Run on Save" exte
 ### GitHub Actions
 On pull requests, a GitHub action will be run to lint commits being submitted for merging.
 
-The GitHub action will run the flake8 code style check and the black code formatter. If either lint checks fail, the PR will not be approved.
+The GitHub action will run the flake8 code style check and the black code formatter. If either lint checks fail, the pull request will not be approved.
 
 ### Pull Request Guidelines
 When submitting a pull request ensure all of the following have been completed:
@@ -95,9 +95,9 @@ When submitting a pull request ensure all of the following have been completed:
 * The commit body should have complete sentences and fully correct punctuation.
 * Ensure all code is consistent in style and format.
 * Do not mix in formatting commits into functional commits unless the formatting is done to code that has had its function changed.
-* The scope of commits within a single PR should not overlap.
+* The scope of commits within a single pull request should not overlap.
   * Code is not added and than deleted accross commits in a single PR.
-  * Code is not modified multiple times in a single PR on multiple commits.
+  * Code is not modified multiple times in a single pull request on multiple commits.
 * Do not include merge commits.
 * Try your best to not introduce bugs into the main branch.
 * Review your code first before requesting a reviewer.
