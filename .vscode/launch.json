@@ -1,0 +1,13 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Game",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "test/test_src/game.py",
+            "console": "integratedTerminal",
+            "justMyCode": false
+        },
+    ]
+}
