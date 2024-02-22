@@ -29,7 +29,7 @@ class LevelManager:
 
     Methods
     -------
-    __new__(cls) -> object()
+    __new__(cls) -> object
         Check if singleton LevelManager already exists, return the instance
     load_level(self) -> None
         Create the current level
