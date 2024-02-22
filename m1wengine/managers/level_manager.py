@@ -29,13 +29,13 @@ class LevelManager:
 
     Methods
     -------
-    __new__(cls) -> object()
+    __new__(cls) -> object
         Check if singleton LevelManager already exists, return the instance
     run(self) -> bool
         Run the currently loaded menu or level and return user input selection
     """
 
-    def __new__(cls) -> object():
+    def __new__(cls) -> object:
         """Create a singleton object.
 
         If singleton already exists returns the previous singleton object
