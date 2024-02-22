@@ -1,7 +1,6 @@
 """AssetManager class."""
 import pygame
 from m1wengine.file_managers.support import import_cut_graphic
-from game_data import level_data, menu_data
 
 
 class AssetManager:
@@ -16,6 +15,8 @@ class AssetManager:
         The list of pygame.sprites that will be used by levels
     _music_manager: pygame.mixer
         The mixer that loads and plays music
+    _game_data: any
+        The game settings containing level and game information
 
     Methods
     -------
@@ -25,15 +26,16 @@ class AssetManager:
         Unload previous music and loads new music
     """
 
-    def __init__(self) -> None:
+    def __init__(self, game_data: any) -> None:
         """Load sprite and music assets."""
         # csv file with sprites used in every level, like player.
         self._univeral_sprites: list[pygame.Surface] = import_cut_graphic(
-            "game_assets/graphics/tilesets/tiny_atlas.png"
+            game_data.tileset_path
         )
 
         self._music_manager: pygame.mixer = pygame.mixer
         self._music_manager.init()
+        self._game_data: any = game_data
 
     @property
     def universal_sprites(self) -> list:
@@ -44,7 +46,11 @@ class AssetManager:
         """Unload previous music and loads menu music."""
         self._music_manager.music.unload()
         if menu_flag == "menu":
-            self._music_manager.music.load(menu_data.get(key).get("music"))
+            self._music_manager.music.load(
+                self._game_data.menu_data.get(key).get("music")
+            )
         else:
-            self._music_manager.music.load(level_data.get(key).get("music"))
+            self._music_manager.music.load(
+                self._game_data.level_data.get(key).get("music")
+            )
         self._music_manager.music.play()

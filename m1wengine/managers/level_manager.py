@@ -50,7 +50,7 @@ class LevelManager:
             cls.instance = super(LevelManager, cls).__new__(cls)
         return cls.instance
 
-    def __init__(self) -> None:
+    def __init__(self, game_data) -> None:
         """Construct the LevelManager class.
 
         This LevelManager will instantiate a level's contents
@@ -58,7 +58,7 @@ class LevelManager:
         """
         # TODO: move clock to setter/getter style
         self._clock: pygame.time.Clock = pygame.time.Clock()
-        self._asset_manager: AssetManager = AssetManager()
+        self._asset_manager: AssetManager = AssetManager(game_data)
         self._user_input: UserSelection = UserSelection.none
         # main menu is the first thing that is loaded
         self._menu: MainMenu = MainMenu()
