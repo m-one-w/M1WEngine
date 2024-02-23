@@ -57,14 +57,14 @@ class NPC(Character):
     radar_set_states(
         self,
         entities: pygame.sprite.Group,
-        set_active_state: type(Callable[[], None]),
-        set_passive_state: type(Callable[[], None]),
+        set_active_state: Callable),
+        set_passive_state: Callable),
     )
         Set the active and passive states based on stuff detected on radar
     radar_set_state(
         self,
         entities: pygame.sprite.Group,
-        set_active_state: type(Callable[[], None]),
+        set_active_state: Callable),
     ) -> bool
         Set the state on a radar detection of entities
     set_target_sprite_from_list(self, sprite_group_list: list, collisions: list)
@@ -214,8 +214,8 @@ class NPC(Character):
     def radar_set_states(
         self,
         entities: pygame.sprite.Group,
-        set_active_state: type(Callable[[], None]),
-        set_passive_state: type(Callable[[], None]),
+        set_active_state: Callable,
+        set_passive_state: Callable,
     ) -> None:
         """Set state and selects which sprite to apply an active state to.
 
@@ -225,9 +225,9 @@ class NPC(Character):
         ----------
         entities: pygame.sprite.Group
             Either the player, or any sprite group
-        set_active_state: type(Callable[[], None])
+        set_active_state: Callable
             The new active state to set
-        set_passive_state: type(Callable[[], None])
+        set_passive_state: Callable
             The new passive state to set
         """
         collided: bool = self.radar_set_state(entities, set_active_state)
@@ -239,7 +239,7 @@ class NPC(Character):
     def radar_set_state(
         self,
         entities: pygame.sprite.Group,
-        set_active_state: type(Callable[[], None]),
+        set_active_state: Callable,
     ) -> bool:
         """Set state and selects which sprite to apply an active state to.
 
@@ -249,7 +249,7 @@ class NPC(Character):
         ----------
         entities: pygame.sprite.Group
             Either the player, or any sprite group
-        set_active_state: type(Callable[[], None])
+        set_active_state: Callable
             The new active state to set
 
         Returns

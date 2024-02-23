@@ -1,5 +1,5 @@
 """This module contains the tools to build the HUD class."""
-from typing import Callable, Type
+from typing import Callable
 import pygame
 from m1wengine.text import Text
 from m1wengine.button import Button
@@ -25,7 +25,7 @@ class HudBuilder(object):
     ) -> list[pygame.sprite.Sprite]
         Return all sprites in the level hint
     build_pause_game_button(
-        self, coordinates: pygame.Vector2, method: type(Callable[[], None])
+        self, coordinates: pygame.Vector2, method: Callable)
     ) -> list[pygame.sprite.Sprite]
         Return all sprites in the pause button
     add_box(self, rect: pygame.rect.Rect) -> pygame.sprite.Sprite
@@ -137,7 +137,7 @@ class HudBuilder(object):
         return level_hint_sprites
 
     def build_pause_game_button(
-        self, coordinates: pygame.Vector2, method: Type[Callable[[], None]]
+        self, coordinates: pygame.Vector2, method: Callable
     ) -> list[pygame.sprite.Sprite]:
         """Create pause button.
 
@@ -145,7 +145,7 @@ class HudBuilder(object):
         ----------
         coordinates: pygame.Vector2
             The x and y coordinates to display the pause menu
-        method: type(Callable[[], None])
+        method: Callable
             A bound method to run on button clicks
 
         Returns
