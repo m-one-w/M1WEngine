@@ -135,5 +135,3 @@ class Button(pygame.sprite.Sprite):
                 self.__already_pressed = False
         self.__text.render_font()
         self.image.blit(self.__text.image, (0, 0))
-
-
