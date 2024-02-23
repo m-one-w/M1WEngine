@@ -50,18 +50,25 @@ class LevelManager:
             cls.instance = super(LevelManager, cls).__new__(cls)
         return cls.instance
 
-    def __init__(self, game_data) -> None:
+    def __init__(self, game_data, settings) -> None:
         """Construct the LevelManager class.
 
         This LevelManager will instantiate a level's contents
         onto the pygame display surface.
+
+        Parameters
+        ----------
+        game_data: any
+            Client side definition of the game data
+        settings: any
+            Client side definition of the game settings
         """
         # TODO: move clock to setter/getter style
         self._clock: pygame.time.Clock = pygame.time.Clock()
         self._asset_manager: AssetManager = AssetManager(game_data)
         self._user_input: UserSelection = UserSelection.none
         # main menu is the first thing that is loaded
-        self._menu: MainMenu = MainMenu()
+        self._menu: MainMenu = MainMenu(settings)
         self._asset_manager.load_music("menu", "main_menu")
         self._level: object = object()
 
