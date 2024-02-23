@@ -112,7 +112,11 @@ class Button(pygame.sprite.Sprite):
         }
 
     def iterate_text_list(self):
-        """Increase the index to change the displayed text and reset index if its already on the last element"""
+        """Iterate through the display button text.
+        
+        Increase the index to change the displayed text and
+        reset index if it's already on the last element
+        """
         if self.Button_Texts_List[self.index] == self.Button_Texts_List[-1]:
             self.index = 0
         else:
