@@ -1,7 +1,6 @@
 """This module contains the MainMenu class."""
 import pygame
 import pygame_menu
-from m1wengine.settings import WINDOW_WIDTH, WINDOW_HEIGHT, MAIN_MENU_BACKGROUND_PATH
 from m1wengine.enums.user_selection import UserSelection
 
 
@@ -38,13 +37,15 @@ class MainMenu(pygame_menu.Menu):
         Draw the menu to the display surface and start the menuLoop
     """
 
-    def __init__(self) -> None:
+    def __init__(self, settings) -> None:
         """Construct the main menu class.
 
         This method will instantiate all required sprite groups for the main menu level
         """
-        self._menu_image: pygame.Surface = pygame.image.load(MAIN_MENU_BACKGROUND_PATH)
-        super().__init__("Main Menu", WINDOW_WIDTH, WINDOW_HEIGHT)
+        self._menu_image: pygame.Surface = pygame.image.load(
+            settings.MAIN_MENU_BACKGROUND_PATH
+        )
+        super().__init__("Main Menu", settings.WINDOW_WIDTH, settings.WINDOW_HEIGHT)
         self._display_surface: pygame.Surface = pygame.display.get_surface()
         # create pygame_menu options for the main menu
         self.add_menu_options()

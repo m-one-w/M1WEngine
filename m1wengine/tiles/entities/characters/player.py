@@ -4,7 +4,6 @@ import pygame
 from m1wengine.enums.actions import Actions
 from m1wengine.enums.eaten_powers import EatenPowers
 from m1wengine.tiles.entities.characters.character import Character
-import m1wengine.settings as settings
 
 # Defines how fast the player object can rotate while running
 PLAYER_ROTATION_SPEED = 5
@@ -52,6 +51,7 @@ class Player(Character):
         pos: tuple,
         group: pygame.sprite.Group,
         obstacle_sprites: pygame.sprite.Group,
+        settings,
     ) -> None:
         """Construct the player object.
 
