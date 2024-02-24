@@ -207,6 +207,29 @@ class NPC(Character):
         self._player_collision_resolved = True
         self._hud = None
 
+    @property
+    def radar(self) -> pygame.Rect:
+        """Get the radar of the NPC."""
+        return self._radar
+
+    @radar.setter
+    def radar(self, new_value: pygame.rect):
+        """Set the new NPC radar.
+
+        Parameters
+        ----------
+        new_value: pygame.Rect
+            New incoming value to set
+
+        Raises
+        ------
+        ValueError: parameter must be a pygame.Rect type
+        """
+        if isinstance(new_value, pygame.Rect):
+            self._radar = pygame.Rect.copy(new_value)
+        else:
+            raise ValueError("Radar must be set to a pygame rect.")
+
     def init_hud(self):
         """Initialize the NPC handle to HUD."""
         self._hud: AbstractHud = LevelManager.global_level_manager._hud
