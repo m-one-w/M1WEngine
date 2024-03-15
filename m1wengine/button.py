@@ -91,7 +91,7 @@ class Button(pygame.sprite.Sprite):
         self.__y: int = y
         self.__width: int = width
         self.__height: int = height
-        # Clicking functionaliti
+        # Clicking functionality
         self._on_click_function: callable = on_click_function
         self.__on_press: bool = one_press
         self.__already_pressed: bool = False
