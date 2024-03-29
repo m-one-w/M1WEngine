@@ -217,7 +217,7 @@ class Character(Entity):
         if axis == "y":
             angle = self.compass.x * 45
 
-        return -angle
+        return angle
 
     def get_distance(self, coords: tuple) -> float:
         """Return the hypotenuse/distance away from another character.
@@ -259,13 +259,13 @@ class Character(Entity):
         angle: float = 0.0
 
         if self._status == "right":
-            angle = self.get_angle_from_direction("x")
-        if self._status == "left":
             angle = -self.get_angle_from_direction("x")
+        if self._status == "left":
+            angle = self.get_angle_from_direction("x")
         if self._status == "up":
-            angle = self.get_angle_from_direction("y")
-        if self._status == "down":
             angle = -self.get_angle_from_direction("y")
+        if self._status == "down":
+            angle = self.get_angle_from_direction("y")
 
         rotated_image: pygame.Surface = pygame.transform.rotate(image, angle)
         return rotated_image
